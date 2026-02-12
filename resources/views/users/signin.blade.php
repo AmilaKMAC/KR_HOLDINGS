@@ -12,6 +12,10 @@
     <!-- CSS -->
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
+
+
     <style>
         body, html {
             margin: 0;
