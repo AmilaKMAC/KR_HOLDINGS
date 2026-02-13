@@ -4,10 +4,12 @@
 @include('includes.navbar.top')
 
 
-<h1>Hello </h1>
+<div class="content">
+    @yield('content')
+</div>
 
 
-</body>
-</html>
 
+@include('includes.footer.start')
+@include('includes.footer.end')
 
