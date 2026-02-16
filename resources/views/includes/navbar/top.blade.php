@@ -1,17 +1,18 @@
         <!-- Top Navbar -->
-        <nav class="navbar navbar-dark bg-dark border-bottom " >
+        <header class="navbar navbar-dark bg-dark border-bottom ">
             <div class="container-fluid ">
+
+
+
+                <!-- Center Title -->
+                <span class="navbar-brand mx-auto mb-2 mt-2 text-center">
+                    Dashboard
+                </span>
 
                 <!-- Toggle button -->
                 <button class="btn btn-outline-light d-lg-none" id="sidebarToggle">
                     <i class="bi bi-list"></i>
                 </button>
 
-                <!-- Center Title -->
-                <span class="navbar-brand mx-auto mb-0 text-center">
-                    Dashboard
-                </span>
-
             </div>
-        </nav>
-
+        </header>

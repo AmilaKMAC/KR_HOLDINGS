@@ -7,6 +7,6 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('users.admin.dashboard');
+    return view('users.dashboard.admin');
 });
 

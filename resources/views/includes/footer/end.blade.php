@@ -1,7 +1,3 @@
-
-
-
-
 <!-- App js -->
 <div>add the js</div>
 
@@ -9,12 +5,24 @@
 
 <!-- Togle Bar -->
 <script>
-document.getElementById("sidebarToggle")
-    .addEventListener("click", function () {
-        document.getElementById("sidebar")
-            .classList.toggle("active");
-});
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    const sidebar = document.getElementById("sidebar");
+
+    sidebarToggle.addEventListener("click", () => {
+        // Toggle the sidebar visibility
+        sidebar.classList.toggle("active");
+
+        // Check if the sidebar active
+        if (sidebar.classList.contains("active")) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    });
+
+    
 </script>
 
 </body>
+
 </html>
