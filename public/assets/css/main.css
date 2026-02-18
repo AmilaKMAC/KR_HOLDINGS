@@ -1,0 +1,38 @@
+/* Default Sidebar */
+#sidebar {
+    left: 0;
+}
+
+/* For Small Screens
+    Toggle Button
+        Laptop - 1024
+        Tablet
+        Mobile
+*/
+@media (max-width: 1199.98px) {
+
+    #sidebar {
+        left: -280px; 
+    }
+
+    #sidebar.active {
+        left: 0; 
+    }
+
+    #content {
+        margin-left: 0 !important;
+    }
+}
+
+/* For large screens */
+@media (min-width: 1200px) {
+
+    #sidebar {
+        left: 0;
+    }
+
+    #content {
+        margin-left: 280px;
+    }
+}
+

@@ -1,17 +1,17 @@
         </div>
         <!--Content wrapper End -->
 
-    </nav>
-    <!-- Content End -->
 
 
 
-        <footer class="footer">
-
-            <div>all right reserved</div>
-
-        </footer>
+        </nav>
+        <!-- Content End -->
 
 
-        <!-- jQuery -->
-        <script src="{{ URL::asset('assets\js\bootstrap.min.js') }}"></script>
+
+     
+
+
+        <!-- JavaScript -->
+        <script src="{{ URL::asset('assets/bootstrap/js/bootstrap.min.js') }}"></script>
+        <script src="{{ URL::asset('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

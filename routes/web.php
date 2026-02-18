@@ -10,3 +10,6 @@ Route::get('/dashboard', function () {
     return view('users.dashboard.admin');
 });
 
+Route::get('/test', function () {
+    return view('users.components.user_management');
+});

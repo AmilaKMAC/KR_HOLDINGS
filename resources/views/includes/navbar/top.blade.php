@@ -10,7 +10,7 @@
                 </span>
 
                 <!-- Toggle button -->
-                <button class="btn btn-outline-light d-lg-none" id="sidebarToggle">
+                <button class="btn btn-outline-light d-xl-none" id="sidebarToggle">
                     <i class="bi bi-list"></i>
                 </button>
 

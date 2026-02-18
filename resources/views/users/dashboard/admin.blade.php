@@ -118,7 +118,7 @@
         <script src="{{ asset('assets/js/chart.js') }}"></script>
     --}}
 
-    <script src="{{ asset('assets/js/chart.umd.js') }}"></script>
+    <script src="{{ asset('assets/bootstrap/js/chart.umd.js') }}"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

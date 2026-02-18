@@ -1,12 +1,16 @@
-<!-- App js -->
-<div>add the js</div>
+<!-- App js -
+    ---------------
+    ---------------
+    ---------------
+-->
 
 
 
-<!-- Togle Bar -->
+<!-- Toggle Bar -->
 <script>
     const sidebarToggle = document.getElementById("sidebarToggle");
     const sidebar = document.getElementById("sidebar");
+
 
     sidebarToggle.addEventListener("click", () => {
         // Toggle the sidebar visibility
