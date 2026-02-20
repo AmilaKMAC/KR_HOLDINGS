@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="container py-4">
+    <div class="container-fluid py-4">
 
         <!-- ===================== TOP SECTION ===================== -->
         <div class="row mb-4 align-items-start">
@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered mb-0 text-center">
+                    <table class="table table-bordered table-striped table-hover text-center align-middle mb-0 ">
                             <thead class="table-light">
                                 <tr>
                                     <th>User Id</th>

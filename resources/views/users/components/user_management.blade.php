@@ -61,11 +61,13 @@
                         <tfoot>
                             <tr>
                                 <td colspan="13" class="bg-light">
-                                    <div class="d-flex justify-content-end p-2">
+                                    <div class="d-flex justify-content-end p-1">
                                         <button type="button"
                                                 class="btn btn-success"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#addUserModal">
+                                                data-bs-target="#addUserModal"
+                                                w-25
+                                                >
                                             + Add User
                                         </button>
                                     </div>
@@ -139,11 +141,13 @@
                         <tfoot>
                             <tr>
                                 <td colspan="13" class="bg-light">
-                                    <div class="d-flex justify-content-end p-2">
+                                    <div class="d-flex justify-content-end p-1">
                                         <button type="button"
                                                 class="btn btn-success"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#addTechnicianModal">
+                                                data-bs-target="#addTechnicianModal"
+                                                w-25
+                                                >
                                             + Add Technician
                                         </button>
                                     </div>
