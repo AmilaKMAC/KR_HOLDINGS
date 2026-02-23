@@ -20,25 +20,25 @@
 
                 <!-- Admin -->
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="dashboard" class="nav-link text-white">
                         <i class="bi bi-speedometer2 me-3"></i> Dashboard
                     </a>
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="user" class="nav-link text-white">
                         <i class="bi bi-person-gear me-3"></i> User Management
                     </a>
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="system_settings" class="nav-link text-white">
                         <i class="bi bi-database-gear me-3"></i> System Settings
                     </a>
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="system_monitoring" class="nav-link text-white">
                         <i class="bi bi-pie-chart-fill me-3"></i> System Monitoring
                     </a>
                 </li>

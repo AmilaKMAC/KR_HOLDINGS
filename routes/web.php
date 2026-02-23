@@ -15,6 +15,11 @@ Route::get('/user', function () {
 });
 
 
-Route::get('/test', function () {
+Route::get('/system_settings', function () {
     return view('users.components.system_settings');
+});
+
+
+Route::get('/system_monitoring', function () {
+    return view('users.components.system_monitoring');
 });
