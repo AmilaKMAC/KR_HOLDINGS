@@ -4,7 +4,8 @@
 @section('content')
     <div class="container-fluid py-4">
 
-        <!-- ===================== TOP SECTION ===================== -->
+        <!-- ===================================================== TOP SECTION ====================================================== -->
+
         <div class="row mb-4 align-items-start">
 
             <!-- No of Users Box -->
@@ -26,7 +27,7 @@
                     </div>
 
                     <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover text-center align-middle mb-0 ">
+                        <table class="table table-bordered table-striped table-hover text-center align-middle mb-0 ">
                             <thead class="table-light">
                                 <tr>
                                     <th>User Id</th>
@@ -60,7 +61,7 @@
 
         <hr class="mt-5 mb-5">
 
-        <!-- ===================== STORAGE SECTION ===================== -->
+        <!-- ================================================ STORAGE SECTION ==================================================== -->
         <div class="row mb-4">
             <div class="col-lg-8 mx-auto">
 
@@ -86,10 +87,10 @@
 
 
         <hr class="mt-5 mb-5">
-        <!-- ===================== CHART SECTION ===================== -->
+        <!-- ============================================= CHART SECTION ============================================================ -->
         <div class="row">
 
-            
+
 
             <!-- Storage Usage Chart -->
             <div class="col-12 col-lg-6 mb-4">

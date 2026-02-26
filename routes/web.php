@@ -23,3 +23,9 @@ Route::get('/system_settings', function () {
 Route::get('/system_monitoring', function () {
     return view('users.components.system_monitoring');
 });
+
+
+
+Route::get('/reports', function () {
+    return view('users.components.reports');
+});

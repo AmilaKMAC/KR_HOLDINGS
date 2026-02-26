@@ -4,8 +4,8 @@
     <div class="container mt-5">
         <div class="d-grid gap-4 col-8 mx-auto">
 
-            <button class="btn btn-dark p-4" data-bs-toggle="modal" data-bs-target="#loginHistoryModal">
-                Login History
+            <button class="btn btn-dark p-4" data-bs-toggle="modal" data-bs-target="#activeUsersModal">
+                 Active Users
             </button>
 
             <button class="btn btn-primary p-4" data-bs-toggle="modal" data-bs-target="#dataBackupModal">
@@ -20,15 +20,15 @@
     </div>
 
 
-    <!-- ================= MODALS ================= -->
+    <!-- ================================================== MODALS ========================================================== -->
 
     <!-- LOGIN HISTORY Modal -->
-    <div class="modal fade" id="loginHistoryModal" tabindex="-1">
+    <div class="modal fade" id="activeUsersModal" tabindex="-1">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Login History</h5>
+                    <h5 class="modal-title fw-bold">Active Users</h5>
                     <button class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 

@@ -10,9 +10,11 @@
                 </span>
 
                 <!-- Toggle button -->
-                <button class="btn btn-outline-light d-xl-none" id="sidebarToggle">
-                    <i class="bi bi-list"></i>
-                </button>
+                <div class="mt-auto">
+                    <button class="btn btn-outline-light d-xl-none" id="sidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
 
             </div>
         </header>

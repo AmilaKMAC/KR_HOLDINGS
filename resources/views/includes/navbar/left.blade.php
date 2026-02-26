@@ -1,12 +1,13 @@
-<!-- Content Start -->
+<!-- ===================================================== Content Start ============================================================-->
 <nav class="d-flex" id="layout">
 
-    <!-- Nav Left  Start -->
-    <aside id="sidebar" class="bg-dark text-white vh-100 position-fixed" style="width:280px; transition:0.3s; z-index: 1000;">
+    <!-- ================================================ Nav Left  Start ========================================================== -->
+    <aside id="sidebar" class="bg-dark text-white vh-100 position-fixed"
+        style="width:280px; transition:0.3s; z-index: 1000;">
 
         <div class="p-3 d-flex flex-column h-100">
 
-            <a href="#"
+            <a href="dashboard"
                 class="text-white text-decoration-none mb-0 d-flex justify-content-center align-items-center px-0 py-1">
 
                 <img src="{{ asset('assets/images/logo.png') }}" height="32" class="me-3" alt="Logo">
@@ -44,8 +45,8 @@
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link text-white">
-                        <i class="bi bi-file-earmark-bar-graph me-3"></i> Reporting Access
+                    <a href="reports" class="nav-link text-white">
+                        <i class="bi bi-clipboard-fill me-3"></i> Reports
                     </a>
                 </li>
 
@@ -68,11 +69,7 @@
                     </a>
                 </li>
 
-                <li>
-                    <a href="#" class="nav-link text-white">
-                        <i class="bi bi-clipboard-fill me-3"></i> Reports
-                    </a>
-                </li>
+
 
                 <!-- Project Coordinator -->
                 <li>
@@ -131,7 +128,7 @@
         </div>
 
     </aside>
-    <!-- Nav Left End -->
+    <!-- ================================================== Nav Left End ==============================================================-->
 
     <!-- Content wrapper Start -->
     <div id="content" style="margin-left:280px; width:100%;">
