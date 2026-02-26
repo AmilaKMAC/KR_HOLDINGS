@@ -6,8 +6,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+/**
+ * Admin Dashboard Route
+ *
+ * Displays the admin dashboard page for authenticated users.
+ *
+ * @route GET /dashboard
+ * @return \Illuminate\View\View The admin dashboard view
+ */
+// Route::get('/dashboard', function () {
+//     return view('users.dashboard.admin');
+// });
+
+
+
 Route::get('/dashboard', function () {
-    return view('users.dashboard.admin');
+    return view('users.dashboard.executive');
 });
 
 Route::get('/user', function () {
