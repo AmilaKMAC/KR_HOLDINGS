@@ -56,6 +56,9 @@ Route::get('/review', function () {
     return view('users.components.review_photos');
 });
 
+Route::get('/demo', function () {
+    return view('users.components.demo');
+});
 
 
 // Reports

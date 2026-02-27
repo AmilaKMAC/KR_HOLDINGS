@@ -44,11 +44,7 @@
                     </a>
                 </li>
 
-                <li>
-                    <a href="reports" class="nav-link text-white">
-                        <i class="bi bi-clipboard-fill me-3"></i> Reports
-                    </a>
-                </li>
+
 
                 <!-- Executive -->
                 <li>
@@ -69,6 +65,17 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="reports" class="nav-link text-white">
+                        <i class="bi bi-clipboard-fill me-3"></i> Reports
+                    </a>
+                </li>
+
+                <li>
+                    <a href="demo" class="nav-link text-white">
+                        <i class="bi bi-clipboard-fill me-3"></i> demo
+                    </a>
+                </li>
 
 
                 <!-- Project Coordinator -->
