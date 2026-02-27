@@ -52,19 +52,19 @@
 
                 <!-- Executive -->
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="tech" class="nav-link text-white">
                         <i class="bi bi-trophy me-3"></i> Technician Performance
                     </a>
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="payment" class="nav-link text-white">
                         <i class="bi bi-cash-stack me-3"></i> Payment & Salary
                     </a>
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="review" class="nav-link text-white">
                         <i class="bi bi-images me-3"></i> Review Photos
                     </a>
                 </li>

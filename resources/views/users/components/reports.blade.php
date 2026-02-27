@@ -6,65 +6,16 @@
 
     <!-- ================= PAGE HEADER ================= -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold mb-0">Activity Center</h4>
+        <h4 class="fw-bold mb-0">Reports Module</h4>
     </div>
 
 
-    <!-- ========================================================= -->
-    <!-- ================= USER ACTIVITY LOGS ==================== -->
-    <!-- ========================================================= -->
-
+    <!-- ===================================================== -->
+    <!-- ================= SYSTEM ACTIVITY LOG ================= -->
+    <!-- ===================================================== -->
     <div class="card shadow-sm mb-5">
         <div class="card-header bg-dark text-white fw-bold">
-            User Activity Logs
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered align-middle text-center">
-                <thead class="table-light">
-                    <tr>
-                        <th>ID</th>
-                        <th>User</th>
-                        <th>Last Action</th>
-                        <th>Status</th>
-                        <th>Last Login</th>
-                        <th></th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Amila</td>
-                        <td>Login</td>
-                        <td>
-                            <span class="badge bg-success">Active</span>
-                        </td>
-                        <td>2026-02-26 09:30 AM</td>
-                        <td>
-                            <button 
-                                class="btn btn-sm btn-info userViewBtn"
-                                data-bs-toggle="modal"
-                                data-bs-target="#userHistoryModal"
-                                data-user="Amila">
-                                View
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-
-
-    <!-- ========================================================= -->
-    <!-- ================= SYSTEM ACTIVITY LOGS ================== -->
-    <!-- ========================================================= -->
-
-    <div class="card shadow-sm">
-        <div class="card-header bg-secondary text-white fw-bold">
-            System Activity Logs
+            System Activity Log
         </div>
 
         <div class="table-responsive">
@@ -76,212 +27,277 @@
                         <th>Module</th>
                         <th>Severity</th>
                         <th>Status</th>
-                        <th>Time</th>
+                        <th>Triggered By</th>
+                        <th>Timestamp</th>
                         <th></th>
                     </tr>
                 </thead>
 
                 <tbody>
+                    @forelse($systemLogs ?? [] as $log)
                     <tr>
-                        <td>101</td>
-                        <td>Database Backup</td>
-                        <td>System</td>
+                        <td>{{ $log->id }}</td>
+                        <td>{{ $log->event }}</td>
+                        <td>{{ $log->module }}</td>
                         <td>
-                            <span class="badge bg-warning text-dark">Medium</span>
+                            <span class="badge bg-warning text-dark">
+                                {{ $log->severity }}
+                            </span>
                         </td>
                         <td>
-                            <span class="badge bg-success">Completed</span>
+                            <span class="badge bg-success">
+                                {{ $log->status }}
+                            </span>
                         </td>
-                        <td>2026-02-26 08:00 AM</td>
+                        <td>{{ $log->user->name ?? '-' }}</td>
+                        <td>{{ $log->created_at }}</td>
                         <td>
-                            <button 
-                                class="btn btn-sm btn-info systemViewBtn"
+                            <button class="btn btn-sm btn-info"
                                 data-bs-toggle="modal"
-                                data-bs-target="#systemHistoryModal"
-                                data-event="Database Backup">
+                                data-bs-target="#systemLogModal"
+                                data-id="{{ $log->id }}">
                                 View
                             </button>
                         </td>
                     </tr>
+                    @empty
+                        <tr><td colspan="8">No Records Found</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <!-- ===================================================== -->
+    <!-- ================= USER ACTIVITY LOG ================== -->
+    <!-- ===================================================== -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-secondary text-white fw-bold">
+            User Activity Log
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>IP Address</th>
+                        <th>Device</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse($userLogs ?? [] as $log)
+                    <tr>
+                        <td>{{ $log->id }}</td>
+                        <td>{{ $log->user->name }}</td>
+                        <td>{{ $log->action }}</td>
+                        <td>{{ $log->ip_address }}</td>
+                        <td>{{ $log->device }}</td>
+                        <td>{{ $log->created_at }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info"
+                                data-bs-toggle="modal"
+                                data-bs-target="#userLogModal"
+                                data-id="{{ $log->id }}">
+                                View
+                            </button>
+                        </td>
+                    </tr>
+                    @empty
+                        <tr><td colspan="7">No Records Found</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <!-- ===================================================== -->
+    <!-- ========== TECHNICIAN PERFORMANCE REPORT ============= -->
+    <!-- ===================================================== -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-primary text-white fw-bold">
+            Technician Performance Report
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Technician</th>
+                        <th>Total Projects</th>
+                        <th>Completed</th>
+                        <th>Pending</th>
+                        <th>Average Completion (Days)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($technicianReports ?? [] as $tech)
+                    <tr>
+                        <td>{{ $tech->id }}</td>
+                        <td>{{ $tech->name }}</td>
+                        <td>{{ $tech->total_projects }}</td>
+                        <td><span class="badge bg-success">{{ $tech->completed }}</span></td>
+                        <td><span class="badge bg-warning text-dark">{{ $tech->pending }}</span></td>
+                        <td>{{ $tech->avg_completion_days }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info">View</button>
+                        </td>
+                    </tr>
+                    @empty
+                        <tr><td colspan="7">No Records Found</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <!-- ===================================================== -->
+    <!-- ============ PROJECT PROGRESS SUMMARY ================= -->
+    <!-- ===================================================== -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-success text-white fw-bold">
+            Project Progress Summary
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Project Name</th>
+                        <th>Partner Company</th>
+                        <th>Status</th>
+                        <th>Start Date</th>
+                        <th>Expected Completion</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($projects ?? [] as $project)
+                    <tr>
+                        <td>{{ $project->id }}</td>
+                        <td>{{ $project->name }}</td>
+                        <td>{{ $project->partner->name ?? '-' }}</td>
+                        <td>
+                            <span class="badge bg-info text-dark">
+                                {{ $project->status }}
+                            </span>
+                        </td>
+                        <td>{{ $project->start_date }}</td>
+                        <td>{{ $project->expected_completion }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info">View</button>
+                        </td>
+                    </tr>
+                    @empty
+                        <tr><td colspan="7">No Records Found</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <!-- ===================================================== -->
+    <!-- ============= MONTHLY ATTENDANCE REPORT ============== -->
+    <!-- ===================================================== -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-warning text-dark fw-bold">
+            Monthly Attendance Report
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Month</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                        <th>Leave</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($attendanceReports ?? [] as $attendance)
+                    <tr>
+                        <td>{{ $attendance->id }}</td>
+                        <td>{{ $attendance->user->name }}</td>
+                        <td>{{ $attendance->month }}</td>
+                        <td>{{ $attendance->present }}</td>
+                        <td>{{ $attendance->absent }}</td>
+                        <td>{{ $attendance->leave }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info">View</button>
+                        </td>
+                    </tr>
+                    @empty
+                        <tr><td colspan="7">No Records Found</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <!-- ===================================================== -->
+    <!-- ============ PARTNER COMPANY REPORT =================== -->
+    <!-- ===================================================== -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-info text-white fw-bold">
+            Partner Company Reports
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Partner Company</th>
+                        <th>Total Projects</th>
+                        <th>Completed</th>
+                        <th>Ongoing</th>
+                        <th>Revenue Generated</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($partnerReports ?? [] as $partner)
+                    <tr>
+                        <td>{{ $partner->id }}</td>
+                        <td>{{ $partner->name }}</td>
+                        <td>{{ $partner->total_projects }}</td>
+                        <td><span class="badge bg-success">{{ $partner->completed }}</span></td>
+                        <td><span class="badge bg-warning text-dark">{{ $partner->ongoing }}</span></td>
+                        <td>{{ $partner->revenue }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info">View</button>
+                        </td>
+                    </tr>
+                    @empty
+                        <tr><td colspan="7">No Records Found</td></tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
 
 </div>
-
-
-
-<!-- ========================================================= -->
-<!-- ================= USER HISTORY MODAL ===================== -->
-<!-- ========================================================= -->
-
-<div class="modal fade" id="userHistoryModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title">
-                    Login History - <span id="modalUserName"></span>
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover text-center align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>#</th>
-                                <th>Login Time</th>
-                                <th>Logout Time</th>
-                                <th>IP Address</th>
-                                <th>Device</th>
-                                <th>Browser</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="userHistoryBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-
-<!-- ========================================================= -->
-<!-- ================= SYSTEM HISTORY MODAL =================== -->
-<!-- ========================================================= -->
-
-<div class="modal fade" id="systemHistoryModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-
-            <div class="modal-header bg-secondary text-white">
-                <h5 class="modal-title">
-                    System Event History - <span id="modalEventName"></span>
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover text-center align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>#</th>
-                                <th>Event Type</th>
-                                <th>Module</th>
-                                <th>Severity</th>
-                                <th>Description</th>
-                                <th>Status</th>
-                                <th>Timestamp</th>
-                            </tr>
-                        </thead>
-                        <tbody id="systemHistoryBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-
-<!-- ========================================================= -->
-<!-- ========================== JS ============================ -->
-<!-- ========================================================= -->
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    // ================= USER HISTORY =================
-    const userButtons = document.querySelectorAll(".userViewBtn");
-    const userBody = document.getElementById("userHistoryBody");
-
-    userButtons.forEach(btn => {
-        btn.addEventListener("click", function () {
-
-            const userName = this.dataset.user;
-            document.getElementById("modalUserName").innerText = userName;
-            userBody.innerHTML = "";
-
-            const sampleUserHistory = [
-                {login:"2026-02-26 09:30 AM", logout:"10:00 AM", ip:"192.168.1.12", device:"Windows 10", browser:"Chrome", status:"Success"},
-                {login:"2026-02-25 03:10 PM", logout:"04:00 PM", ip:"192.168.1.15", device:"Android", browser:"Edge", status:"Success"},
-                {login:"2026-02-24 08:45 AM", logout:"-", ip:"192.168.1.18", device:"Windows 11", browser:"Chrome", status:"Failed"}
-            ];
-
-            sampleUserHistory.forEach((row,index)=>{
-                let badge = row.status === "Success" 
-                    ? '<span class="badge bg-success">Success</span>'
-                    : '<span class="badge bg-danger">Failed</span>';
-
-                userBody.innerHTML += `
-                    <tr>
-                        <td>${index+1}</td>
-                        <td>${row.login}</td>
-                        <td>${row.logout}</td>
-                        <td>${row.ip}</td>
-                        <td>${row.device}</td>
-                        <td>${row.browser}</td>
-                        <td>${badge}</td>
-                    </tr>`;
-            });
-
-        });
-    });
-
-
-    // ================= SYSTEM HISTORY =================
-    const systemButtons = document.querySelectorAll(".systemViewBtn");
-    const systemBody = document.getElementById("systemHistoryBody");
-
-    systemButtons.forEach(btn => {
-        btn.addEventListener("click", function () {
-
-            const eventName = this.dataset.event;
-            document.getElementById("modalEventName").innerText = eventName;
-            systemBody.innerHTML = "";
-
-            const sampleSystemHistory = [
-                {type:"Backup", module:"System", severity:"Medium", desc:"Daily DB Backup", status:"Completed", time:"2026-02-26 08:00 AM"},
-                {type:"Update", module:"Security", severity:"High", desc:"Firewall Updated", status:"Completed", time:"2026-02-25 11:30 PM"},
-                {type:"Error", module:"Server", severity:"Critical", desc:"Server Timeout", status:"Failed", time:"2026-02-24 02:10 AM"}
-            ];
-
-            sampleSystemHistory.forEach((row,index)=>{
-
-                let severityBadge = row.severity === "Critical"
-                    ? '<span class="badge bg-danger">Critical</span>'
-                    : row.severity === "High"
-                    ? '<span class="badge bg-warning text-dark">High</span>'
-                    : '<span class="badge bg-info text-dark">Medium</span>';
-
-                let statusBadge = row.status === "Completed"
-                    ? '<span class="badge bg-success">Completed</span>'
-                    : '<span class="badge bg-danger">Failed</span>';
-
-                systemBody.innerHTML += `
-                    <tr>
-                        <td>${index+1}</td>
-                        <td>${row.type}</td>
-                        <td>${row.module}</td>
-                        <td>${severityBadge}</td>
-                        <td>${row.desc}</td>
-                        <td>${statusBadge}</td>
-                        <td>${row.time}</td>
-                    </tr>`;
-            });
-
-        });
-    });
-
-});
-</script>
 
 @endsection

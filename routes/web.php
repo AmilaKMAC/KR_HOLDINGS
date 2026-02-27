@@ -40,6 +40,26 @@ Route::get('/system_monitoring', function () {
 
 
 
+Route::get('/tech', function () {
+    return view('users.components.technician_performance');
+});
+
+
+
+Route::get('/payment', function () {
+    return view('users.components.payment_and_salary');
+});
+
+
+
+Route::get('/review', function () {
+    return view('users.components.review_photos');
+});
+
+
+
+// Reports
+
 Route::get('/reports', function () {
     return view('users.components.reports');
 });
