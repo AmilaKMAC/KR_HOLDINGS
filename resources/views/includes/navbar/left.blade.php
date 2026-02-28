@@ -80,7 +80,7 @@
 
                 <!-- Project Coordinator -->
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="project_management" class="nav-link text-white">
                         <i class="bi bi-archive me-3"></i> Project Management
                     </a>
                 </li>

@@ -21,8 +21,17 @@ Route::get('/', function () {
 
 
 Route::get('/dashboard', function () {
+    return view('users.dashboard.admin');
+});
+
+Route::get('/e', function () {
     return view('users.dashboard.executive');
 });
+
+Route::get('/c', function () {
+    return view('users.dashboard.coordinator');
+});
+
 
 Route::get('/user', function () {
     return view('users.components.user_management');
@@ -65,4 +74,9 @@ Route::get('/demo', function () {
 
 Route::get('/reports', function () {
     return view('users.components.reports');
+});
+
+
+Route::get('/project_management', function () {
+    return view('users.components.project_management');
 });

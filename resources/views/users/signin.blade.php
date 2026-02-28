@@ -17,12 +17,13 @@
 
 
     <style>
-        body, html {
+        body,
+        html {
             margin: 0;
             padding: 0;
             overflow: hidden;
             height: 100%;
-            
+
         }
 
         .bg-image-col {
@@ -36,13 +37,11 @@
 
         .login-col {
             min-height: 100vh;
-            background: linear-gradient(
-              90deg,
-              var(--bs-primary),
-              #01184e
-            );
+            background: linear-gradient(90deg,
+                    var(--bs-primary),
+                    #01184e);
             color: #fff;
-            
+
         }
 
         .card {
@@ -56,7 +55,7 @@
 <body class="bg-primary">
 
     <div class="container-fluid p-0">
-      
+
         <div class="row g-0">
             <!-- Background Image Column -->
             <div class="col-lg-6 bg-image-col d-none d-lg-block">
