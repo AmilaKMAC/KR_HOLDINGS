@@ -80,3 +80,8 @@ Route::get('/reports', function () {
 Route::get('/project_management', function () {
     return view('users.components.project_management');
 });
+
+
+Route::get('/attendance_approval', function () {
+    return view('users.components.attendance_approval');
+});

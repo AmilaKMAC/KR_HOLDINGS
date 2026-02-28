@@ -86,7 +86,7 @@
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="attendance_approval" class="nav-link text-white">
                         <i class="bi bi-check2-circle me-3"></i> Attendance Approval
                     </a>
                 </li>
