@@ -85,3 +85,8 @@ Route::get('/project_management', function () {
 Route::get('/attendance_approval', function () {
     return view('users.components.attendance_approval');
 });
+
+
+Route::get('/photo_approval', function () {
+    return view('users.components.proof_of_work_review');
+});

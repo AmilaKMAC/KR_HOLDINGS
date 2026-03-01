@@ -1,548 +1,489 @@
 @extends('layout.app')
 
 @section('content')
-    <div class="container mt-5">
-        <div class="d-grid gap-4 col-8 mx-auto">
 
-            <button class="btn btn-dark p-4 report-btn" data-report="system" data-title="System Activity Log">
-                System Activity Log
-            </button>
+<div class="container-fluid py-4">
 
-            <button class="btn btn-secondary p-4 report-btn" data-report="user" data-title="User Activity Report">
-                User Activity Report
-            </button>
-
-            <button class="btn btn-primary p-4 report-btn" data-report="technician"
-                data-title="Technician Performance Report">
-                Technician Performance
-            </button>
-
-            <button class="btn btn-success p-4 report-btn" data-report="project" data-title="Project Progress Summary">
-                Project Progress
-            </button>
-
-            <button class="btn btn-warning p-4 report-btn" data-report="attendance" data-title="Attendance Summary">
-                Attendance Summary
-            </button>
-
-            <button class="btn btn-info p-4 report-btn" data-report="partner" data-title="Partner Company Report">
-                Partner Companies
-            </button>
-
+    <!-- ================= PAGE TITLE ================= -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h4 class="fw-bold mb-0">Proof of Work Review for Approval</h4>
+                </div>
+            </div>
         </div>
     </div>
 
-
-    <!-- ===================== MAIN REPORT MODAL ===================== -->
-    <div class="modal fade" id="reportModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title" id="reportTitle"></h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <!-- ================= PENDING APPROVAL TABLE ================= -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-12 col-xxl-11">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning bg-opacity-25">
+                    <h6 class="fw-bold mb-0 text-warning-emphasis">Pending Approval</h6>
                 </div>
+                <div class="card-body table-responsive">
+                    <table class="table table-bordered align-middle text-center mb-3">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Project ID</th>
+                                <th>Customer Name</th>
+                                <th>Location</th>
+                                <th>Capacity</th>
+                                <th>Approval</th>
+                                <th>Partner Company</th>
+                                <th>Technician ID's</th>
+                                <th>Additional Work</th>
+                                <th>View</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingTableBody">
+                            <tr
+                                data-project-id="P001"
+                                data-customer="Kasun Perera"
+                                data-location="Colombo"
+                                data-capacity="10kW"
+                                data-partner="ABC Solar"
+                                data-technicians="T01, T02"
+                                data-additional="">
+                                <td>P001</td>
+                                <td>Kasun Perera</td>
+                                <td>Colombo</td>
+                                <td>10kW</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning approval-trigger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#approvalModal">
+                                        Approve
+                                    </button>
+                                </td>
+                                <td>ABC Solar</td>
+                                <td>T01, T02</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-secondary additional-work-trigger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#additionalWorkModal">
+                                        Select Work
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary view-btn">View</button>
+                                </td>
+                            </tr>
+                            <tr
+                                data-project-id="P002"
+                                data-customer="Nimal Silva"
+                                data-location="Kandy"
+                                data-capacity="5kW"
+                                data-partner="SunTech Lanka"
+                                data-technicians="T03, T04"
+                                data-additional="">
+                                <td>P002</td>
+                                <td>Nimal Silva</td>
+                                <td>Kandy</td>
+                                <td>5kW</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning approval-trigger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#approvalModal">
+                                        Approve
+                                    </button>
+                                </td>
+                                <td>SunTech Lanka</td>
+                                <td>T03, T04</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-secondary additional-work-trigger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#additionalWorkModal">
+                                        Select Work
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary view-btn">View</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                <div class="modal-body">
-
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover text-center align-middle" id="mainReportTable">
-                            <thead class="table-light">
-                                <tr id="tableHead"></tr>
-                            </thead>
-                            <tbody id="tableBody"></tbody>
-                        </table>
-                    </div>
-
-                    <!-- Bottom Controls -->
-                    <div class="d-flex justify-content-between align-items-center mt-2">
+                    <!-- Button group for Pending table -->
+                    <div class="d-flex justify-content-end">
                         <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-outline-secondary btn-sm limit-btn active"
-                                data-limit="5">5</button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm limit-btn"
-                                data-limit="10">10</button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm limit-btn"
-                                data-limit="20">20</button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm limit-btn"
-                                data-limit="all">All</button>
-                        </div>
-                        <div>
-                            <button class="btn btn-outline-dark btn-sm me-1" onclick="printMainTable()">Print</button>
-                            <button class="btn btn-outline-success btn-sm">Export Excel</button>
+                            <button type="button" class="btn btn-outline-dark btn-sm"
+                                onclick="printTable('pendingTableBody', 'Pending Approval')">
+                                Print
+                            </button>
+                            <button type="button" class="btn btn-outline-success btn-sm">
+                                Export Excel
+                            </button>
                         </div>
                     </div>
 
                 </div>
-
             </div>
         </div>
     </div>
 
-
-    <!-- ===================== VIEW DETAIL MODAL ===================== -->
-    <div class="modal fade" id="detailModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="detailTitle">Detailed View</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <!-- ================= APPROVED PROJECTS TABLE ================= -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-xxl-11">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success bg-opacity-25">
+                    <h6 class="fw-bold mb-0 text-success-emphasis">Approved Projects</h6>
                 </div>
+                <div class="card-body table-responsive">
+                    <table class="table table-bordered align-middle text-center mb-3">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Project ID</th>
+                                <th>Customer Name</th>
+                                <th>Location</th>
+                                <th>Capacity</th>
+                                <th>Partner Company</th>
+                                <th>Technician ID's</th>
+                                <th>Additional Work</th>
+                                <th>Approved At</th>
+                                <th>View</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approvedTableBody">
+                            <tr id="approvedEmptyRow" style="display:none;">
+                                <td colspan="9" class="text-muted fst-italic py-3">No approved projects yet.</td>
+                            </tr>
+                            <tr>
+                                <td>P003</td>
+                                <td>Sunil Fernando</td>
+                                <td>Galle</td>
+                                <td>8kW</td>
+                                <td>GreenPower Co.</td>
+                                <td>T05, T06</td>
+                                <td>Panel Lifting, Extra Cabling</td>
+                                <td><span class="badge bg-success">12/02/2025, 10:30 AM</span></td>
+                                <td><button class="btn btn-sm btn-primary view-btn">View</button></td>
+                            </tr>
+                            <tr>
+                                <td>P004</td>
+                                <td>Amara Jayasinghe</td>
+                                <td>Negombo</td>
+                                <td>15kW</td>
+                                <td>SolarMax PVT</td>
+                                <td>T07, T08, T09</td>
+                                <td>Structure Reinforcement</td>
+                                <td><span class="badge bg-success">18/02/2025, 02:15 PM</span></td>
+                                <td><button class="btn btn-sm btn-primary view-btn">View</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                <div class="modal-body" id="detailContent">
+                    <!-- Button group for Approved table -->
+                    <div class="d-flex justify-content-end">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-dark btn-sm"
+                                onclick="printTable('approvedTableBody', 'Approved Projects')">
+                                Print
+                            </button>
+                            <button type="button" class="btn btn-outline-success btn-sm">
+                                Export Excel
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-outline-dark btn-sm me-auto" onclick="printDetailTable()">Print</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-
             </div>
         </div>
     </div>
 
-
-    <script>
-        let currentReport = null;
+</div>
 
 
-        // ── Data from Laravel controller (passed via Blade) ──────────────────────────
-        // In your controller, pass these variables:
-        //   return view('reports', [
-        //       'systemLogs'         => $systemLogs,         // collection/array
-        //       'users'              => $users,
-        //       'userLogs'           => $userLogs,            // keyed by user id
-        //       'technicians'        => $technicians,
-        //       'techProjects'       => $techProjects,        // keyed by tech id
-        //       'projects'           => $projects,
-        //       'attendance'         => $attendance,
-        //       'attendanceHistory'  => $attendanceHistory,   // keyed by tech id
-        //       'partners'           => $partners,
-        //       'partnerProjects'    => $partnerProjects,     // keyed by partner id
-        //   ]);
 
-        const data = {
-            system: @json($systemLogs ?? []),
-            user: @json($users ?? []),
-            userLogs: @json($userLogs ?? []),
-            technician: @json($technicians ?? []),
-            techProjects: @json($techProjects ?? []),
-            project: @json($projects ?? []),
-            attendance: @json($attendance ?? []),
-            attendanceHistory: @json($attendanceHistory ?? []),
-            partner: @json($partners ?? []),
-            partnerProjects: @json($partnerProjects ?? []),
-        };
+<!-- ================= ADDITIONAL WORK MODAL ================= -->
+<div class="modal fade" id="additionalWorkModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select Additional Work</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-start">
+                <div class="form-check">
+                    <input class="form-check-input additional-work-check" type="checkbox" id="wire1" value="Ground Mounting Wire">
+                    <label class="form-check-label" for="wire1">Ground Mounting Wire</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input additional-work-check" type="checkbox" id="lift1" value="Panel Lifting">
+                    <label class="form-check-label" for="lift1">Panel Lifting</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input additional-work-check" type="checkbox" id="angle1" value="Angle Adjust">
+                    <label class="form-check-label" for="angle1">Angle Adjust</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input additional-work-check" type="checkbox" id="cable1" value="Extra Cabling">
+                    <label class="form-check-label" for="cable1">Extra Cabling</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input additional-work-check" type="checkbox" id="structure1" value="Structure Reinforcement">
+                    <label class="form-check-label" for="structure1">Structure Reinforcement</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" id="saveAdditionalWork">Save Selection</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-        // ── Report Config ─────────────────────────────────────────────────────────────
-        const reportConfig = {
-            system: {
-                headers: ["ID", "Event", "Module", "Severity", "Status", "Triggered By", "Date"],
-                view: false
-            },
-            user: {
-                headers: ["User ID", "Name", "Role", "Email", "Status", "Created At"],
-                view: true
-            },
-            technician: {
-                headers: ["Tech ID", "Technician Name", "Total Projects", "Completed", "Pending"],
-                view: true
-            },
-            project: {
-                headers: ["Project ID", "Customer Name", "Location", "Capacity", "Status"],
-                view: true
-            },
-            attendance: {
-                headers: ["Emp ID", "Employee", "Present", "Absent", "Leave", "Month"],
-                view: true
-            },
-            partner: {
-                headers: ["Partner ID", "Company Name", "Total Projects", "Completed", "Ongoing"],
-                view: true
-            }
-        };
 
-        // ── Fetch rows ────────────────────────────────────────────────────────────────
-        function fetchData(type, limit) {
-            const lim = limit === 'all' ? 9999 : parseInt(limit);
-            const pools = {
-                system: () => data.system.slice(0, lim),
-                user: () => data.user.slice(0, lim).map(u => [u.id, u.name, u.role, u.email, u.status, u.created]),
-                technician: () => data.technician.slice(0, lim).map(t => [t.id, t.name, t.total, t.completed, t
-                    .pending
-                ]),
-                project: () => data.project.slice(0, lim).map(p => [p.id, p.customer, p.location, p.capacity, p
-                    .status
-                ]),
-                attendance: () => data.attendance.slice(0, lim).map(a => [a.id, a.name, a.present, a.absent, a.leave,
-                    "February 2026"
-                ]),
-                partner: () => data.partner.slice(0, lim).map(p => [p.id, p.company, p.total, p.completed, p.ongoing]),
-            };
-            return pools[type] ? pools[type]() : [];
-        }
 
-        // ── Open main modal ───────────────────────────────────────────────────────────
-        document.querySelectorAll('.report-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                currentReport = this.dataset.report;
-                document.getElementById('reportTitle').innerText = this.dataset.title;
-                // reset limit buttons to 5
-                document.querySelectorAll('.limit-btn').forEach(b => b.classList.remove('active'));
-                document.querySelector('.limit-btn[data-limit="5"]').classList.add('active');
-                loadTable(5);
-                new bootstrap.Modal(document.getElementById('reportModal')).show();
-            });
-        });
+<!-- ================= APPROVAL MODAL ================= -->
+<div class="modal fade" id="approvalModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Approve Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <p class="fw-bold mb-4">Select Approval Status</p>
+                <button type="button" id="approveYesBtn" class="btn btn-success me-3 px-4">YES</button>
+                <button type="button" id="approveNoBtn" class="btn btn-danger px-4">NO</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-        document.querySelectorAll('.limit-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.limit-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                loadTable(this.dataset.limit);
-            });
-        });
 
-        // ── Load main table ───────────────────────────────────────────────────────────
-        function loadTable(limit) {
-            const head = document.getElementById('tableHead');
-            const body = document.getElementById('tableBody');
-            head.innerHTML = "";
-            body.innerHTML = "";
 
-            reportConfig[currentReport].headers.forEach(h => {
-                head.innerHTML += `<th>${h}</th>`;
-            });
-            if (reportConfig[currentReport].view) {
-                head.innerHTML += "<th>Action</th>";
-            }
+<!-- ================= PHOTO REVIEW MODAL ================= -->
+<div class="modal fade" id="photoModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow">
 
-            const rows = fetchData(currentReport, limit);
-
-            rows.forEach((r, idx) => {
-                let rowHtml = "<tr>";
-                r.forEach(c => {
-                    rowHtml += `<td>${c}</td>`;
-                });
-                if (reportConfig[currentReport].view) {
-                    rowHtml += `<td>
-                <button class="btn btn-sm btn-outline-primary"
-                        onclick="showDetail('${currentReport}', ${idx})">
-                    View
+            {{-- FIX: title uses me-auto to push buttons all the way right;
+                 Report Issue sits left of the ✕ close button --}}
+            <div class="modal-header">
+                <h5 class="modal-title fw-semibold">Installation Photo Review</h5>
+                <button class="btn btn-sm btn-danger ms-auto me-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#messageModal">
+                    Report Issue
                 </button>
-            </td>`;
-                }
-                rowHtml += "</tr>";
-                body.innerHTML += rowHtml;
-            });
-        }
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
 
+            <div class="modal-body">
 
+                <div class="text-end mb-4">
+                    <a href="#" class="btn btn-success">Download All Photos</a>
+                </div>
 
-        // ── Detail limit state ────────────────────────────────────────────────────────
-        let detailState = {};
+                @php
+                    $sections = [
+                        "Panel Installation",
+                        "Waterproofing (Roof Top)",
+                        "Railing Installation",
+                        "DC Wiring",
+                        "Inverter Installation",
+                        "Combiner Boxes",
+                        "Hybrid Battery (Optional)",
+                        "Casing",
+                        "Grounding",
+                        "Additional Work (Optional)"
+                    ];
+                @endphp
 
-        function detailLimitBtns(sectionId) {
-            return `
-    <div class="btn-group btn-group-sm mt-2 mb-1" role="group">
-        <button type="button" class="btn btn-outline-secondary detail-limit-btn active"
-                data-section="${sectionId}" data-limit="5">5</button>
-        <button type="button" class="btn btn-outline-secondary detail-limit-btn"
-                data-section="${sectionId}" data-limit="10">10</button>
-        <button type="button" class="btn btn-outline-secondary detail-limit-btn"
-                data-section="${sectionId}" data-limit="20">20</button>
-        <button type="button" class="btn btn-outline-secondary detail-limit-btn"
-                data-section="${sectionId}" data-limit="all">All</button>
-    </div>`;
-        }
+                @foreach($sections as $section)
+                <div class="mb-5">
+                    <h6 class="fw-bold text-primary mb-3">{{ $section }}</h6>
+                    <div class="row g-3">
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <img src="https://via.placeholder.com/600x400"
+                                 class="img-fluid rounded shadow-sm preview-image"
+                                 style="cursor:pointer" alt="Photo">
+                        </div>
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <img src="https://via.placeholder.com/600x400"
+                                 class="img-fluid rounded shadow-sm preview-image"
+                                 style="cursor:pointer" alt="Photo">
+                        </div>
+                    </div>
+                </div>
+                @endforeach
 
-        function sliceLimit(arr, limit) {
-            return limit === 'all' ? arr : arr.slice(0, parseInt(limit));
-        }
+            </div>
 
-        function renderLoginRows(logs, limit) {
-            const rows = sliceLimit(logs, limit);
-            return rows.length > 0 ?
-                rows.map((l, i) => `<tr>
-            <td>${i+1}</td><td>${l.ip}</td><td>${l.device}</td>
-            <td>${l.login}</td><td>${l.logout}</td>
-          </tr>`).join('') :
-                `<tr><td colspan="5" class="text-muted">No login records found.</td></tr>`;
-        }
-
-        function renderTechCompletedRows(arr, limit) {
-            const rows = sliceLimit(arr, limit);
-            return rows.length > 0 ?
-                rows.map((p, i) => `<tr>
-            <td>${i+1}</td><td>${p.id}</td>
-            <td class="text-start">${p.name}</td><td>${p.date}</td>
-          </tr>`).join('') :
-                `<tr><td colspan="4" class="text-muted">No completed projects.</td></tr>`;
-        }
-
-        function renderTechPendingRows(arr, limit) {
-            const rows = sliceLimit(arr, limit);
-            return rows.length > 0 ?
-                rows.map((p, i) => `<tr>
-            <td>${i+1}</td><td>${p.id}</td>
-            <td class="text-start">${p.name}</td><td>${p.dueDate}</td>
-          </tr>`).join('') :
-                `<tr><td colspan="4" class="text-success fw-semibold">No pending projects — all done!</td></tr>`;
-        }
-
-        function renderAttendanceRows(arr, limit) {
-            const rows = sliceLimit(arr, limit);
-            return rows.length > 0 ?
-                rows.map((h, i) => `<tr>
-            <td>${i+1}</td><td>${h.month}</td>
-            <td class="text-success fw-bold">${h.present}</td>
-            <td class="text-danger fw-bold">${h.absent}</td>
-            <td class="text-warning fw-bold">${h.leave}</td>
-          </tr>`).join('') :
-                `<tr><td colspan="5" class="text-muted">No previous records found.</td></tr>`;
-        }
-
-        function renderPartnerCompletedRows(arr, limit) {
-            const rows = sliceLimit(arr, limit);
-            return rows.length > 0 ?
-                rows.map((pr, i) => `<tr>
-            <td>${i+1}</td><td>${pr.id}</td><td class="text-start">${pr.customer}</td>
-            <td>${pr.location}</td><td>${pr.capacity}</td><td>${pr.date}</td>
-          </tr>`).join('') :
-                `<tr><td colspan="6" class="text-muted">No completed projects.</td></tr>`;
-        }
-
-        function renderPartnerOngoingRows(arr, limit) {
-            const rows = sliceLimit(arr, limit);
-            return rows.length > 0 ?
-                rows.map((pr, i) => `<tr>
-            <td>${i+1}</td><td>${pr.id}</td><td class="text-start">${pr.customer}</td>
-            <td>${pr.location}</td><td>${pr.capacity}</td><td>${pr.startDate}</td>
-          </tr>`).join('') :
-                `<tr><td colspan="6" class="text-muted">No ongoing projects.</td></tr>`;
-        }
-
-        // ── Detail modal ──────────────────────────────────────────────────────────────
-        function showDetail(type, idx) {
-            let html = "";
-            let title = "Detailed View";
-            detailState = {};
-
-            if (type === "user") {
-                const u = data.user[idx];
-                const logs = data.userLogs[u.id] || [];
-                title = `Login History — ${u.name}`;
-                detailState.loginLogs = logs;
-                html = `
-        <p class="mb-2 text-muted">
-            <strong>User:</strong> ${u.name} &nbsp;|&nbsp;
-            <strong>Role:</strong> ${u.role} &nbsp;|&nbsp;
-            <strong>Email:</strong> ${u.email}
-        </p>
-        <div class="table-responsive">
-        <table class="table table-bordered table-hover text-center align-middle mb-0">
-            <thead class="table-dark">
-                <tr>
-                    <th>#</th><th>IP Address</th><th>Device / Browser</th>
-                    <th>Login Date & Time</th><th>Logout Date & Time</th>
-                </tr>
-            </thead>
-            <tbody id="loginLogBody">${renderLoginRows(logs, 5)}</tbody>
-        </table>
         </div>
-        ${detailLimitBtns('loginLog')}`;
-            } else if (type === "technician") {
-                const t = data.technician[idx];
-                const projects = data.techProjects[t.id] || {
-                    completed: [],
-                    pending: []
-                };
-                title = `Projects — ${t.name}`;
-                detailState.techCompleted = projects.completed;
-                detailState.techPending = projects.pending;
-                html = `
-        <p class="mb-2 text-muted">
-            <strong>Technician:</strong> ${t.name} &nbsp;|&nbsp;
-            <strong>Total:</strong> ${t.total} &nbsp;|&nbsp;
-            <strong>Completed:</strong> ${t.completed} &nbsp;|&nbsp;
-            <strong>Pending:</strong> ${t.pending}
-        </p>
+    </div>
+</div>
 
-        <h6 class="fw-bold text-success mt-3 mb-2">Completed Projects</h6>
-        <div class="table-responsive">
-        <table class="table table-bordered table-hover table-sm text-center align-middle mb-0">
-            <thead class="table-success">
-                <tr><th>#</th><th>Project ID</th><th>Project Name</th><th>Completed Date</th></tr>
-            </thead>
-            <tbody id="techCompletedBody">${renderTechCompletedRows(projects.completed, 5)}</tbody>
-        </table>
+
+
+<!-- ================= MESSAGE TECHNICIAN MODAL ================= -->
+<div class="modal fade" id="messageModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Send Message to Technician</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Issue Type</label>
+                    <select class="form-select">
+                        <option>Missing Photo</option>
+                        <option>Incorrect Installation</option>
+                        <option>Incomplete Work</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Message</label>
+                    <textarea class="form-control" rows="4"
+                        placeholder="Describe the issue clearly..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger">Send Message</button>
+            </div>
         </div>
-        ${detailLimitBtns('techCompleted')}
+    </div>
+</div>
 
-        <h6 class="fw-bold text-danger mt-4 mb-2">Pending Projects</h6>
-        <div class="table-responsive">
-        <table class="table table-bordered table-hover table-sm text-center align-middle mb-0">
-            <thead class="table-danger">
-                <tr><th>#</th><th>Project ID</th><th>Project Name</th><th>Due Date</th></tr>
-            </thead>
-            <tbody id="techPendingBody">${renderTechPendingRows(projects.pending, 5)}</tbody>
-        </table>
+
+
+<!-- ================= IMAGE PREVIEW MODAL ================= -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="previewImage" src="" class="img-fluid rounded mb-3" style="max-height:75vh;">
+                <div>
+                    <a id="downloadImageBtn" href="#" download class="btn btn-success">Download Image</a>
+                </div>
+            </div>
         </div>
-        ${detailLimitBtns('techPending')}`;
-            } else if (type === "project") {
-                const p = data.project[idx];
-                title = `Project Details — ${p.id}`;
-                html = `
-        <div class="table-responsive">
-        <table class="table table-bordered align-middle mb-0">
-            <tbody>
-                <tr><th class="table-light" style="width:35%">Project ID</th><td>${p.id}</td></tr>
-                <tr><th class="table-light">Customer Name</th><td>${p.customer}</td></tr>
-                <tr><th class="table-light">Location</th><td>${p.location}</td></tr>
-                <tr><th class="table-light">Capacity</th><td>${p.capacity}</td></tr>
-                <tr><th class="table-light">Start Date</th><td>${p.start}</td></tr>
-                <tr><th class="table-light">End Date</th><td>${p.end}</td></tr>
-                <tr><th class="table-light">Assigned Technician</th><td>${p.tech}</td></tr>
-                <tr><th class="table-light">Partner Company</th><td>${p.partner}</td></tr>
-                <tr><th class="table-light">Status</th><td>${p.status}</td></tr>
-                <tr><th class="table-light">Additional Work</th><td>${p.addWork}</td></tr>
-            </tbody>
-        </table>
-        </div>`;
-            } else if (type === "attendance") {
-                const a = data.attendance[idx];
-                const history = data.attendanceHistory[a.id] || [];
-                title = `Attendance History — ${a.name}`;
-                detailState.attendanceHistory = history;
-                html = `
-        <p class="mb-2 text-muted">
-            <strong>Technician:</strong> ${a.name} &nbsp;|&nbsp;
-            <strong>Current Month (Feb 2026):</strong>&nbsp;
-            Present: <span class="text-success fw-bold">${a.present}</span> &nbsp;
-            Absent: <span class="text-danger fw-bold">${a.absent}</span> &nbsp;
-            Leave: <span class="text-warning fw-bold">${a.leave}</span>
-        </p>
-        <h6 class="fw-bold mb-2">Previous Monthly Attendance</h6>
-        <div class="table-responsive">
-        <table class="table table-bordered table-hover text-center align-middle mb-0">
-            <thead class="table-dark">
-                <tr>
-                    <th>#</th><th>Month</th>
-                    <th>Present Days</th><th>Absent Days</th><th>Leave Days</th>
-                </tr>
-            </thead>
-            <tbody id="attendanceHistoryBody">${renderAttendanceRows(history, 5)}</tbody>
-        </table>
-        </div>
-        ${detailLimitBtns('attendanceHistory')}`;
-            } else if (type === "partner") {
-                const p = data.partner[idx];
-                const projects = data.partnerProjects[p.id] || {
-                    completed: [],
-                    ongoing: []
-                };
-                title = `Projects — ${p.company}`;
-                detailState.partnerCompleted = projects.completed;
-                detailState.partnerOngoing = projects.ongoing;
-                html = `
-        <p class="mb-2 text-muted">
-            <strong>Partner:</strong> ${p.company} &nbsp;|&nbsp;
-            <strong>Total:</strong> ${p.total} &nbsp;|&nbsp;
-            <strong>Completed:</strong> ${p.completed} &nbsp;|&nbsp;
-            <strong>Ongoing:</strong> ${p.ongoing}
-        </p>
+    </div>
+</div>
 
-        <h6 class="fw-bold text-success mt-3 mb-2">Completed Projects</h6>
-        <div class="table-responsive">
-        <table class="table table-bordered table-hover table-sm text-center align-middle mb-0">
-            <thead class="table-success">
-                <tr><th>#</th><th>Project ID</th><th>Customer</th><th>Location</th><th>Capacity</th><th>Completed Date</th></tr>
-            </thead>
-            <tbody id="partnerCompletedBody">${renderPartnerCompletedRows(projects.completed, 5)}</tbody>
-        </table>
-        </div>
-        ${detailLimitBtns('partnerCompleted')}
 
-        <h6 class="fw-bold text-primary mt-4 mb-2">Ongoing Projects</h6>
-        <div class="table-responsive">
-        <table class="table table-bordered table-hover table-sm text-center align-middle mb-0">
-            <thead class="table-primary">
-                <tr><th>#</th><th>Project ID</th><th>Customer</th><th>Location</th><th>Capacity</th><th>Start Date</th></tr>
-            </thead>
-            <tbody id="partnerOngoingBody">${renderPartnerOngoingRows(projects.ongoing, 5)}</tbody>
-        </table>
-        </div>
-        ${detailLimitBtns('partnerOngoing')}`;
-            }
 
-            document.getElementById('detailTitle').innerText = title;
-            document.getElementById('detailContent').innerHTML = html;
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-            // Bind detail limit buttons after content is injected
-            document.querySelectorAll('.detail-limit-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const section = this.dataset.section;
-                    const limit = this.dataset.limit;
+    const photoModal          = new bootstrap.Modal(document.getElementById('photoModal'));
+    const previewModal        = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
+    const approvalModal       = new bootstrap.Modal(document.getElementById('approvalModal'));
+    const additionalWorkModal = new bootstrap.Modal(document.getElementById('additionalWorkModal'));
 
-                    document.querySelectorAll(`.detail-limit-btn[data-section="${section}"]`)
-                        .forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
+    let activeRow = null;
 
-                    const bodyMap = {
-                        loginLog: {
-                            el: 'loginLogBody',
-                            fn: () => renderLoginRows(detailState.loginLogs, limit)
-                        },
-                        techCompleted: {
-                            el: 'techCompletedBody',
-                            fn: () => renderTechCompletedRows(detailState.techCompleted, limit)
-                        },
-                        techPending: {
-                            el: 'techPendingBody',
-                            fn: () => renderTechPendingRows(detailState.techPending, limit)
-                        },
-                        attendanceHistory: {
-                            el: 'attendanceHistoryBody',
-                            fn: () => renderAttendanceRows(detailState.attendanceHistory, limit)
-                        },
-                        partnerCompleted: {
-                            el: 'partnerCompletedBody',
-                            fn: () => renderPartnerCompletedRows(detailState.partnerCompleted, limit)
-                        },
-                        partnerOngoing: {
-                            el: 'partnerOngoingBody',
-                            fn: () => renderPartnerOngoingRows(detailState.partnerOngoing, limit)
-                        },
-                    };
+    /* -------- View button -------- */
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('view-btn')) {
+            photoModal.show();
+        }
+    });
 
-                    if (bodyMap[section]) {
-                        document.getElementById(bodyMap[section].el).innerHTML = bodyMap[section].fn();
-                    }
+    /* -------- Approval trigger -------- */
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('approval-trigger')) {
+            activeRow = e.target.closest('tr');
+        }
+    });
+
+    /* -------- Additional Work trigger -------- */
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('additional-work-trigger')) {
+            activeRow = e.target.closest('tr');
+            document.querySelectorAll('.additional-work-check').forEach(cb => cb.checked = false);
+            const saved = activeRow.dataset.additional || '';
+            if (saved) {
+                saved.split(', ').forEach(val => {
+                    document.querySelectorAll('.additional-work-check').forEach(cb => {
+                        if (cb.value === val) cb.checked = true;
+                    });
                 });
-            });
-
-            const reportModalEl = document.getElementById('reportModal');
-            const detailModalEl = document.getElementById('detailModal');
-
-            bootstrap.Modal.getInstance(reportModalEl)?.hide();
-            reportModalEl.addEventListener('hidden.bs.modal', function openDetail() {
-                new bootstrap.Modal(detailModalEl).show();
-                reportModalEl.removeEventListener('hidden.bs.modal', openDetail);
-            });
+            }
         }
+    });
 
-        function printMainTable() {
-            const title = document.getElementById('reportTitle').innerText;
-            const table = document.getElementById('mainReportTable').outerHTML;
-            openPrintWindow(title, table);
+    /* -------- Save Additional Work -------- */
+    document.getElementById('saveAdditionalWork').addEventListener('click', function () {
+        if (!activeRow) return;
+        const selected = [];
+        document.querySelectorAll('.additional-work-check:checked').forEach(cb => selected.push(cb.value));
+        activeRow.dataset.additional = selected.join(', ');
+        const trigger = activeRow.querySelector('.additional-work-trigger');
+        trigger.textContent = selected.length > 0 ? `${selected.length} Selected` : 'Select Work';
+        additionalWorkModal.hide();
+    });
+
+    /* -------- YES → move row to Approved table -------- */
+    document.getElementById('approveYesBtn').addEventListener('click', function () {
+        if (!activeRow) return;
+
+        const approvedAt = new Date().toLocaleString();
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${activeRow.dataset.projectId}</td>
+            <td>${activeRow.dataset.customer}</td>
+            <td>${activeRow.dataset.location}</td>
+            <td>${activeRow.dataset.capacity}</td>
+            <td>${activeRow.dataset.partner}</td>
+            <td>${activeRow.dataset.technicians}</td>
+            <td>${activeRow.dataset.additional || '—'}</td>
+            <td><span class="badge bg-success">${approvedAt}</span></td>
+            <td><button class="btn btn-sm btn-primary view-btn">View</button></td>
+        `;
+
+        const emptyRow = document.getElementById('approvedEmptyRow');
+        if (emptyRow) emptyRow.style.display = 'none';
+
+        document.getElementById('approvedTableBody').appendChild(newRow);
+        activeRow.remove();
+
+        approvalModal.hide();
+        activeRow = null;
+    });
+
+    /* -------- NO → just close -------- */
+    document.getElementById('approveNoBtn').addEventListener('click', function () {
+        approvalModal.hide();
+        activeRow = null;
+    });
+
+    /* -------- Image preview -------- */
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('preview-image')) {
+            const src = e.target.getAttribute('src');
+            document.getElementById('previewImage').src = src;
+            document.getElementById('downloadImageBtn').href = src;
+            previewModal.show();
         }
+    });
 
-        function printDetailTable() {
-            const title = document.getElementById('detailTitle').innerText;
-            const content = document.getElementById('detailContent').innerHTML;
-            openPrintWindow(title, content);
-        }
+});
 
+/* -------- Print helper -------- */
+function printTable(tbodyId, title) {
+    const tbody = document.getElementById(tbodyId);
+    const table = tbody.closest('table');
+    const win = window.open('', '_blank');
+    win.document.write(`
+        <html><head><title>${title}</title>
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        </head><body class="p-4">
+        <h5 class="mb-3">${title}</h5>
+        ${table.outerHTML}
+        </body></html>`);
+    win.document.close();
+    win.print();
+}
+</script>
 
-    </script>
 @endsection

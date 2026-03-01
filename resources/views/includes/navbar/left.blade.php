@@ -92,7 +92,7 @@
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="photo_approval" class="nav-link text-white">
                         <i class="bi bi-file-earmark-check me-3"></i> Proof of Work Review
                     </a>
                 </li>
