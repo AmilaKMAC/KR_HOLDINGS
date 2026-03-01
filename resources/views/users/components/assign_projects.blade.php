@@ -43,9 +43,7 @@
                                 <td>076xxxx</td>
                                 <td>5kW</td>
                                 <td>Hayleys</td>
-                                <td>
-                                    <span class="badge bg-warning text-dark">Pending</span>
-                                </td>
+                                <td><span class="badge bg-warning text-dark">Pending</span></td>
                                 <td>
                                     <button class="btn btn-sm btn-danger"
                                             data-bs-toggle="modal"
@@ -62,9 +60,7 @@
                                 <td>070xxxx</td>
                                 <td>10kW</td>
                                 <td>Hayleys</td>
-                                <td>
-                                    <span class="badge bg-warning text-dark">Pending</span>
-                                </td>
+                                <td><span class="badge bg-warning text-dark">Pending</span></td>
                                 <td>
                                     <button class="btn btn-sm btn-danger"
                                             data-bs-toggle="modal"
@@ -81,14 +77,21 @@
                                 <td>070xxxx</td>
                                 <td>10kW</td>
                                 <td>Hayleys</td>
-                                <td>
-                                    <span class="badge bg-success">Completed</span>
-                                </td>
+                                <td><span class="badge bg-success">Completed</span></td>
                                 <td>-</td>
                             </tr>
                         </tbody>
-
                     </table>
+
+                    <!-- ================= BUTTON GROUP ================= -->
+                    <div class="d-flex justify-content-end mt-3">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-primary">Refresh</button>
+                            <button type="button" class="btn btn-outline-success">Export</button>
+                            <button type="button" class="btn btn-outline-secondary">Print</button>
+                        </div>
+                    </div>
+                    <!-- ================================================= -->
 
                 </div>
             </div>
@@ -109,10 +112,7 @@
             </div>
 
             <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label">Enter Cancel Reason</label>
-                    <textarea class="form-control" rows="4" placeholder="Type reason here..."></textarea>
-                </div>
+                <textarea class="form-control" rows="4" placeholder="Type reason here..."></textarea>
             </div>
 
             <div class="modal-footer">

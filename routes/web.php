@@ -94,3 +94,7 @@ Route::get('/attendance_approval', function () {
 Route::get('/photo_approval', function () {
     return view('users.components.proof_of_work_review');
 });
+
+Route::get('/assign_projects', function () {
+    return view('users.components.assign_projects');
+});

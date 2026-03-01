@@ -100,7 +100,7 @@
                 <!-- Technician -->
 
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="assign_projects" class="nav-link text-white">
                         <i class="bi bi-pin me-3"></i> Assigned Projects
                     </a>
                 </li>
