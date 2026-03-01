@@ -32,6 +32,10 @@ Route::get('/c', function () {
     return view('users.dashboard.coordinator');
 });
 
+Route::get('/t', function () {
+    return view('users.dashboard.technician');
+});
+
 
 Route::get('/user', function () {
     return view('users.components.user_management');
