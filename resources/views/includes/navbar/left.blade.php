@@ -106,7 +106,7 @@
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="attendance" class="nav-link text-white">
                         <i class="bi bi-calendar-check me-3"></i> Attendance
                     </a>
                 </li>

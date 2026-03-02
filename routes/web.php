@@ -98,3 +98,7 @@ Route::get('/photo_approval', function () {
 Route::get('/assign_projects', function () {
     return view('users.components.assign_projects');
 });
+
+Route::get('/attendance', function () {
+    return view('users.components.attendance');
+});
