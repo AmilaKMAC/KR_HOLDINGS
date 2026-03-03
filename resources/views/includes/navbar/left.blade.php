@@ -112,7 +112,7 @@
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="proof_of_work" class="nav-link text-white">
                         <i class="bi bi-camera me-3"></i> Proof of Work
                     </a>
                 </li>

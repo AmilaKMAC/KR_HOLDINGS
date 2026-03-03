@@ -102,3 +102,7 @@ Route::get('/assign_projects', function () {
 Route::get('/attendance', function () {
     return view('users.components.attendance');
 });
+
+Route::get('/proof_of_work', function () {
+    return view('users.components.proof_of_work');
+});
