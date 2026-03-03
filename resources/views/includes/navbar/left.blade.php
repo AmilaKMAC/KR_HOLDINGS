@@ -118,7 +118,7 @@
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link text-white">
+                    <a href="profile" class="nav-link text-white">
                         <i class="bi bi-person-circle me-3"></i> Profile
                     </a>
                 </li>

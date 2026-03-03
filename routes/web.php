@@ -106,3 +106,7 @@ Route::get('/attendance', function () {
 Route::get('/proof_of_work', function () {
     return view('users.components.proof_of_work');
 });
+
+Route::get('/profile', function () {
+    return view('users.components.profile');
+});
