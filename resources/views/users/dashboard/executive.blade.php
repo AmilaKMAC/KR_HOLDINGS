@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-fluid py-4">
 
-        <!-- ================= KPI CARDS (TABLE STYLE STRUCTURE) ================= -->
+        <!-- ================= KPI CARDS ================= -->
         @php
             $stats = [
                 [
@@ -29,7 +29,7 @@
             ];
         @endphp
 
-        <div class="row g-4 mb-4">
+        <div class="row g-4 mb-5">
             @foreach ($stats as $stat)
                 <div class="col-12 col-md-6 col-xl-3">
                     <div class="card shadow-sm h-100">
@@ -49,58 +49,56 @@
                     </div>
                 </div>
             @endforeach
-        </div>
 
+        </div>
 
         <!-- ================= CHART SECTION ================= -->
-        <div class="row g-4 mt-5">
-
-            <!-- Completion Rate (Area Chart) -->
-            <div class="col-12 col-lg-6">
-                <div class="card shadow-sm mb-3">
-                    <div class="card-body text-center bg-secondary text-white">
-                        <h4 class="fw-bold mb-0">Completion Rate</h4>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <canvas id="completionChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Attendance Reliability (Line Chart) -->
-            <div class="col-12 col-lg-6">
-                <div class="card shadow-sm mb-3">
-                    <div class="card-body text-center bg-primary text-white">
-                        <h4 class="fw-bold mb-0">Attendance Reliability</h4>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <canvas id="attendanceChart"></canvas>
+        <div class="col-12 ">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body text-center bg-dark text-white">
+                    <h4 class="fw-bold mb-0">Progress Overview</h4>
                 </div>
             </div>
         </div>
 
-        <!-- Partner Completion (Bar Chart) -->
-        <div class="row mt-5 justify-content-center">
 
-            <div class="col-12 col-xxl-8 col-lg-6 col-md-12">
-                <div class="card shadow-sm mb-3">
-                    <div class="card-body text-center bg-success text-white">
-                        <h4 class="fw-bold mb-0">Partner Completion</h4>
+        <div class="container-fluid">
+            <div class="row g-4">
+
+                <!-- Completion Rate (Area Chart) -->
+                <div class="col-12 col-lg-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="text-center">Monthly Completion Rate</h6>
+                            <canvas id="completionChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <canvas id="partnerChart"></canvas>
+                <!-- Attendance Reliability (Line Chart) -->
+                <div class="col-12 col-lg-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h6 class="text-center">Monthly Attendance Reliability</h6>
+                            <canvas id="attendanceChart"></canvas>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Partner Completion (Bar Chart) -->
+                <div class="col-12 col-xxl-6 ">
+                    <div class="card shadow-sm">
+
+                        <div class="card-body">
+                            <h6 class="text-center">Partner Completion</h6>
+                            <canvas id="partnerChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-
         </div>
     </div>
-
 
 
 
@@ -108,9 +106,11 @@
     <!-- Chart.js -->
     <script src="{{ asset('assets/bootstrap/js/chart.umd.js') }}"></script>
 
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
+            // ================= AREA CHART =================
             new Chart(document.getElementById('completionChart'), {
                 type: 'line',
                 data: {
@@ -123,6 +123,12 @@
                     }]
                 },
                 options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -132,6 +138,7 @@
                 }
             });
 
+            // ================= LINE CHART =================
             new Chart(document.getElementById('attendanceChart'), {
                 type: 'line',
                 data: {
@@ -143,6 +150,12 @@
                     }]
                 },
                 options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -152,6 +165,7 @@
                 }
             });
 
+            // ================= BAR CHART =================
             new Chart(document.getElementById('partnerChart'), {
                 type: 'bar',
                 data: {
@@ -162,6 +176,12 @@
                     }]
                 },
                 options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true
