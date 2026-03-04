@@ -23,9 +23,9 @@
                         <div class="card shadow-sm h-100">
 
                             <!-- Header (Separated like table header) -->
-                            <h4 class="card-header bg-{{ $stat['color'] }} text-white fw-semibold text-center">
+                            <h5 class="card-header bg-{{ $stat['color'] }} text-white fw-semibold text-center">
                                 {{ $stat['title'] }}
-                            </h4>
+                            </h5>
 
                             <!-- Body -->
                             <div class="card-body text-center">
@@ -45,7 +45,7 @@
                 <!-- SECTION TITLE -->
                 <div class="card shadow-sm mb-3">
                     <div class="card-body text-center bg-primary text-white">
-                        <h4 class="fw-bold mb-0">Active Users</h4>
+                        <h5 class="fw-bold mb-0">Active Users</h5>
                     </div>
                 </div>
 
@@ -96,7 +96,7 @@
 
         <div class="card shadow-sm mb-3">
             <div class="card-body text-center bg-secondary text-white">
-                <h4 class="fw-bold mb-0">Storage Overview</h4>
+                <h5 class="fw-bold mb-0">Storage Overview</h5>
             </div>
         </div>
 
@@ -133,7 +133,7 @@
 
         <div class="card shadow-sm mb-3">
             <div class="card-body text-center bg-dark text-white">
-                <h4 class="fw-bold mb-0">System Analytics</h4>
+                <h5 class="fw-bold mb-0">System Analytics</h5>
             </div>
         </div>
 

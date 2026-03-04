@@ -1,15 +1,19 @@
 @extends('layout.app')
 
 @section('content')
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-4 ">
 
         <!-- ================= Technician Level ================= -->
-        <div class="row mb-4">
-            <div class="col-md-6 col-lg-6">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center fw-bold">
-                        Technician Level
+        <div class="row mb-4 justify-content-center">
+            <div class="col-12 col-lg-6">
+
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body text-center bg-dark text-white">
+                        <h5 class="fw-bold mb-0">Technician Level</h5>
                     </div>
+                </div>
+
+                <div class="card shadow-sm">
                     <div class="card-body p-0 table-responsive ">
                         <table class="table table-bordered table-striped table-hover text-center align-middle mb-0 ">
                             <thead class="table-light">
@@ -54,12 +58,17 @@
 
 
         <!-- ================= Solar ================= -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center fw-bold">
-                        Solar
+        <div class="row mb-4 justify-content-center">
+            <div class="col-12 col-lg-6">
+
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body text-center bg-secondary text-white">
+                        <h5 class="fw-bold mb-0">Solar</h5>
                     </div>
+                </div>
+
+                <div class="card shadow-sm">
+
                     <div class="card-body p-0 table-responsive">
                         <table class="table table-bordered table-striped table-hover text-center align-middle mb-0">
                             <thead class="table-light">
@@ -100,14 +109,22 @@
                     </div>
                 </div>
             </div>
+        </div>
 
 
-            <!-- ================= Additional Work ================= -->
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center fw-bold">
-                        Additional Work
+        <!-- ================= Additional Work ================= -->
+        <div class="row mb-4 justify-content-center">
+
+            <div class="col-12 col-lg-6">
+
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body text-center bg-primary text-white">
+                        <h5 class="fw-bold mb-0">Additional Work</h5>
                     </div>
+                </div>
+
+                <div class="card shadow-sm">
+
                     <div class="card-body p-0 table-responsive">
                         <table class="table table-bordered table-striped table-hover text-center align-middle mb-0">
                             <thead class="table-light">
@@ -148,61 +165,66 @@
                 </div>
             </div>
         </div>
+    </div>
 
 
-        <!-- ================= Partner Company ================= -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center fw-bold">
-                        Partner Company
+    <!-- ================= Partner Company ================= -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-6">
+
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body text-center bg-success text-white">
+                        <h5 class="fw-bold mb-0">Partner Company</h5>
                     </div>
-                    <div class="card-body p-0 table-responsive">
-                        <table class="table table-bordered table-striped table-hover text-center align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Partner ID</th>
-                                    <th>Company Name</th>
-                                    <th>Status</th>
-                                    <th>Date Added</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>P01</td>
-                                    <td>Hayleys</td>
-                                    <td><span class="badge bg-success">Active</span></td>
-                                    <td>2023-02-15</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#editPartnerModal">
-                                            Edit
+                </div>
+
+            <div class="card shadow-sm">
+
+                <div class="card-body p-0 table-responsive">
+                    <table class="table table-bordered table-striped table-hover text-center align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Partner ID</th>
+                                <th>Company Name</th>
+                                <th>Status</th>
+                                <th>Date Added</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>P01</td>
+                                <td>Hayleys</td>
+                                <td><span class="badge bg-success">Active</span></td>
+                                <td>2023-02-15</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#editPartnerModal">
+                                        Edit
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5" class="bg-light">
+                                    <div class="d-flex justify-content-end ">
+                                        <button type="button" class="btn btn-success w-25" data-bs-toggle="modal"
+                                            data-bs-target="#addPartnerModal">
+                                            + Add
                                         </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="5" class="bg-light">
-                                        <div class="d-flex justify-content-end ">
-                                            <button type="button" class="btn btn-success w-25" data-bs-toggle="modal"
-                                                data-bs-target="#addPartnerModal">
-                                                + Add
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
 
 
-                    </div>
                 </div>
             </div>
         </div>
-
     </div>
+
 
 
     <!-- ================================================== MODALS ========================================================== -->

@@ -50,7 +50,7 @@
               <div class="col-12 ">
                     <div class="card shadow-sm mb-3">
                         <div class="card-body text-center bg-dark text-white">
-                            <h4 class="fw-bold mb-0">Progress Overview</h4>
+                            <h5 class="fw-bold mb-0">Progress Overview</h5>
                         </div>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
         <div class="col-12">
             <div class="card shadow-sm mb-3">
                 <div class="card-body text-center bg-dark text-white">
-                    <h4 class="fw-bold mb-0">Available Technicians</h4>
+                    <h5 class="fw-bold mb-0">Available Technicians</h5>
                 </div>
             </div>
 
@@ -102,7 +102,7 @@
         <div class="col-12">
             <div class="card shadow-sm mb-3">
                 <div class="card-body text-center bg-info text-white">
-                    <h4 class="fw-bold mb-0">Project Overview</h4>
+                    <h5 class="fw-bold mb-0">Project Overview</h5>
                 </div>
             </div>
             <div class="card shadow-sm">
