@@ -4,36 +4,45 @@
 
 <div class="container-fluid mt-4">
 
-    <!-- ================= HEADER ================= -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-body text-center">
-            <h3 class="fw-bold">Project Coordinator Dashboard</h3>
-        </div>
-    </div>
-
-
     <!-- ================= KPI SECTION ================= -->
-    <div class="row mb-4">
+        <!-- ================= KPI CARDS ================= -->
+        @php
+            $stats = [
+                [
+                    'title' => 'Total Ongoing Projects',
+                    'value' => 12,
+                    'color' => 'success',
+                ],
+                [
+                    'title' => 'Total Completed Projects',
+                    'value' => 35,
+                    'color' => 'primary',
+                ],
+                
+            ];
+        @endphp
 
-        <div class="col-md-6">
-            <div class="card text-center shadow-sm border-0">
-                <div class="card-body">
-                    <h6 class="text-muted">Total Ongoing Projects</h6>
-                    <h2 class="fw-bold text-primary">12</h2>
+        <div class="row g-4 mb-4 justify-content-center">
+            @foreach ($stats as $stat)
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="card shadow-sm h-100">
+
+                        <!-- Header (Separated like table header) -->
+                        <div class="card-header bg-{{ $stat['color'] }} text-white fw-semibold text-center">
+                            {{ $stat['title'] }}
+                        </div>
+
+                        <!-- Body -->
+                        <div class="card-body text-center">
+                            <h2 class="fw-bold mb-0 text-{{ $stat['color'] }}">
+                                {{ $stat['value'] }}
+                            </h2>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
+            @endforeach
         </div>
-
-        <div class="col-md-6">
-            <div class="card text-center shadow-sm border-0">
-                <div class="card-body">
-                    <h6 class="text-muted">Total Completed Projects</h6>
-                    <h2 class="fw-bold text-success">35</h2>
-                </div>
-            </div>
-        </div>
-
-    </div>
 
 
     <!-- ================= AVAILABLE TECHNICIANS ================= -->

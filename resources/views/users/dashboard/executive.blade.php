@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-fluid py-4">
 
-        <!-- ================= KPI CARDS ================= -->
+        <!-- ================= KPI CARDS (TABLE STYLE STRUCTURE) ================= -->
         @php
             $stats = [
                 [
@@ -32,53 +32,66 @@
         <div class="row g-4 mb-4">
             @foreach ($stats as $stat)
                 <div class="col-12 col-md-6 col-xl-3">
-                    <div class="card text-bg-{{ $stat['color'] }} text-center shadow-sm h-100">
-                        <div class="card-header fw-semibold">
+                    <div class="card shadow-sm h-100">
+
+                        <!-- Header (Separated like table header) -->
+                        <div class="card-header bg-{{ $stat['color'] }} text-white fw-semibold text-center">
                             {{ $stat['title'] }}
                         </div>
-                        <div class="card-body">
-                            <h3 class="fw-bold mb-0">
+
+                        <!-- Body -->
+                        <div class="card-body text-center">
+                            <h2 class="fw-bold mb-0 text-{{ $stat['color'] }}">
                                 {{ $stat['value'] }}
-                            </h3>
+                            </h2>
                         </div>
+
                     </div>
                 </div>
             @endforeach
         </div>
 
+
         <!-- ================= CHART SECTION ================= -->
-        <div class="row g-4">
+        <div class="row g-4 mt-5">
 
             <!-- Completion Rate (Area Chart) -->
             <div class="col-12 col-lg-6">
-                <div class="card shadow-sm h-100">
-                    <div class="card-header fw-semibold">
-                        Completion Rate (Area Chart)
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body text-center bg-secondary text-white">
+                        <h4 class="fw-bold mb-0">Completion Rate</h4>
                     </div>
-                    <div class="card-body">
-                        <canvas id="completionChart"></canvas>
-                    </div>
+                </div>
+
+                <div class="card-body">
+                    <canvas id="completionChart"></canvas>
                 </div>
             </div>
 
             <!-- Attendance Reliability (Line Chart) -->
             <div class="col-12 col-lg-6">
-                <div class="card shadow-sm h-100">
-                    <div class="card-header fw-semibold">
-                        Monthly Attendance Reliability
-                    </div>
-                    <div class="card-body">
-                        <canvas id="attendanceChart"></canvas>
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body text-center bg-primary text-white">
+                        <h4 class="fw-bold mb-0">Attendance Reliability</h4>
                     </div>
                 </div>
+                <div class="card-body">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
             </div>
+        </div>
 
-            <!-- Partner Completion (Bar Chart) -->
-            <div class="col-12 col-xxl-6">
-                <div class="card shadow-sm">
-                    <div class="card-header fw-semibold">
-                        Completion of Projects by Partner Company
+        <!-- Partner Completion (Bar Chart) -->
+        <div class="row mt-5 justify-content-center">
+
+            <div class="col-12 col-xxl-8 col-lg-6 col-md-12">
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body text-center bg-success text-white">
+                        <h4 class="fw-bold mb-0">Partner Completion</h4>
                     </div>
+                </div>
+
+                <div class="card shadow-sm">
                     <div class="card-body">
                         <canvas id="partnerChart"></canvas>
                     </div>
@@ -91,14 +104,13 @@
 
 
 
+
     <!-- Chart.js -->
     <script src="{{ asset('assets/bootstrap/js/chart.umd.js') }}"></script>
-
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
-            // ================= AREA CHART =================
             new Chart(document.getElementById('completionChart'), {
                 type: 'line',
                 data: {
@@ -111,12 +123,6 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true
-                        }
-                    },
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -126,7 +132,6 @@
                 }
             });
 
-            // ================= LINE CHART =================
             new Chart(document.getElementById('attendanceChart'), {
                 type: 'line',
                 data: {
@@ -138,12 +143,6 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true
-                        }
-                    },
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -153,7 +152,6 @@
                 }
             });
 
-            // ================= BAR CHART =================
             new Chart(document.getElementById('partnerChart'), {
                 type: 'bar',
                 data: {
@@ -164,12 +162,6 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true
-                        }
-                    },
                     scales: {
                         y: {
                             beginAtZero: true
