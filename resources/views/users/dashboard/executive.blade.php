@@ -56,7 +56,7 @@
         <div class="col-12 ">
             <div class="card shadow-sm mb-3">
                 <div class="card-body text-center bg-dark text-white">
-                    <h5 class="fw-bold mb-0">Progress Overview</h5>
+                    <h6 class="fw-bold mb-0">Progress Overview</h6>
                 </div>
             </div>
         </div>

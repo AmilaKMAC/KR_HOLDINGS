@@ -6,14 +6,11 @@
         <!-- ================= USER REGISTRATION Table ================= -->
         <div class="row mb-5">
             <div class="col-12">
-
-                <div class="card shadow-sm mb-3">
-                    <div class="card-body text-center bg-dark text-white">
-                        <h5 class="fw-bold mb-0">User Registration</h5>
-                    </div>
-                </div>
-
                 <div class="card shadow-sm">
+
+                    <div class="card-header text-center fw-bold">
+                        User Registration
+                    </div>
 
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped table-hover text-center align-middle mb-0">
@@ -85,13 +82,12 @@
         <!-- ================= TECHNICIAN REGISTRATION Table ================= -->
         <div class="row mb-5">
             <div class="col-12">
-
-                <div class="card shadow-sm mb-3">
-                    <div class="card-body text-center bg-secondary text-white">
-                        <h5 class="fw-bold mb-0">Technician Registration</h5>
-                    </div>
-                </div>
                 <div class="card shadow-sm">
+
+                    <div class="card-header text-center fw-bold">
+                        Technician Registration
+                    </div>
+
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped table-hover text-center align-middle mb-0">
 
@@ -140,7 +136,7 @@
 
                             <tfoot>
                                 <tr>
-                                    <td colspan="14" class="bg-light">
+                                    <td colspan="13" class="bg-light">
                                         <div class="d-flex justify-content-end p-1">
                                             <button type="button" class="btn btn-success" data-bs-toggle="modal"
                                                 data-bs-target="#addTechnicianModal" w-25>

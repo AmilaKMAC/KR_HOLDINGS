@@ -19,13 +19,13 @@
 
 
                 @foreach ($stats as $stat)
-                    <div class="col-12 col-lg-4 mb-3 align-self-start">
+                    <div class="col-12 col-lg-3 mb-3 align-self-center">
                         <div class="card shadow-sm h-100">
 
                             <!-- Header (Separated like table header) -->
-                            <h5 class="card-header bg-{{ $stat['color'] }} text-white fw-semibold text-center">
+                            <h6 class="card-header bg-{{ $stat['color'] }} text-white fw-semibold text-center">
                                 {{ $stat['title'] }}
-                            </h5>
+                            </h6>
 
                             <!-- Body -->
                             <div class="card-body text-center">
@@ -40,12 +40,12 @@
             
 
             <!-- ================= ACTIVE USERS TABLE ================= -->
-            <div class="col-12 col-lg-8">
+            <div class="col-12 col-lg-9">
 
                 <!-- SECTION TITLE -->
                 <div class="card shadow-sm mb-3">
                     <div class="card-body text-center bg-primary text-white">
-                        <h5 class="fw-bold mb-0">Active Users</h5>
+                        <h6 class="fw-bold mb-0">Active Users</h6>
                     </div>
                 </div>
 
@@ -96,7 +96,7 @@
 
         <div class="card shadow-sm mb-3">
             <div class="card-body text-center bg-secondary text-white">
-                <h5 class="fw-bold mb-0">Storage Overview</h5>
+                <h6 class="fw-bold mb-0">Storage Overview</h6>
             </div>
         </div>
 
@@ -133,7 +133,7 @@
 
         <div class="card shadow-sm mb-3">
             <div class="card-body text-center bg-dark text-white">
-                <h5 class="fw-bold mb-0">System Analytics</h5>
+                <h6 class="fw-bold mb-0">System Analytics</h6>
             </div>
         </div>
 

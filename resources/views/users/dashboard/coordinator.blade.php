@@ -20,7 +20,7 @@
             ];
         @endphp
 
-        <div class="row g-4 mb-4 justify-content-center mb-5">
+        <div class="row g-4 mb-4  mb-5">
             @foreach ($stats as $stat)
                 <div class="col-12 col-md-6 col-xl-3">
                     <div class="card shadow-sm h-100">
@@ -50,7 +50,7 @@
               <div class="col-12 ">
                     <div class="card shadow-sm mb-3">
                         <div class="card-body text-center bg-dark text-white">
-                            <h5 class="fw-bold mb-0">Progress Overview</h5>
+                            <h6 class="fw-bold mb-0">Progress Overview</h6>
                         </div>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
         <div class="col-12">
             <div class="card shadow-sm mb-3">
                 <div class="card-body text-center bg-dark text-white">
-                    <h5 class="fw-bold mb-0">Available Technicians</h5>
+                    <h6 class="fw-bold mb-0">Available Technicians</h6>
                 </div>
             </div>
 
@@ -102,7 +102,7 @@
         <div class="col-12">
             <div class="card shadow-sm mb-3">
                 <div class="card-body text-center bg-info text-white">
-                    <h5 class="fw-bold mb-0">Project Overview</h5>
+                    <h6 class="fw-bold mb-0">Project Overview</h6>
                 </div>
             </div>
             <div class="card shadow-sm">

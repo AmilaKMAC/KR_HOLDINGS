@@ -26,7 +26,7 @@
         <div class="col-12">
             <div class="card shadow-sm mb-3">
                 <div class="card-body text-center bg-dark text-white">
-                    <h5 class="fw-bold mb-0">Ongoing Projects</h5>
+                    <h6 class="fw-bold mb-0">Ongoing Projects</h6>
                 </div>
             </div>
 
@@ -122,17 +122,17 @@
 
                     <div class="col-md-4">
                         <h6 class="fw-semibold">Ongoing Projects</h6>
-                        <h5 class="fw-bold">3</h5>
+                        <h6 class="fw-bold">3</h6>
                     </div>
 
                     <div class="col-md-4">
                         <h6 class="fw-semibold">Completed Projects</h6>
-                        <h5 class="fw-bold">25</h5>
+                        <h6 class="fw-bold">25</h6>
                     </div>
 
                     <div class="col-md-4">
                         <h6 class="fw-semibold">Project Completion Rate</h6>
-                        <h5 class="fw-bold text-success">89%</h5>
+                        <h6 class="fw-bold text-success">89%</h6>
                     </div>
 
                 </div>
