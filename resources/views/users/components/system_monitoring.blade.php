@@ -27,9 +27,9 @@
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
 
-                <div class="modal-header">
+                <div class="modal-header bg-dark text-white">
                     <h5 class="modal-title fw-bold">Active Users</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                    <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body table-responsive">

@@ -4,21 +4,13 @@
 
 <div class="container-fluid py-4">
 
-    <!-- ================= PAGE TITLE ================= -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    <h4 class="fw-bold mb-0">Review Photos</h4>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- ================= PROJECT TABLE ================= -->
     <div class="row justify-content-center">
         <div class="col-12 col-xxl-11">
+
             <div class="card shadow-sm">
+
                 <div class="card-body table-responsive">
 
                     <table class="table table-bordered align-middle text-center">
@@ -51,6 +43,14 @@
                     </table>
 
                 </div>
+
+                <!-- Bottom Controls -->
+                <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light border-top">
+                        @include('others.limit_btn_group')
+
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -63,9 +63,9 @@
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content shadow">
 
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title fw-semibold">Installation Photo Review</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
@@ -124,7 +124,6 @@
 </div>
 
 
-
 <!-- ================= IMAGE PREVIEW MODAL ================= -->
 <div class="modal fade" id="imagePreviewModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -158,11 +157,10 @@
 </div>
 
 
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    const photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
+    const photoModal  = new bootstrap.Modal(document.getElementById('photoModal'));
     const previewModal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
 
     // Open main modal
@@ -175,13 +173,18 @@ document.addEventListener("DOMContentLoaded", function () {
     // Image click preview
     document.querySelectorAll('.preview-image').forEach(img => {
         img.addEventListener('click', function () {
-
             const imageSrc = this.getAttribute('src');
-
             document.getElementById('previewImage').src = imageSrc;
             document.getElementById('downloadImageBtn').href = imageSrc;
-
             previewModal.show();
+        });
+    });
+
+    // Limit buttons
+    document.querySelectorAll('.limit-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.limit-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
         });
     });
 

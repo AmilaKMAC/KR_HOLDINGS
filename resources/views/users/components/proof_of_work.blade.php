@@ -13,24 +13,24 @@
         </div>
     </div>
 
-    <!-- ================= MAIN OPTIONS (no card) ================= -->
+    <!-- ================= MAIN Buttons ================ -->
     <div class="row justify-content-center">
         <div class="col-lg-6">
             <div class="d-grid gap-3">
 
-                <button class="btn btn-outline-primary py-3"
+                <button class="btn bg-primary text-white py-3"
                         data-bs-toggle="modal"
                         data-bs-target="#assignedProjectModal">
                     Assigned Project
                 </button>
 
-                <button class="btn btn-outline-secondary py-3"
+                <button class="btn bg-secondary text-white py-3"
                         data-bs-toggle="modal"
                         data-bs-target="#previousProjectModal">
                     Previous Projects
                 </button>
 
-                <button class="btn btn-outline-success py-3"
+                <button class="btn bg-success text-white py-3"
                         data-bs-toggle="modal"
                         data-bs-target="#viewUploadedModal">
                     View Uploaded Photos
@@ -43,15 +43,14 @@
 </div>
 
 
-<!-- ========================================================= -->
-<!-- ================= ASSIGNED PROJECT MODAL ================= -->
-<!-- ========================================================= -->
+<!-- ================= MODALS ================= -->
 
+<!-- Proof of Work Review for Approval Modal -->
 <div class="modal fade" id="assignedProjectModal" tabindex="-1">
 <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 <div class="modal-content">
 
-<div class="modal-header">
+<div class="modal-header bg-primary text-white">
     <h5 class="modal-title fw-bold">Proof of Work Review for Approval</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 </div>
@@ -59,13 +58,13 @@
 <div class="modal-body table-responsive">
 
     <table class="table table-bordered text-center align-middle">
-        <thead class="table-light">
+        <thead class="table-light ">
         <tr>
             <th>Project ID</th>
             <th>Customer</th>
             <th>Location</th>
             <th>Capacity</th>
-            <th>View</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -76,7 +75,7 @@
             <td>10kW</td>
             <td>
                 <button class="btn btn-sm btn-primary openProofModal" data-mode="upload">
-                    View
+                    Upload
                 </button>
             </td>
         </tr>
@@ -89,15 +88,13 @@
 </div>
 
 
-<!-- ========================================================= -->
-<!-- ================= PREVIOUS PROJECT MODAL ================= -->
-<!-- ========================================================= -->
+<!--  PREVIOUS PROJECT MODAL  -->
 
 <div class="modal fade" id="previousProjectModal" tabindex="-1">
 <div class="modal-dialog modal-lg modal-dialog-centered">
 <div class="modal-content">
 
-<div class="modal-header">
+<div class="modal-header bg-secondary text-white">
     <h5 class="modal-title fw-bold">Upload Photos for Previous Project</h5>
     <button class="btn-close" data-bs-dismiss="modal"></button>
 </div>
@@ -131,15 +128,12 @@
 </div>
 
 
-<!-- ========================================================= -->
 <!-- ================= VIEW UPLOADED MODAL ================= -->
-<!-- ========================================================= -->
-
 <div class="modal fade" id="viewUploadedModal" tabindex="-1">
 <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 <div class="modal-content">
 
-<div class="modal-header">
+<div class="modal-header bg-success text-white">
     <h5 class="modal-title fw-bold">Uploaded Projects</h5>
     <button class="btn-close" data-bs-dismiss="modal"></button>
 </div>
@@ -177,15 +171,13 @@
 </div>
 
 
-<!-- ========================================================= -->
-<!-- ================= PROOF DETAILS MODAL (Upload/View/Edit) ================= -->
-<!-- ========================================================= -->
+<!--  View Assign MODAL  -->
 
 <div class="modal fade" id="proofDetailsModal" tabindex="-1">
 <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 <div class="modal-content">
 
-<div class="modal-header">
+<div class="modal-header bg-primary text-white">
     <h5 class="modal-title fw-bold">Proof of Work</h5>
     <button class="btn-close" data-bs-dismiss="modal"></button>
 </div>

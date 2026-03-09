@@ -3,22 +3,12 @@
 @section('content')
     <div class="container-fluid py-4">
 
-        <!-- ================= PAGE TITLE ================= -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <h4 class="fw-bold mb-0">Payment & Salary Management</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- ================= TECHNICIAN DETAILS TABLE ================= -->
         <div class="row justify-content-center">
             <div class="col-12 col-xxl-11">
                 <div class="card shadow-sm">
-                    <div class="card-header fw-semibold text-center">
+                    <div class="card-header fw-semibold text-center bg-dark text-white">
                         Technician Details
                     </div>
 
@@ -36,20 +26,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-
                                 <tr>
                                     <td>T01</td>
                                     <td>Kamal</td>
                                     <td>2024-10-05</td>
-                                    
                                     <td>75,000 LKR</td>
-
                                     <td>
                                         <span class="badge bg-warning text-dark status-badge">
                                             Pending
                                         </span>
                                     </td>
-
                                     <td>
                                         <button class="btn btn-sm btn-primary update-btn">
                                             Update
@@ -61,11 +47,15 @@
                                         </button>
                                     </td>
                                 </tr>
-
-
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Bottom Controls -->
+                    <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light border-top">
+                        @include('others.limit_btn_group')
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -101,7 +91,6 @@
                                     <th>Others</th>
                                     <th>Total</th>
                                     <th>Payment Status</th>
-                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -112,7 +101,6 @@
                                     <td>8,000</td>
                                     <td>7,000</td>
                                     <td><strong>75,000</strong></td>
-                                    
                                     <td>
                                         <span class="badge bg-warning text-dark status-badge">
                                             Pending
@@ -141,7 +129,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-
                                 <tr>
                                     <td>2024-09-05</td>
                                     <td>50,000</td>
@@ -160,61 +147,56 @@
                                         </button>
                                     </td>
                                 </tr>
-
-    
-
                             </tbody>
                         </table>
                     </div>
 
-                </div>
+                    <!-- Previous Bills Bottom Controls -->
+                    <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light border-top">
+                        @include('others.limit_btn_group')
 
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">
-                        Close
-                    </button>
-                </div>
+                    </div>
 
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+
+                </div>
             </div>
         </div>
-    </div>
 
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
 
-            // ================= STATUS TOGGLE (ALL TABLES) =================
-            document.querySelectorAll('.update-btn').forEach(button => {
-
-                button.addEventListener('click', function() {
-
-                    let badge = this.closest('tr').querySelector('.status-badge');
-
-                    if (!badge) return;
-
-                    if (badge.textContent.trim() === "Pending") {
-                        badge.textContent = "Paid";
-                        badge.classList.remove('bg-warning', 'text-dark');
-                        badge.classList.add('bg-success');
-                    } else {
-                        badge.textContent = "Pending";
-                        badge.classList.remove('bg-success');
-                        badge.classList.add('bg-warning', 'text-dark');
-                    }
-
+                // ================= STATUS TOGGLE (ALL TABLES) =================
+                document.querySelectorAll('.update-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        let badge = this.closest('tr').querySelector('.status-badge');
+                        if (!badge) return;
+                        if (badge.textContent.trim() === "Pending") {
+                            badge.textContent = "Paid";
+                            badge.classList.remove('bg-warning', 'text-dark');
+                            badge.classList.add('bg-success');
+                        } else {
+                            badge.textContent = "Pending";
+                            badge.classList.remove('bg-success');
+                            badge.classList.add('bg-warning', 'text-dark');
+                        }
+                    });
                 });
 
-            });
-
-            // ================= VIEW MODAL =================
-            const modal = new bootstrap.Modal(document.getElementById('billModal'));
-
-            document.querySelectorAll('.view-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    modal.show();
+                // ================= VIEW MODAL =================
+                const modal = new bootstrap.Modal(document.getElementById('billModal'));
+                document.querySelectorAll('.view-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        modal.show();
+                    });
                 });
-            });
 
-        });
-    </script>
-@endsection
+
+            });
+        </script>
+    @endsection

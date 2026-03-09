@@ -1,378 +1,341 @@
 @extends('layout.app')
 
 @section('content')
-    <div class="container-fluid py-4">
 
-        <!-- ================= Technician Level ================= -->
-        <div class="row mb-4">
-            <div class="col-md-6 col-lg-6">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center fw-bold">
-                        Technician Level
-                    </div>
-                    <div class="card-body p-0 table-responsive ">
-                        <table class="table table-bordered table-striped table-hover text-center align-middle mb-0 ">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Level</th>
-                                    <th>Basic Salary</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>L01</td>
-                                    <td>25000</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#editTechnicianModal">
-                                            Edit
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
+<div class="container mt-5">
+    <div class="d-grid gap-4 col-8 mx-auto">
 
-                            <tfoot>
-                                <tr>
-                                    <td colspan="3" class="bg-light">
-                                        <div class="d-flex justify-content-end ">
-                                            <button type="button" class="btn btn-success p-1 w-25" data-bs-toggle="modal"
-                                                data-bs-target="#addTechnicianModal">
-                                                + Add
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
+        <button class="btn btn-dark p-4 report-btn"
+                data-report="technician"
+                data-title="Technician Level">
+            Technician Level
+        </button>
 
+        <button class="btn btn-secondary p-4 report-btn"
+                data-report="work"
+                data-title="Additional Work">
+            Additional Work
+        </button>
 
-                    </div>
-                </div>
-            </div>
-        </div>
+        <button class="btn btn-primary p-4 report-btn"
+                data-report="solar"
+                data-title="Solar">
+            Solar
+        </button>
 
-
-        <!-- ================= Solar ================= -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center fw-bold">
-                        Solar
-                    </div>
-                    <div class="card-body p-0 table-responsive">
-                        <table class="table table-bordered table-striped table-hover text-center align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Capacity</th>
-                                    <th>Rate</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>C01</td>
-                                    <td>1-3 kW</td>
-                                    <td>500</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#editSolarModal">
-                                            Edit
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-
-                            <tfoot>
-                                <tr>
-                                    <td colspan="4" class="bg-light">
-                                        <div class="d-flex justify-content-end ">
-                                            <button type="button" class="btn btn-success p-1 w-25" data-bs-toggle="modal"
-                                                data-bs-target="#addSolarModal">
-                                                + Add
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- ================= Additional Work ================= -->
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center fw-bold">
-                        Additional Work
-                    </div>
-                    <div class="card-body p-0 table-responsive">
-                        <table class="table table-bordered table-striped table-hover text-center align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Description</th>
-                                    <th>Rate</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Panel Lifting</td>
-                                    <td>200</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#editWorkModal">
-                                            Edit
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-
-                            <tfoot>
-                                <tr>
-                                    <td colspan="4" class="bg-light">
-                                        <div class="d-flex justify-content-end ">
-                                            <button type="button" class="btn btn-success p-1 w-25" data-bs-toggle="modal"
-                                                data-bs-target="#addWorkModal">
-                                                + Add
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- ================= Partner Company ================= -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center fw-bold">
-                        Partner Company
-                    </div>
-                    <div class="card-body p-0 table-responsive">
-                        <table class="table table-bordered table-striped table-hover text-center align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Partner ID</th>
-                                    <th>Company Name</th>
-                                    <th>Status</th>
-                                    <th>Date Added</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>P01</td>
-                                    <td>Hayleys</td>
-                                    <td><span class="badge bg-success">Active</span></td>
-                                    <td>2023-02-15</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#editPartnerModal">
-                                            Edit
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="5" class="bg-light">
-                                        <div class="d-flex justify-content-end ">
-                                            <button type="button" class="btn btn-success w-25" data-bs-toggle="modal"
-                                                data-bs-target="#addPartnerModal">
-                                                + Add
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
+        <button class="btn btn-warning p-4 report-btn"
+                data-report="partner"
+                data-title="Partner Company">
+            Partner Company
+        </button>
 
     </div>
+</div>
 
 
-    <!-- ================================================== MODALS ========================================================== -->
+<!-- ===================== MAIN REPORT MODAL ===================== -->
+<div class="modal fade" id="reportModal" tabindex="-1">
+<div class="modal-dialog modal-xl modal-dialog-centered">
+<div class="modal-content">
 
-    <!-- Add Technician Modal -->
-    <div class="modal fade" id="addTechnicianModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5>Add Technician Level</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" class="form-control mb-3" placeholder="Level">
-                    <input type="number" class="form-control" placeholder="Basic Salary">
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-success">Save</button>
-                </div>
+<div class="modal-header bg-dark text-white">
+    <h5 class="modal-title" id="reportTitle"></h5>
+    <button type="button" class="btn-close btn-close-white"
+            data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body">
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center align-middle" id="mainReportTable">
+            <thead class="table-light">
+                <tr id="tableHead"></tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div class="d-flex justify-content-end mt-2">
+        <button class="btn btn-success btn-sm" id="addNewBtn">+ Add New</button>
+    </div>
+
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- ================================================== ADD / EDIT MODALS ================================================== -->
+
+<!-- Add Technician Modal -->
+<div class="modal fade" id="addTechnicianModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5>Add Technician Level</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control mb-3" placeholder="Level">
+                <input type="number" class="form-control" placeholder="Basic Salary">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-success">Save</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Edit Technician Modal -->
-    <div class="modal fade" id="editTechnicianModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5>Edit Technician</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" class="form-control mb-3" value="L01">
-                    <input type="number" class="form-control" value="25000">
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary">Update</button>
-                </div>
+<!-- Edit Technician Modal -->
+<div class="modal fade" id="editTechnicianModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5>Edit Technician Level</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control mb-3" value="L01">
+                <input type="number" class="form-control" value="25000">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary">Update</button>
             </div>
         </div>
     </div>
+</div>
 
-
-    <!-- Add Solar Modal -->
-    <div class="modal fade" id="addSolarModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5>Add Solar Rate</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input class="form-control mb-2" placeholder="ID">
-                    <input class="form-control mb-2" placeholder="Capacity">
-                    <input class="form-control" placeholder="Rate">
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-success">Save</button>
-                </div>
+<!-- Add Additional Work Modal -->
+<div class="modal fade" id="addWorkModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5>Add Additional Work</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input class="form-control mb-2" placeholder="Description">
+                <input class="form-control" placeholder="Rate">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-success">Save</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Edit Solar Modal -->
-    <div class="modal fade" id="editSolarModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5>Edit Solar</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input class="form-control mb-2" value="C01">
-                    <input class="form-control mb-2" value="1-3 kW">
-                    <input class="form-control" value="500">
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary">Update</button>
-                </div>
+<!-- Edit Additional Work Modal -->
+<div class="modal fade" id="editWorkModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5>Edit Additional Work</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input class="form-control mb-2" value="Panel Lifting">
+                <input class="form-control" value="200">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary">Update</button>
             </div>
         </div>
     </div>
+</div>
 
-
-    <!-- Add Additional Work Modal -->
-    <div class="modal fade" id="addWorkModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5>Add Additional Work</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input class="form-control mb-2" placeholder="Description">
-                    <input class="form-control" placeholder="Rate">
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-success">Save</button>
-                </div>
+<!-- Add Solar Modal -->
+<div class="modal fade" id="addSolarModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5>Add Solar Rate</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input class="form-control mb-2" placeholder="ID">
+                <input class="form-control mb-2" placeholder="Capacity">
+                <input class="form-control" placeholder="Rate">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-success">Save</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Edit Additional Work Modal -->
-    <div class="modal fade" id="editWorkModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5>Edit Work</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input class="form-control mb-2" value="Panel Lifting">
-                    <input class="form-control" value="200">
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary">Update</button>
-                </div>
+<!-- Edit Solar Modal -->
+<div class="modal fade" id="editSolarModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5>Edit Solar</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input class="form-control mb-2" value="C01">
+                <input class="form-control mb-2" value="1-3 kW">
+                <input class="form-control" value="500">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary">Update</button>
             </div>
         </div>
     </div>
+</div>
 
-
-    <!-- Add Partner Modal -->
-    <div class="modal fade" id="addPartnerModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5>Add New Partner</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input class="form-control mb-2" placeholder="Partner ID">
-                    <input class="form-control mb-2" placeholder="Company Name">
-                    <select class="form-control mb-2">
-                        <option>Active</option>
-                        <option>Inactive</option>
-                    </select>
-                    <input type="date" class="form-control">
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-success">Save</button>
-                </div>
+<!-- Add Partner Modal -->
+<div class="modal fade" id="addPartnerModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5>Add New Partner</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input class="form-control mb-2" placeholder="Partner ID">
+                <input class="form-control mb-2" placeholder="Company Name">
+                <select class="form-select mb-2">
+                    <option>Active</option>
+                    <option>Inactive</option>
+                </select>
+                <input type="date" class="form-control">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-success">Save</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Edit Partner Modal -->
-    <div class="modal fade" id="editPartnerModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5>Edit Partner</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input class="form-control mb-2" value="P01">
-                    <input class="form-control mb-2" value="Hayleys">
-                    <select class="form-control mb-2">
-                        <option selected>Active</option>
-                        <option>Inactive</option>
-                    </select>
-                    <input type="date" class="form-control" value="2023-02-15">
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary">Update</button>
-                </div>
+<!-- Edit Partner Modal -->
+<div class="modal fade" id="editPartnerModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5>Edit Partner</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input class="form-control mb-2" value="P01">
+                <input class="form-control mb-2" value="Hayleys">
+                <select class="form-select mb-2">
+                    <option selected>Active</option>
+                    <option>Inactive</option>
+                </select>
+                <input type="date" class="form-control" value="2023-02-15">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary">Update</button>
             </div>
         </div>
     </div>
+</div>
+
+
+<script>
+
+let currentReport = null;
+
+// ── Report Config ─────────────────────────────────────────────────────────────
+const reportConfig = {
+    technician: {
+        headers:  ["Level", "Basic Salary", "Action"],
+        addModal: "addTechnicianModal",
+        rows: [
+            ["L01", "25,000", `<button class="btn btn-sm btn-primary" onclick="openEdit('editTechnicianModal')">Edit</button>`],
+            ["L02", "30,000", `<button class="btn btn-sm btn-primary" onclick="openEdit('editTechnicianModal')">Edit</button>`],
+        ]
+    },
+    work: {
+        headers:  ["Description", "Rate", "Action"],
+        addModal: "addWorkModal",
+        rows: [
+            ["Panel Lifting", "200", `<button class="btn btn-sm btn-primary" onclick="openEdit('editWorkModal')">Edit</button>`],
+            ["Wiring Setup",  "350", `<button class="btn btn-sm btn-primary" onclick="openEdit('editWorkModal')">Edit</button>`],
+        ]
+    },
+    solar: {
+        headers:  ["ID", "Capacity", "Rate", "Action"],
+        addModal: "addSolarModal",
+        rows: [
+            ["C01", "1-3 kW",  "500", `<button class="btn btn-sm btn-primary" onclick="openEdit('editSolarModal')">Edit</button>`],
+            ["C02", "4-7 kW",  "750", `<button class="btn btn-sm btn-primary" onclick="openEdit('editSolarModal')">Edit</button>`],
+            ["C03", "8-10 kW", "950", `<button class="btn btn-sm btn-primary" onclick="openEdit('editSolarModal')">Edit</button>`],
+        ]
+    },
+    partner: {
+        headers:  ["Partner ID", "Company Name", "Status", "Date Added", "Action"],
+        addModal: "addPartnerModal",
+        rows: [
+            ["P01", "Hayleys",    `<span class="badge bg-success">Active</span>`,   "2023-02-15", `<button class="btn btn-sm btn-primary" onclick="openEdit('editPartnerModal')">Edit</button>`],
+            ["P02", "SolarTech",  `<span class="badge bg-success">Active</span>`,   "2023-06-10", `<button class="btn btn-sm btn-primary" onclick="openEdit('editPartnerModal')">Edit</button>`],
+            ["P03", "EcoPower",   `<span class="badge bg-danger">Inactive</span>`,  "2024-01-05", `<button class="btn btn-sm btn-primary" onclick="openEdit('editPartnerModal')">Edit</button>`],
+        ]
+    },
+};
+
+// ── Open main modal ───────────────────────────────────────────────────────────
+document.querySelectorAll('.report-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+        currentReport = this.dataset.report;
+        document.getElementById('reportTitle').innerText = this.dataset.title;
+        loadTable();
+        new bootstrap.Modal(document.getElementById('reportModal')).show();
+    });
+});
+
+// ── Add New button ────────────────────────────────────────────────────────────
+document.getElementById('addNewBtn').addEventListener('click', function () {
+    const addModalId = reportConfig[currentReport]?.addModal;
+    if (!addModalId) return;
+
+    const reportModalEl = document.getElementById('reportModal');
+    bootstrap.Modal.getInstance(reportModalEl)?.hide();
+
+    reportModalEl.addEventListener('hidden.bs.modal', function openAdd() {
+        new bootstrap.Modal(document.getElementById(addModalId)).show();
+        reportModalEl.removeEventListener('hidden.bs.modal', openAdd);
+    });
+});
+
+// ── Load table ────────────────────────────────────────────────────────────────
+function loadTable() {
+    const config = reportConfig[currentReport];
+    const head   = document.getElementById('tableHead');
+    const body   = document.getElementById('tableBody');
+    head.innerHTML = "";
+    body.innerHTML = "";
+
+    config.headers.forEach(h => { head.innerHTML += `<th>${h}</th>`; });
+
+    config.rows.forEach(r => {
+        let rowHtml = "<tr>";
+        r.forEach(c => { rowHtml += `<td>${c}</td>`; });
+        rowHtml += "</tr>";
+        body.innerHTML += rowHtml;
+    });
+}
+
+// ── Open edit modal (hide report modal first) ─────────────────────────────────
+function openEdit(editModalId) {
+    const reportModalEl = document.getElementById('reportModal');
+    bootstrap.Modal.getInstance(reportModalEl)?.hide();
+
+    reportModalEl.addEventListener('hidden.bs.modal', function openEditModal() {
+        new bootstrap.Modal(document.getElementById(editModalId)).show();
+        reportModalEl.removeEventListener('hidden.bs.modal', openEditModal);
+    });
+}
+
+</script>
+
 @endsection
