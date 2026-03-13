@@ -46,7 +46,7 @@ public function updateTechnicianLevel(Request $request, $id)
     $technicianLevel = TechnicianLevel::findOrFail($id);
     $technicianLevel->update($request->all());
 
-    return redirect()->back()->with('success', 'Technician level updated successfully.');
+    return redirect()->route('system_settings.index')->with('success', 'Technician level updated successfully.');
 
 }
 
@@ -55,12 +55,12 @@ public function updateTechnicianLevel(Request $request, $id)
 // Store Solar Capacity
 public function storeSolarCapacity(Request $request){
     $request->validate([
-        'capacity' => 'required|numeric|min:0'
+        'capacity' => 'required|string'
     ]);
 
     Solar::create($request->all());
 
-    return redirect()->back()->with('success', 'Solar capacity added successfully.');
+    return redirect()->route('system_settings.index')->with('success', 'Solar capacity added successfully.');
 }
 
 // Update Solar Capacity
@@ -72,7 +72,7 @@ public  function updateSolarCapacity(Request $request, $id){
     $solarCapacity = Solar::findOrFail($id);
     $solarCapacity->update($request->all());
 
-    return redirect()->back()->with('success', 'Solar capacity updated successfully.');
+    return redirect()->route('system_settings.index')->with('success', 'Solar capacity updated successfully.');
 }
 
 
@@ -85,7 +85,7 @@ public function storeAdditionalWork(Request $request){
 
     AdditionalWork::create($request->all());
 
-    return redirect()->back()->with('success', 'Additional work added successfully.');
+    return redirect()->route('system_settings.index')->with('success', 'Additional work added successfully.');
 }
 
 // Update Additional Work
@@ -98,8 +98,32 @@ public function updateAdditionalWork(Request $request, $id){
     $additionalWork = AdditionalWork::findOrFail($id);
     $additionalWork->update($request->all());
 
-    return redirect()->back()->with('success', 'Additional work updated successfully.');
+    return redirect()->route('system_settings.index')->with('success', 'Additional work updated successfully.');
 }
 
 
+
+// Store Partner Company
+public function storePartnerCompany(Request $request){
+    $request->validate([
+        'company_name' => 'required|string|max:255',
+        'created_at' => 'required|date'
+    ]);
+
+    PartnerCompany::create($request->all());
+
+    return redirect()->route('system_settings.index')->with('success', 'Partner company added successfully.');
+}
+
+// Update Partner Company
+public function updatePartnerCompany(Request $request, $id){
+    $request->validate([
+        'company_name' => 'required|string|max:255',
+    ]);
+
+    $partnerCompany = PartnerCompany::findOrFail($id);
+    $partnerCompany->update($request->all());
+
+    return redirect()->route('system_settings.index')->with('success', 'Partner company updated successfully.');
+}
 }
