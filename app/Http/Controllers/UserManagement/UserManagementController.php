@@ -7,7 +7,7 @@ use App\Models\UserManagement\TechnicianRegistration;
 use App\Models\UserManagement\User;
 use App\Models\UserManagement\UserRegistration;
 use App\Models\UserManagement\UserRole;
-use App\Models\SystemSettings\TechnicianLevel; // fixed capital A
+use App\Models\SystemSettings\TechnicianLevel; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
