@@ -45,7 +45,7 @@
                             <tbody>
                                 @forelse ($technician_level as $level)
                                     <tr>
-                                        <td>L{{ str_pad($level->idtechnician_level, 3, '0', STR_PAD_LEFT) }}</td>
+                                        <td>L{{ str_pad($level->idtechnician_level, 2, '0', STR_PAD_LEFT) }}</td>
                                         <td>{{ $level->basic_salary }} LKR</td>
                                         <td>
                                             <button class="btn btn-sm btn-primary"
