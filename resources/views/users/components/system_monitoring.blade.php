@@ -5,7 +5,7 @@
         <div class="d-grid gap-4 col-8 mx-auto">
 
             <button class="btn btn-dark p-4" data-bs-toggle="modal" data-bs-target="#activeUsersModal">
-                 Active Users
+                Active Users
             </button>
 
             <button class="btn btn-primary p-4" data-bs-toggle="modal" data-bs-target="#dataBackupModal">
@@ -46,20 +46,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>U01</td>
-                                <td>admin01</td>
-                                <td>Admin</td>
-                                <td>2026-01-01 12:00</td>
-                                <td>Windows 11</td>
-                                <td>192.168.1.1</td>
-                                <td>
-                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#logoutModal">
-                                        Logout
-                                    </button>
-                                </td>
-                            </tr>
+                            @forelse ($active_users as $active_user)
+                                <tr>
+                                    <td>
+                                        @if ($active_user->UserRegistration)
+                                            U{{ str_pad($active_user->UserRegistration->iduser_registration, 3, '0', STR_PAD_LEFT) }}
+                                        @else
+                                            T{{ str_pad($active_user->TechnicianRegistration->idtechnician_registration, 3, '0', STR_PAD_LEFT) }}
+                                        @endif
+                                    </td>
+                                    <td>{{ $active_user->User->username }}</td>
+                                    <td>{{ $active_user->UserRole->role_name ?? 'N/A' }}</td>
+                                    <td>{{ $active_user->login_time }}</td>
+                                    <td>{{ $active_user->device }}</td>
+                                    <td>{{ $active_user->ip_address }}</td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#logoutModal">
+                                            Logout
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center">No data found.</td>
+                                </tr>
+                            @endforelse
+
                         </tbody>
                     </table>
                 </div>
@@ -202,7 +215,8 @@
 
                             <div class="border p-3 mt-4 d-flex justify-content-between align-items-center">
                                 <span class="fs-5">Storage Usage</span>
-                                <input type="number" id="usedStorage" class="form-control w-25 text-center" value="10">
+                                <input type="number" id="usedStorage" class="form-control w-25 text-center"
+                                    value="10">
                             </div>
 
                             <button class="btn btn-outline-dark mt-4">

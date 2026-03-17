@@ -98,7 +98,7 @@
                                     <th>User ID</th>
                                     <th>Name</th>
                                     <th>Role</th>
-                                    <th>Email</th>
+                                    <th>Username</th>
                                     <th>Status</th>
                                     <th>Created At</th>
                                     <th>Action</th>
