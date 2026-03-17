@@ -12,8 +12,4 @@
     <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}">
 
     <!-- App Title -->
-    {{--  <title>{{ $title }}</title>  --}}
-
-
-
-
+    <title>{{ $title }}</title>
