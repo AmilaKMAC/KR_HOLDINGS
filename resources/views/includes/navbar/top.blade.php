@@ -6,7 +6,7 @@
 
                 <!-- Center Title -->
                 <span class="navbar-brand mx-auto mb-2 mt-2 text-center">
-                    Dashboard
+                    {{ Request::route()->defaults['title']  }}
                 </span>
 
                 <!-- Toggle button -->
