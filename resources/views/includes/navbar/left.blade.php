@@ -27,7 +27,7 @@
                 </li>
 
                 <li>
-                    <a href="user" class="nav-link text-white">
+                    <a href="userManagement" class="nav-link text-white">
                         <i class="bi bi-person-gear me-3"></i> User Management
                     </a>
                 </li>
