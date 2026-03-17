@@ -40,11 +40,11 @@
                                                 N/A
                                             @endif
                                         </td>
-                                        <td>{{ ucwords(strtolower($user->first_name), " ,") }}</td>
-                                        <td>{{ ucwords(strtolower($user->last_name), " ,") }}</td>
+                                        <td>{{ ucwords(strtolower($user->first_name), ' ,') }}</td>
+                                        <td>{{ ucwords(strtolower($user->last_name), ' ,') }}</td>
                                         <td>{{ strtoupper($user->nic) }}</td>
                                         <td>{{ $user->dob }}</td>
-                                        <td>{{ ucwords(strtolower($user->address), " ,") }}</td>
+                                        <td>{{ ucwords(strtolower($user->address), ' ,') }}</td>
                                         <td>{{ $user->contact_no }}</td>
                                         <td>{{ ucfirst(strtolower($user->gender)) }}</td>
                                         <td>{{ $user->created_at?->format('Y-m-d') }}</td>
@@ -59,8 +59,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-sm btn-primary"
-                                                data-bs-toggle="modal"
+                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#editUserModal{{ $user->iduser }}">
                                                 Edit
                                             </button>
@@ -122,15 +121,16 @@
                                                 N/A
                                             @endif
                                         </td>
-                                        <td>{{ ucwords(strtolower($technician->first_name), " ,") }}</td>
-                                        <td>{{ ucwords(strtolower($technician->last_name), " ,") }}</td>
+                                        <td>{{ ucwords(strtolower($technician->first_name), ' ,') }}</td>
+                                        <td>{{ ucwords(strtolower($technician->last_name), ' ,') }}</td>
                                         <td>{{ strtoupper($technician->nic) }}</td>
                                         <td>{{ $technician->dob }}</td>
-                                        <td>{{ ucwords(strtolower($technician->address), " ,") }}</td>
+                                        <td>{{ ucwords(strtolower($technician->address), ' ,') }}</td>
                                         <td>{{ $technician->contact_no }}</td>
                                         <td>{{ ucfirst(strtolower($technician->gender)) }}</td>
                                         <td>{{ $technician->created_at?->format('Y-m-d') }}</td>
-                                        <td>{{ $technician->TechnicianRegistration?->technician_level_idtechnician_level ?? 'N/A' }}</td>
+                                        <td>{{ $technician->TechnicianRegistration?->technician_level_idtechnician_level ?? 'N/A' }}
+                                        </td>
                                         <td>{{ $technician->username }}</td>
                                         <td>*****</td>
                                         <td>
@@ -141,8 +141,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-sm btn-primary"
-                                                data-bs-toggle="modal"
+                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#editTechnicianModal{{ $technician->iduser }}">
                                                 Edit
                                             </button>
@@ -212,8 +211,10 @@
                                 <label class="form-label">Gender</label>
                                 <select name="gender" class="form-select">
                                     <option value="">Select Gender</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
+                                    <option value="Male" {{ $user->gender == 'Male' ? 'selected' : '' }}>Male
+                                    </option>
+                                    <option value="Female" {{ $user->gender == 'Female' ? 'selected' : '' }}>Female
+                                    </option>
                                 </select>
                             </div>
                             <div class="col-md-4">
@@ -224,16 +225,17 @@
                                 <label class="form-label">Role</label>
                                 <select name="user_role_iduser_role" class="form-select" required>
                                     <option value="">Select Role</option>
-                                    <option value="1">Admin</option>
-                                    <option value="2">Executive</option>
-                                    <option value="3">Project Coordinator</option>
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role->iduser_role }}">{{ $role->role_name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Status</label>
-                                <select name="status" class="form-select" required>
-                                    <option value="1">Active</option>
-                                    <option value="0">Inactive</option>
+                                <select name="status" class="form-select">
+                                    <option value="1" {{ $user->status == 1 ? 'selected' : '' }}>Active</option>
+                                    <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>Inactive
+                                    </option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -303,8 +305,10 @@
                                     <label class="form-label">Gender</label>
                                     <select name="gender" class="form-select">
                                         <option value="">Select Gender</option>
-                                        <option value="Male" {{ $user->gender == 'Male' ? 'selected' : '' }}>Male</option>
-                                        <option value="Female" {{ $user->gender == 'Female' ? 'selected' : '' }}>Female</option>
+                                        <option value="Male" {{ $user->gender == 'Male' ? 'selected' : '' }}>Male
+                                        </option>
+                                        <option value="Female" {{ $user->gender == 'Female' ? 'selected' : '' }}>Female
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
@@ -315,16 +319,20 @@
                                 <div class="col-md-4">
                                     <label class="form-label">Role</label>
                                     <select name="user_role_iduser_role" class="form-select">
-                                        <option value="1" {{ $user->user_role_iduser_role == 1 ? 'selected' : '' }}>Admin</option>
-                                        <option value="2" {{ $user->user_role_iduser_role == 2 ? 'selected' : '' }}>Executive</option>
-                                        <option value="3" {{ $user->user_role_iduser_role == 3 ? 'selected' : '' }}>Project Coordinator</option>
+                                        @foreach ($roles as $role)
+                                            <option value="{{ $role->iduser_role }}"
+                                                {{ $user->user_role_iduser_role == $role->iduser_role ? 'selected' : '' }}>
+                                                {{ $role->role_name }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Status</label>
                                     <select name="status" class="form-select">
                                         <option value="1" {{ $user->status == 1 ? 'selected' : '' }}>Active</option>
-                                        <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>Inactive</option>
+                                        <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>Inactive
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
@@ -387,11 +395,13 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Gender</label>
-                                <select name="gender" class="form-select">
-                                    <option value="">Select Gender</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
+                                    <select name="gender" class="form-select">
+                                        <option value="">Select Gender</option>
+                                        <option value="Male" {{ $technician->gender == 'Male' ? 'selected' : '' }}>Male
+                                        </option>
+                                        <option value="Female" {{ $technician->gender == 'Female' ? 'selected' : '' }}>
+                                            Female</option>
+                                    </select>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Start Date</label>
@@ -401,16 +411,20 @@
                                 <label class="form-label">Experience Level</label>
                                 <select name="experience_level" class="form-select" required>
                                     <option value="">Select Level</option>
-                                    <option value="1">L01</option>
-                                    <option value="2">L02</option>
-                                    <option value="3">L03</option>
+                                    @foreach ($technicianLevels as $level)
+                                        <option value="{{ $level->idtechnician_level }}">
+                                            L{{ str_pad($level->idtechnician_level, 2, '0', STR_PAD_LEFT) }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Status</label>
-                                <select name="status" class="form-select" required>
-                                    <option value="1">Active</option>
-                                    <option value="0">Inactive</option>
+                                <select name="status" class="form-select">
+                                    <option value="1" {{ $technician->status == 1 ? 'selected' : '' }}>Active
+                                    </option>
+                                    <option value="0" {{ $technician->status == 0 ? 'selected' : '' }}>Inactive
+                                    </option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -480,8 +494,10 @@
                                     <label class="form-label">Gender</label>
                                     <select name="gender" class="form-select">
                                         <option value="">Select Gender</option>
-                                        <option value="Male" {{ $technician->gender == 'Male' ? 'selected' : '' }}>Male</option>
-                                        <option value="Female" {{ $technician->gender == 'Female' ? 'selected' : '' }}>Female</option>
+                                        <option value="Male" {{ $technician->gender == 'Male' ? 'selected' : '' }}>Male
+                                        </option>
+                                        <option value="Female" {{ $technician->gender == 'Female' ? 'selected' : '' }}>
+                                            Female</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
@@ -489,22 +505,29 @@
                                     <input type="date" name="start_date" class="form-control bg-light"
                                         value="{{ $technician->created_at?->format('Y-m-d') }}" readonly>
                                 </div>
+
                                 <div class="col-md-4">
                                     <label class="form-label">Experience Level</label>
                                     <select name="experience_level" class="form-select">
-                                        <option value="1" {{ $technician->TechnicianRegistration?->technician_level_idtechnician_level == 1 ? 'selected' : '' }}>L01</option>
-                                        <option value="2" {{ $technician->TechnicianRegistration?->technician_level_idtechnician_level == 2 ? 'selected' : '' }}>L02</option>
-                                        <option value="3" {{ $technician->TechnicianRegistration?->technician_level_idtechnician_level == 3 ? 'selected' : '' }}>L03</option>
-                                        <option value="4" {{ $technician->TechnicianRegistration?->technician_level_idtechnician_level == 4 ? 'selected' : '' }}>L04</option>
+                                        @foreach ($technicianLevels as $level)
+                                            <option value="{{ $level->idtechnician_level }}"
+                                                {{ $technician->TechnicianRegistration?->technician_level_idtechnician_level == $level->idtechnician_level ? 'selected' : '' }}>
+                                                L{{ str_pad($level->idtechnician_level, 2, '0', STR_PAD_LEFT) }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
+
                                 <div class="col-md-4">
                                     <label class="form-label">Status</label>
                                     <select name="status" class="form-select">
-                                        <option value="1" {{ $technician->status == 1 ? 'selected' : '' }}>Active</option>
-                                        <option value="0" {{ $technician->status == 0 ? 'selected' : '' }}>Inactive</option>
+                                        <option value="1" {{ $technician->status == 1 ? 'selected' : '' }}>Active
+                                        </option>
+                                        <option value="0" {{ $technician->status == 0 ? 'selected' : '' }}>Inactive
+                                        </option>
                                     </select>
                                 </div>
+
                                 <div class="col-md-6">
                                     <label class="form-label">Username</label>
                                     <input type="text" name="username" class="form-control"
@@ -526,5 +549,4 @@
             </div>
         </div>
     @endforeach
-
 @endsection

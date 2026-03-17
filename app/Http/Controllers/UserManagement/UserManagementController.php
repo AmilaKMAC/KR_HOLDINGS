@@ -7,6 +7,7 @@ use App\Models\UserManagement\TechnicianRegistration;
 use App\Models\UserManagement\User;
 use App\Models\UserManagement\UserRegistration;
 use App\Models\UserManagement\UserRole;
+use App\Models\SystemSettings\TechnicianLevel; // fixed capital A
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -25,7 +26,12 @@ class UserManagementController extends Controller
 
         $roles = UserRole::whereIn('iduser_role', [1, 2, 3])->get();
 
-        return view('users.components.user_management', compact('users', 'technicians', 'roles'), ['title' => 'User Management']);
+        $technicianLevels = TechnicianLevel::all(); // added
+
+        return view('users.components.user_management',
+            compact('users', 'technicians', 'roles', 'technicianLevels'),
+            ['title' => 'User Management']
+        );
     }
 
     // ================= STORE USER =================
@@ -170,15 +176,15 @@ class UserManagementController extends Controller
         ]);
 
         $data = [
-            'first_name'       => $request->first_name,
-            'last_name'        => $request->last_name,
-            'nic'              => $request->nic,
-            'dob'              => $request->dob,
-            'address'          => $request->address,
-            'contact_no'       => $request->contact_no,
-            'gender'           => $request->gender,
-            'status'           => $request->status,
-            'username'         => $request->username,
+            'first_name' => $request->first_name,
+            'last_name'  => $request->last_name,
+            'nic'        => $request->nic,
+            'dob'        => $request->dob,
+            'address'    => $request->address,
+            'contact_no' => $request->contact_no,
+            'gender'     => $request->gender,
+            'status'     => $request->status,
+            'username'   => $request->username,
         ];
 
         if ($request->filled('password')) {
@@ -186,6 +192,11 @@ class UserManagementController extends Controller
         }
 
         $technician->update($data);
+
+        // Also update the technician registration level
+        $technician->TechnicianRegistration?->update([
+            'technician_level_idtechnician_level' => $request->experience_level,
+        ]);
 
         return redirect()->route('userManagement.index')->with('success', 'Technician updated successfully!');
     }
