@@ -23,11 +23,12 @@
             padding: 0;
             overflow: hidden;
             height: 100%;
+            background: radial-gradient(circle, rgb(21, 45, 68) 70%);
 
         }
 
         .bg-image-col {
-            background-image: url('{{ asset('assets/images/background.png') }}');
+            background-image: url('{{ asset('assets/images/background.jpg') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -37,10 +38,17 @@
 
         .login-col {
             min-height: 100vh;
-            background: linear-gradient(90deg,
-                    var(--bs-primary),
-                    #01184e);
-            color: #fff;
+   
+    background-color: #212529;
+
+ 
+    background-image: radial-gradient(
+        circle,
+        rgba(31, 113, 185, 0.8) 10%, 
+        rgb(21, 45, 68) 80%        
+    );
+
+    color: white; /* readable text */
 
         }
 
