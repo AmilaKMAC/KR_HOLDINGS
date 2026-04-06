@@ -14,6 +14,8 @@ use App\Http\Controllers\Proof\WorkReviewController;
 use App\Http\Controllers\ProjectManagement\AssignProjectController;
 use App\Http\Controllers\Attendance\AttendanceMarkController;
 use App\Http\Controllers\Dashboard\ExecutiveController;
+use App\Http\Controllers\Dashboard\CoordinatorController;
+use App\Http\Controllers\Dashboard\TechnicianController;
 use App\Http\Controllers\Proof\ImageUploadController;
 use App\Http\Controllers\Profile\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -28,12 +30,12 @@ Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboa
 
 Route::get('/e', [ExecutiveController::class, 'index'])->name('executive.dashboard')->defaults('title', 'Dashboard');
 
-Route::get('/coordinator/dashboard', function () {
-    return view('users.dashboard.coordinator');
-})->name('coordinator.dashboard');
-Route::get('/technician/dashboard', function () {
-    return view('users.dashboard.technician');
-})->name('technician.dashboard');
+Route::get('/c', [CoordinatorController::class, 'index'])->name('coordinator.dashboard')->defaults('title', 'Dashboard');
+
+Route::get('/t', [TechnicianController::class, 'index'])->name('technician.dashboard')->defaults('title', 'Dashboard');
+
+
+
 
 // User Management
 Route::get('/userManagement', [UserManagementController::class, 'index'])->name('userManagement.index')->defaults('title', 'User Management');
