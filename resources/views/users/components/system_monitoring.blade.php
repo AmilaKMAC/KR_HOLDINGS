@@ -51,8 +51,10 @@
                                     <td>
                                         @if ($active_user->UserRegistration)
                                             U{{ str_pad($active_user->UserRegistration->iduser_registration, 3, '0', STR_PAD_LEFT) }}
-                                        @else
+                                        @elseif ($active_user->TechnicianRegistration)
                                             T{{ str_pad($active_user->TechnicianRegistration->idtechnician_registration, 3, '0', STR_PAD_LEFT) }}
+                                        @else
+                                            N/A
                                         @endif
                                     </td>
                                     <td>{{ $active_user->User->username }}</td>
