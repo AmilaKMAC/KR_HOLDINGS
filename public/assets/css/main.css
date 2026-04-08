@@ -3,12 +3,6 @@
     left: 0;
 }
 
-/* For Small Screens
-    Toggle Button
-        Laptop - 1024
-        Tablet
-        Mobile
-*/
 @media (max-width: 1199.98px) {
 
     #sidebar {
