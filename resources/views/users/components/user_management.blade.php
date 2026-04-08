@@ -10,8 +10,8 @@
                     <div class="card-header text-center fw-bold bg-dark text-white">
                         User Registration
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-hover text-center align-middle mb-0">
+                    <div class="table-responsive p-2">
+                        <table class="table table-bordered table-striped table-hover text-center align-middle mb-0 data-table">
                             <thead class="table-light">
                                 <tr>
                                     <th>UID</th>
@@ -48,7 +48,7 @@
                                         <td>{{ $user->contact_no }}</td>
                                         <td>{{ ucfirst(strtolower($user->gender)) }}</td>
                                         <td>{{ $user->created_at?->format('Y-m-d') }}</td>
-                                        <td>{{ $user->UserRole->role_name ?? 'N/A' }}</td>
+                                        <td>{{ $user->UserRole?->role_name ?? 'N/A' }}</td>
                                         <td>{{ $user->username }}</td>
                                         <td>*****</td>
                                         <td>
@@ -73,8 +73,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light border-top">
-                        @include('others.limit_btn_group')
+                    <div class="d-flex justify-content-end px-3 py-2 bg-light border-top">
                         <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
                             data-bs-target="#addUserModal">
                             + Add User
@@ -91,8 +90,8 @@
                     <div class="card-header text-center fw-bold bg-secondary text-white">
                         Technician Registration
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-hover text-center align-middle mb-0">
+                    <div class="table-responsive p-2">
+                        <table class="table table-bordered table-striped table-hover text-center align-middle mb-0 data-table">
                             <thead class="table-light">
                                 <tr>
                                     <th>UID</th>
@@ -155,8 +154,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light border-top">
-                        @include('others.limit_btn_group')
+                    <div class="d-flex justify-content-end px-3 py-2 bg-light border-top">
                         <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
                             data-bs-target="#addTechnicianModal">
                             + Add Technician
@@ -211,10 +209,8 @@
                                 <label class="form-label">Gender</label>
                                 <select name="gender" class="form-select">
                                     <option value="">Select Gender</option>
-                                    <option value="Male" {{ $user->gender == 'Male' ? 'selected' : '' }}>Male
-                                    </option>
-                                    <option value="Female" {{ $user->gender == 'Female' ? 'selected' : '' }}>Female
-                                    </option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
                                 </select>
                             </div>
                             <div class="col-md-4">
@@ -232,10 +228,9 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Status</label>
-                                <select name="status" class="form-select">
-                                    <option value="1" {{ $user->status == 1 ? 'selected' : '' }}>Active</option>
-                                    <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>Inactive
-                                    </option>
+                                <select name="status" class="form-select" required>
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -395,13 +390,11 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Gender</label>
-                                    <select name="gender" class="form-select">
-                                        <option value="">Select Gender</option>
-                                        <option value="Male" {{ $technician->gender == 'Male' ? 'selected' : '' }}>Male
-                                        </option>
-                                        <option value="Female" {{ $technician->gender == 'Female' ? 'selected' : '' }}>
-                                            Female</option>
-                                    </select>
+                                <select name="gender" class="form-select">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Start Date</label>
@@ -420,11 +413,9 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Status</label>
-                                <select name="status" class="form-select">
-                                    <option value="1" {{ $technician->status == 1 ? 'selected' : '' }}>Active
-                                    </option>
-                                    <option value="0" {{ $technician->status == 0 ? 'selected' : '' }}>Inactive
-                                    </option>
+                                <select name="status" class="form-select" required>
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -505,7 +496,6 @@
                                     <input type="date" name="start_date" class="form-control bg-light"
                                         value="{{ $technician->created_at?->format('Y-m-d') }}" readonly>
                                 </div>
-
                                 <div class="col-md-4">
                                     <label class="form-label">Experience Level</label>
                                     <select name="experience_level" class="form-select">
@@ -517,7 +507,6 @@
                                         @endforeach
                                     </select>
                                 </div>
-
                                 <div class="col-md-4">
                                     <label class="form-label">Status</label>
                                     <select name="status" class="form-select">
@@ -527,7 +516,6 @@
                                         </option>
                                     </select>
                                 </div>
-
                                 <div class="col-md-6">
                                     <label class="form-label">Username</label>
                                     <input type="text" name="username" class="form-control"
@@ -550,3 +538,4 @@
         </div>
     @endforeach
 @endsection
+
