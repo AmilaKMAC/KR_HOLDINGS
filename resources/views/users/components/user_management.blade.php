@@ -4,30 +4,22 @@
     <div class="container-fluid px-2 px-md-4 px-lg-5">
 
         <!-- ================= USER TABLE ================= -->
-        <div class="row mb-5">
+        <div class="row mb-5 justify-content-center">
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header text-center fw-bold bg-dark text-white">
                         User Registration
                     </div>
                     <div class="table-responsive p-2">
-                        <table class="table table-bordered table-striped table-hover text-center align-middle mb-0 data-table">
+                        <table class="table table-bordered table-striped table-hover data-table text-center align-middle mb-0 w-100">
                             <thead class="table-light">
                                 <tr>
                                     <th>UID</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>NIC</th>
-                                    <th>DOB</th>
-                                    <th>Address</th>
+                                    <th>Name</th>
                                     <th>Contact</th>
-                                    <th>Gender</th>
-                                    <th>Start Date</th>
                                     <th>Role</th>
-                                    <th>Username</th>
-                                    <th>Password</th>
                                     <th>Status</th>
-                                    <th>Edit</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -40,17 +32,10 @@
                                                 N/A
                                             @endif
                                         </td>
-                                        <td>{{ ucwords(strtolower($user->first_name), ' ,') }}</td>
-                                        <td>{{ ucwords(strtolower($user->last_name), ' ,') }}</td>
-                                        <td>{{ strtoupper($user->nic) }}</td>
-                                        <td>{{ $user->dob }}</td>
-                                        <td>{{ ucwords(strtolower($user->address), ' ,') }}</td>
+                                        <td>{{ ucwords(strtolower($user->first_name)) }}
+                                            {{ ucwords(strtolower($user->last_name)) }}</td>
                                         <td>{{ $user->contact_no }}</td>
-                                        <td>{{ ucfirst(strtolower($user->gender)) }}</td>
-                                        <td>{{ $user->created_at?->format('Y-m-d') }}</td>
                                         <td>{{ $user->UserRole?->role_name ?? 'N/A' }}</td>
-                                        <td>{{ $user->username }}</td>
-                                        <td>*****</td>
                                         <td>
                                             @if ($user->status == 1)
                                                 <span class="badge bg-success">Active</span>
@@ -59,7 +44,11 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                                data-bs-target="#infoUserModal{{ $user->iduser }}">
+                                                Info
+                                            </button>
+                                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#editUserModal{{ $user->iduser }}">
                                                 Edit
                                             </button>
@@ -67,7 +56,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="14" class="text-center text-muted">No users found</td>
+                                        <td colspan="6" class="text-center text-muted">No users found</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -84,30 +73,22 @@
         </div>
 
         <!-- ================= TECHNICIAN TABLE ================= -->
-        <div class="row mb-5">
+        <div class="row mb-5 justify-content-center">
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header text-center fw-bold bg-secondary text-white">
                         Technician Registration
                     </div>
                     <div class="table-responsive p-2">
-                        <table class="table table-bordered table-striped table-hover text-center align-middle mb-0 data-table">
+                        <table class="table table-bordered table-striped data-table table-hover text-center align-middle mb-0 w-100">
                             <thead class="table-light">
                                 <tr>
                                     <th>UID</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>NIC</th>
-                                    <th>DOB</th>
-                                    <th>Address</th>
+                                    <th>Name</th>
                                     <th>Contact</th>
-                                    <th>Gender</th>
-                                    <th>Start Date</th>
-                                    <th>Experience Level</th>
-                                    <th>Username</th>
-                                    <th>Password</th>
+                                    <th>Level</th>
                                     <th>Status</th>
-                                    <th>Edit</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -120,18 +101,12 @@
                                                 N/A
                                             @endif
                                         </td>
-                                        <td>{{ ucwords(strtolower($technician->first_name), ' ,') }}</td>
-                                        <td>{{ ucwords(strtolower($technician->last_name), ' ,') }}</td>
-                                        <td>{{ strtoupper($technician->nic) }}</td>
-                                        <td>{{ $technician->dob }}</td>
-                                        <td>{{ ucwords(strtolower($technician->address), ' ,') }}</td>
+                                        <td>{{ ucwords(strtolower($technician->first_name)) }}
+                                            {{ ucwords(strtolower($technician->last_name)) }}</td>
                                         <td>{{ $technician->contact_no }}</td>
-                                        <td>{{ ucfirst(strtolower($technician->gender)) }}</td>
-                                        <td>{{ $technician->created_at?->format('Y-m-d') }}</td>
-                                        <td>{{ $technician->TechnicianRegistration?->technician_level_idtechnician_level ?? 'N/A' }}
+                                        <td>
+                                            L{{ str_pad($technician->TechnicianRegistration?->technician_level_idtechnician_level ?? 0, 2, '0', STR_PAD_LEFT) }}
                                         </td>
-                                        <td>{{ $technician->username }}</td>
-                                        <td>*****</td>
                                         <td>
                                             @if ($technician->status == 1)
                                                 <span class="badge bg-success">Active</span>
@@ -140,6 +115,10 @@
                                             @endif
                                         </td>
                                         <td>
+                                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                                data-bs-target="#infoTechModal{{ $technician->iduser }}">
+                                                Info
+                                            </button>
                                             <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#editTechnicianModal{{ $technician->iduser }}">
                                                 Edit
@@ -148,7 +127,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="14" class="text-center text-muted">No technicians found</td>
+                                        <td colspan="6" class="text-center text-muted">No technicians found</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -167,9 +146,153 @@
     </div>
 
 
-    <!-- ========================== MODALS ===================== -->
+    <!-- ========================== MODALS ========================== -->
 
-    <!-- ADD USER MODAL -->
+    <!-- ===== INFO USER MODALS ===== -->
+    @foreach ($users as $user)
+        <div class="modal fade" id="infoUserModal{{ $user->iduser }}" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h5 class="modal-title fw-bold">
+                            User Info — {{ ucwords(strtolower($user->first_name)) }}
+                            {{ ucwords(strtolower($user->last_name)) }}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">First Name</small>
+                                {{ ucwords(strtolower($user->first_name)) }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Last Name</small>
+                                {{ ucwords(strtolower($user->last_name)) }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">NIC</small>
+                                {{ strtoupper($user->nic) }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Date of Birth</small>
+                                {{ $user->dob }}
+                            </div>
+                            <div class="col-12">
+                                <small class="text-muted d-block">Address</small>
+                                {{ ucwords(strtolower($user->address)) }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Contact</small>
+                                {{ $user->contact_no }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Gender</small>
+                                {{ ucfirst(strtolower($user->gender)) }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Username</small>
+                                {{ $user->username }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Role</small>
+                                {{ $user->UserRole?->role_name ?? 'N/A' }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Status</small>
+                                @if ($user->status == 1)
+                                    <span class="badge bg-success">Active</span>
+                                @else
+                                    <span class="badge bg-danger">Inactive</span>
+                                @endif
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Start Date</small>
+                                {{ $user->created_at?->format('Y-m-d') }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
+    <!-- ===== INFO TECHNICIAN MODALS ===== -->
+    @foreach ($technicians as $technician)
+        <div class="modal fade" id="infoTechModal{{ $technician->iduser }}" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h5 class="modal-title fw-bold">
+                            Technician Info — {{ ucwords(strtolower($technician->first_name)) }}
+                            {{ ucwords(strtolower($technician->last_name)) }}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">First Name</small>
+                                {{ ucwords(strtolower($technician->first_name)) }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Last Name</small>
+                                {{ ucwords(strtolower($technician->last_name)) }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">NIC</small>
+                                {{ strtoupper($technician->nic) }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Date of Birth</small>
+                                {{ $technician->dob }}
+                            </div>
+                            <div class="col-12">
+                                <small class="text-muted d-block">Address</small>
+                                {{ ucwords(strtolower($technician->address)) }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Contact</small>
+                                {{ $technician->contact_no }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Gender</small>
+                                {{ ucfirst(strtolower($technician->gender)) }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Username</small>
+                                {{ $technician->username }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Experience Level</small>
+                                L{{ str_pad($technician->TechnicianRegistration?->technician_level_idtechnician_level ?? 0, 2, '0', STR_PAD_LEFT) }}
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Status</small>
+                                @if ($technician->status == 1)
+                                    <span class="badge bg-success">Active</span>
+                                @else
+                                    <span class="badge bg-danger">Inactive</span>
+                                @endif
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted d-block">Start Date</small>
+                                {{ $technician->created_at?->format('Y-m-d') }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
+    <!-- ===== ADD USER MODAL ===== -->
     <div class="modal fade" id="addUserModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -252,7 +375,7 @@
         </div>
     </div>
 
-    <!-- EDIT USER MODALS -->
+    <!-- ===== EDIT USER MODALS ===== -->
     @foreach ($users as $user)
         <div class="modal fade" id="editUserModal{{ $user->iduser }}" tabindex="-1">
             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -352,7 +475,7 @@
         </div>
     @endforeach
 
-    <!-- ADD TECHNICIAN MODAL -->
+    <!-- ===== ADD TECHNICIAN MODAL ===== -->
     <div class="modal fade" id="addTechnicianModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -437,7 +560,7 @@
         </div>
     </div>
 
-    <!-- EDIT TECHNICIAN MODALS -->
+    <!-- ===== EDIT TECHNICIAN MODALS ===== -->
     @foreach ($technicians as $technician)
         <div class="modal fade" id="editTechnicianModal{{ $technician->iduser }}" tabindex="-1">
             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -538,4 +661,3 @@
         </div>
     @endforeach
 @endsection
-

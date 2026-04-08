@@ -10,81 +10,84 @@
                     <div class="card-header bg-warning bg-opacity-25">
                         <h6 class="fw-bold mb-0 text-warning-emphasis">Pending Approval</h6>
                     </div>
-                    <div class="card-body table-responsive">
-                        <table class="table table-bordered align-middle text-center data-table">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Project ID</th>
-                                    <th>Customer Name</th>
-                                    <th>Location</th>
-                                    <th>Capacity</th>
-                                    <th>Partner Company</th>
-                                    <th>Technician ID's</th>
-                                    <th>Additional Work</th>
-                                    <th>Approval</th>
-                                    <th>View</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pendingTableBody">
-                                <tr data-project-id="P001" data-customer="Kasun Perera" data-location="Colombo"
-                                    data-capacity="10kW" data-partner="ABC Solar" data-technicians="T01, T02"
-                                    data-additional="">
-                                    <td>P001</td>
-                                    <td>Kasun Perera</td>
-                                    <td>Colombo</td>
-                                    <td>10kW</td>
+                    <div class="p-2">
 
-                                    <td>ABC Solar</td>
-                                    <td>T01, T02</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-secondary additional-work-trigger"
-                                            data-bs-toggle="modal" data-bs-target="#additionalWorkModal">
-                                            Select Work
-                                        </button>
-                                    </td>
+                        <div class="card-body table-responsive">
+                            <table class="table table-bordered align-middle text-center data-table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Project ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Location</th>
+                                        <th>Capacity</th>
+                                        <th>Partner Company</th>
+                                        <th>Technician ID's</th>
+                                        <th>Additional Work</th>
+                                        <th>Approval</th>
+                                        <th>View</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pendingTableBody">
+                                    <tr data-project-id="P001" data-customer="Kasun Perera" data-location="Colombo"
+                                        data-capacity="10kW" data-partner="ABC Solar" data-technicians="T01, T02"
+                                        data-additional="">
+                                        <td>P001</td>
+                                        <td>Kasun Perera</td>
+                                        <td>Colombo</td>
+                                        <td>10kW</td>
+
+                                        <td>ABC Solar</td>
+                                        <td>T01, T02</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary additional-work-trigger"
+                                                data-bs-toggle="modal" data-bs-target="#additionalWorkModal">
+                                                Select Work
+                                            </button>
+                                        </td>
 
 
-                                    <td>
-                                        <button class="btn btn-sm btn-warning approval-trigger" data-bs-toggle="modal"
-                                            data-bs-target="#approvalModal">
-                                            Approve
-                                        </button>
-                                    </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning approval-trigger" data-bs-toggle="modal"
+                                                data-bs-target="#approvalModal">
+                                                Approve
+                                            </button>
+                                        </td>
 
-                                    <td>
-                                        <button class="btn btn-sm btn-primary view-btn">View</button>
-                                    </td>
-                                </tr>
-                                <tr data-project-id="P002" data-customer="Nimal Silva" data-location="Kandy"
-                                    data-capacity="5kW" data-partner="SunTech Lanka" data-technicians="T03, T04"
-                                    data-additional="">
-                                    <td>P002</td>
-                                    <td>Nimal Silva</td>
-                                    <td>Kandy</td>
-                                    <td>5kW</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary view-btn">View</button>
+                                        </td>
+                                    </tr>
+                                    <tr data-project-id="P002" data-customer="Nimal Silva" data-location="Kandy"
+                                        data-capacity="5kW" data-partner="SunTech Lanka" data-technicians="T03, T04"
+                                        data-additional="">
+                                        <td>P002</td>
+                                        <td>Nimal Silva</td>
+                                        <td>Kandy</td>
+                                        <td>5kW</td>
 
-                                    <td>SunTech Lanka</td>
-                                    <td>T03, T04</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-secondary additional-work-trigger"
-                                            data-bs-toggle="modal" data-bs-target="#additionalWorkModal">
-                                            Select Work
-                                        </button>
-                                    </td>
+                                        <td>SunTech Lanka</td>
+                                        <td>T03, T04</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary additional-work-trigger"
+                                                data-bs-toggle="modal" data-bs-target="#additionalWorkModal">
+                                                Select Work
+                                            </button>
+                                        </td>
 
-                                    <td>
-                                        <button class="btn btn-sm btn-warning approval-trigger" data-bs-toggle="modal"
-                                            data-bs-target="#approvalModal">
-                                            Approve
-                                        </button>
-                                    </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning approval-trigger" data-bs-toggle="modal"
+                                                data-bs-target="#approvalModal">
+                                                Approve
+                                            </button>
+                                        </td>
 
-                                    <td>
-                                        <button class="btn btn-sm btn-primary view-btn">View</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary view-btn">View</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- Bottom Controls -->
@@ -101,6 +104,8 @@
                     <div class="card-header bg-success bg-opacity-25">
                         <h6 class="fw-bold mb-0 text-success-emphasis">Approved Projects</h6>
                     </div>
+
+                    <div class="p-2">
                     <div class="card-body table-responsive">
                         <table class="table table-bordered align-middle text-center data-table">
                             <thead class="table-light">
@@ -144,6 +149,7 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
                     </div>
 
                     <!-- Bottom Controls -->
@@ -232,7 +238,8 @@
                     <h5 class="modal-title fw-semibold">Installation Photo Review</h5>
 
                     <div class="ms-auto d-flex align-items-center gap-5">
-                        <button class="btn btn-sm fw-bold btn-danger" data-bs-toggle="modal" data-bs-target="#messageModal">
+                        <button class="btn btn-sm fw-bold btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#messageModal">
                             Report Issue
                         </button>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>

@@ -9,6 +9,7 @@
             </div>
 
 
+            <div class="p-2">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover text-center align-middle data-table">
                     <thead class="table-light">
@@ -49,6 +50,7 @@
                     Add New Project
                 </button>
             </div>
+            </div>
 
         </div>
 
@@ -57,6 +59,8 @@
             <div class="card-header fw-bold text-center bg-secondary text-white">
                 Assign Technicians
             </div>
+
+            <div class="p-2">
 
             <div class="table-responsive">
                 <table class="table table-bordered text-center align-middle data-table">
@@ -90,6 +94,7 @@
                     Add Technician
                 </button>
             </div>
+            </div>
 
         </div>
 
@@ -99,6 +104,7 @@
                 Cancellation
             </div>
 
+            <div class="p-2">
             <div class="table-responsive">
                 <table class="table table-bordered text-center align-middle data-table">
                     <thead class="table-light">
@@ -116,6 +122,7 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
             </div>
 
             

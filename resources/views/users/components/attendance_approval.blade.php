@@ -12,6 +12,7 @@
                         Technician Attendance Management
                     </div>
 
+                    <div class="p-2">
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped table-hover text-center align-middle mb-0 data-table">
 
@@ -76,6 +77,7 @@
 
                         </table>
                     </div>
+                    </div>
 
                     <!-- Bottom Controls -->
                     <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light border-top">
@@ -127,9 +129,9 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
-                <div class="modal-body">
+                <div class="modal-body p-2">
                     <div class="table-responsive">
-                        <table class="table table-bordered text-center align-middle">
+                        <table class="table table-bordered text-center align-middle data-table">
                             <thead class="table-light">
                                 <tr>
                                     <th>Date</th>
