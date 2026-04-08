@@ -19,6 +19,7 @@ use App\Http\Controllers\SystemMonitoring\SystemMonitoringController;
 use App\Http\Controllers\SystemSettings\SystemSettingsController;
 use App\Http\Controllers\TechnicianPerformance\TechnicianPerformanceController;
 use App\Http\Controllers\UserManagement\UserManagementController;
+use App\Http\Controllers\Reports\LogController;
 use Illuminate\Support\Facades\Route;
 
 // ================= PUBLIC =================
@@ -49,21 +50,21 @@ Route::middleware(['auth', 'role:1'])->group(function () {
     Route::put('/system_settings/partner_company/{id}', [SystemSettingsController::class, 'updatePartnerCompany'])->name('system_settings.updatePartnerCompany');
     Route::get('/system_monitoring', [SystemMonitoringController::class, 'index'])->name('system_monitoring.index')->defaults('title', 'System Monitoring');
     Route::post('/force-logout/{id}', [SystemMonitoringController::class, 'forceLogout'])->name('system_monitoring.forceLogout');
-    Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index')->defaults('title', 'Reports');
+    Route::get('/log_reports', [LogController::class, 'index'])->name('log_reports.index')->defaults('title', 'Log Reports');
 });
 
 // ================= EXECUTIVE (role: 2) =================
 Route::middleware(['auth', 'role:2'])->group(function () {
-    Route::get('/e', [ExecutiveController::class, 'index'])->name('executive.dashboard')->defaults('title', 'Dashboard');
-    Route::get('/tech', [TechnicianPerformanceController::class, 'index'])->name('technician_performance.index')->defaults('title', 'Technician Performance');
+    Route::get('/executive', [ExecutiveController::class, 'index'])->name('executive.dashboard')->defaults('title', 'Dashboard');
+    Route::get('/technician_performance', [TechnicianPerformanceController::class, 'index'])->name('technician_performance.index')->defaults('title', 'Technician Performance');
     Route::get('/payment', [PaymentAndSalaryController::class, 'index'])->name('payment_and_salary.index')->defaults('title', 'Payment and Salary');
     Route::get('/review', [WorkReviewController::class, 'index'])->name('review_photos.index')->defaults('title', 'Review Photos');
-    Route::get('/reports_executive', [ReportsController::class, 'executive'])->name('reports.executive')->defaults('title', 'Reports');
+    Route::get('/Reports', [ReportsController::class, 'index'])->name('reports.index')->defaults('title', 'Reports');
 });
 
 // ================= PROJECT COORDINATOR (role: 3) =================
 Route::middleware(['auth', 'role:3'])->group(function () {
-    Route::get('/c', [CoordinatorController::class, 'index'])->name('coordinator.dashboard')->defaults('title', 'Dashboard');
+    Route::get('/coordinator', [CoordinatorController::class, 'index'])->name('coordinator.dashboard')->defaults('title', 'Dashboard');
     Route::get('/project_management', [ProjectManagementController::class, 'index'])->name('project_management.index')->defaults('title', 'Project Management');
     Route::get('/attendance_approval', [AttendanceApprovalController::class, 'index'])->name('attendance_approval.index')->defaults('title', 'Attendance Approval');
     Route::get('/proof_of_work_approval', [WorkApprovalController::class, 'index'])->name('proof_of_work_approval.index')->defaults('title', 'Proof of Work Approval');
@@ -71,7 +72,7 @@ Route::middleware(['auth', 'role:3'])->group(function () {
 
 // ================= TECHNICIAN (role: 4) =================
 Route::middleware(['auth', 'role:4'])->group(function () {
-    Route::get('/t', [TechnicianController::class, 'index'])->name('technician.dashboard')->defaults('title', 'Dashboard');
+    Route::get('/technician', [TechnicianController::class, 'index'])->name('technician.dashboard')->defaults('title', 'Dashboard');
     Route::get('/assign_projects', [AssignProjectController::class, 'index'])->name('assign_projects.index')->defaults('title', 'Assign Projects');
     Route::get('/attendance', [AttendanceMarkController::class, 'index'])->name('attendance.index')->defaults('title', 'Attendance');
     Route::get('/proof_of_work', [ImageUploadController::class, 'index'])->name('proof_of_work.index')->defaults('title', 'Image Upload');
