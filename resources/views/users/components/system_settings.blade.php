@@ -545,33 +545,5 @@
     @endforeach
 
 
-    <script>
-        document.querySelectorAll('.btn-close').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                window.location.href = '{{ route('system_settings.index') }}';
-            });
-        });
-
-
-
-        function openNestedModal(parentId, childId) {
-            const parentEl = document.getElementById(parentId);
-            bootstrap.Modal.getInstance(parentEl)?.hide();
-            parentEl.addEventListener('hidden.bs.modal', function handler() {
-                new bootstrap.Modal(document.getElementById(childId)).show();
-                parentEl.removeEventListener('hidden.bs.modal', handler);
-            });
-        }
-
-        function closeAndReturn(childId, parentId) {
-            const childEl = document.getElementById(childId);
-            bootstrap.Modal.getInstance(childEl)?.hide();
-            childEl.addEventListener('hidden.bs.modal', function handler() {
-                new bootstrap.Modal(document.getElementById(parentId)).show();
-                childEl.removeEventListener('hidden.bs.modal', handler);
-            });
-
-
-        }
-    </script>
+ 
 @endsection
