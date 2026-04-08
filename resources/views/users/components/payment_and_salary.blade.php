@@ -13,7 +13,7 @@
                     </div>
 
                     <div class="card-body table-responsive">
-                        <table class="table table-bordered align-middle text-center">
+                        <table class="table table-bordered align-middle text-center data-table">
                             <thead class="table-light">
                                 <tr>
                                     <th>Technician ID</th>
@@ -53,7 +53,6 @@
 
                     <!-- Bottom Controls -->
                     <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light border-top">
-                        @include('others.limit_btn_group')
                     </div>
 
                 </div>
@@ -115,7 +114,7 @@
                     <h6 class="fw-bold text-success mb-3">Previous Bills</h6>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered text-center align-middle">
+                        <table class="table table-bordered text-center align-middle data-table">
                             <thead class="table-light">
                                 <tr>
                                     <th>Date</th>
@@ -153,7 +152,6 @@
 
                     <!-- Previous Bills Bottom Controls -->
                     <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light border-top">
-                        @include('others.limit_btn_group')
 
                     </div>
 

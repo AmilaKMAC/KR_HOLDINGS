@@ -27,64 +27,68 @@
 </script>
 
 
-<!-- ======================== Limit Button Group ============================ -->
+<!-- ===================== Close Button ========================= -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    // GLOBAL CLOSE BUTTON HANDLER
+    document.addEventListener('DOMContentLoaded',
 
-    // For tables directly on the page
-    document.querySelectorAll('.card').forEach(card => {
-        applyLimitButtons(card);
-        initTable(card);
-    });
+        function() {
+            document.querySelectorAll('.btn-close').forEach(function(btn) {
+                btn.addEventListener('click',
+                    function() {
+                        // Reload current page (BEST for all modules)
+                        window.location.reload();
 
-    // For tables inside modals
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('shown.bs.modal', function () {
-            applyLimitButtons(modal);
-            initTable(modal);
-        });
-    });
-
-    // Bind limit buttons inside a container
-    function applyLimitButtons(container) {
-        container.querySelectorAll('.limit-btn').forEach(btn => {
-            btn.addEventListener('click', function () {
-                container.querySelectorAll('.limit-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                applyLimit(container, this.dataset.limit);
+                        // dynamic redirect instead
+                        let redirect = this.getAttribute('data-redirect');
+                        if (redirect) {
+                            window.location.href = redirect;
+                        }
+                    });
             });
         });
+
+    //  OPEN NESTED MODAL
+    function openNestedModal(parentId, childId) {
+        const parentEl = document.getElementById(parentId);
+        bootstrap.Modal.getInstance(parentEl)?.hide();
+
+        parentEl.addEventListener('hidden.bs.modal',
+            function handler() {
+                new bootstrap.Modal(document.getElementById(childId)).show();
+                parentEl.removeEventListener('hidden.bs.modal', handler);
+            });
     }
 
-    // Apply row visibility and update showing info
-    function applyLimit(container, limit) {
-        const tbody = container.querySelector('tbody');
-        if (!tbody) return;
+    //  CLOSE CHILD & RETURN TO PARENT
+    function closeAndReturn(childId, parentId) {
+        const childEl = document.getElementById(childId);
+        bootstrap.Modal.getInstance(childEl)?.hide();
 
-        const allRows = Array.from(tbody.querySelectorAll('tr'));
-        const lim = limit === 'all' ? 9999 : parseInt(limit);
-
-        allRows.forEach((row, i) => {
-            row.style.display = i < lim ? '' : 'none';
-        });
-
-        const shown = Math.min(lim, allRows.length);
-        const infoEl = container.querySelector('.showing-info');
-        if (infoEl) infoEl.innerText = `Showing 1 to ${shown} of ${allRows.length} entries`;
+        childEl.addEventListener('hidden.bs.modal',
+            function handler() {
+                new bootstrap.Modal(document.getElementById(parentId)).show();
+                childEl.removeEventListener('hidden.bs.modal', handler);
+            });
     }
-
-    // Init: apply default limit of 5 on load/open
-    function initTable(container) {
-        const activeBtn = container.querySelector('.limit-btn[data-limit="5"]');
-        if (activeBtn) {
-            container.querySelectorAll('.limit-btn').forEach(b => b.classList.remove('active'));
-            activeBtn.classList.add('active');
-        }
-        applyLimit(container, '5');
-    }
-
-});
 </script>
+
+
+<!-- DataTables -->
+<script>
+    $(document).ready(function () {
+        $('.data-table').DataTable({
+            responsive: true,
+            pageLength: 10,
+            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'All']],
+            columnDefs: [
+                { orderable: false, targets: -1 }
+            ]
+        });
+    });
+</script>
+
+@stack('scripts')
 
 </body>
 

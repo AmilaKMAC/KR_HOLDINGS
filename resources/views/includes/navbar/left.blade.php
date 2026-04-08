@@ -46,8 +46,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('reports.index') }}" class="nav-link text-white">
-                            <i class="bi bi-clipboard-fill me-3"></i> Reports
+                        <a href="{{ route('log_reports.index') }}" class="nav-link text-white">
+                            <i class="bi bi-clipboard-fill me-3"></i> Log Reports
                         </a>
                     </li>
                 @endif

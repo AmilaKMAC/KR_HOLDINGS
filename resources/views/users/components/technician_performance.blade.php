@@ -35,7 +35,7 @@
 
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover text-center align-middle" id="completionTable">
+                        <table class="table table-bordered table-hover text-center align-middle data-table" id="completionTable">
                             <thead class="table-light">
                                 <tr>
                                     <th>Technician ID</th>
@@ -61,7 +61,6 @@
 
                     <!-- Bottom Controls -->
                     <div class="d-flex justify-content-between align-items-center mt-2">
-                        @include('others.limit_btn_group')
                         <div class="d-flex align-items-center gap-2">
                             <span class="text-muted small" id="completionInfo"></span>
                             <button class="btn btn-outline-dark btn-sm" onclick="printTable('completionTable', 'Technician Completion of Work')">Print</button>
@@ -87,7 +86,7 @@
 
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover text-center align-middle" id="rateTable">
+                        <table class="table table-bordered table-hover text-center align-middle data-table" id="rateTable">
                             <thead class="table-light">
                                 <tr>
                                     <th>Technician ID</th>
@@ -110,7 +109,6 @@
 
                     <!-- Bottom Controls -->
                     <div class="d-flex justify-content-between align-items-center mt-2">
-                        @include('others.limit_btn_group')
                         <div class="d-flex align-items-center gap-2">
                             <span class="text-muted small" id="rateInfo"></span>
                             <button class="btn btn-outline-dark btn-sm" onclick="printTable('rateTable', 'Completion Rate')">Print</button>
@@ -136,7 +134,7 @@
 
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover text-center align-middle" id="attendanceTable">
+                        <table class="table table-bordered table-hover text-center align-middle data-table" id="attendanceTable">
                             <thead class="table-light">
                                 <tr>
                                     <th>Technician ID</th>
@@ -159,7 +157,6 @@
 
                     <!-- Bottom Controls -->
                     <div class="d-flex justify-content-between align-items-center mt-2">
-                        @include('others.limit_btn_group')
                         <div class="d-flex align-items-center gap-2">
                             <span class="text-muted small" id="attendanceInfo"></span>
                             <button class="btn btn-outline-dark btn-sm" onclick="printTable('attendanceTable', 'Attendance Reliability')">Print</button>
@@ -185,7 +182,7 @@
                 <html>
                 <head>
                     <title>${title}</title>
-                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+                    <link rel="stylesheet">
                     <style>
                         body { padding: 24px; font-family: Arial, sans-serif; }
                         h5   { margin-bottom: 16px; }

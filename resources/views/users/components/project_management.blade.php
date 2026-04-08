@@ -10,7 +10,7 @@
 
 
             <div class="table-responsive">
-                <table class="table table-bordered table-hover text-center align-middle">
+                <table class="table table-bordered table-hover text-center align-middle data-table">
                     <thead class="table-light">
                         <tr>
                             <th>Project ID</th>
@@ -44,7 +44,6 @@
 
             <!-- Bottom Controls -->
             <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light border-top">
-                @include('others.limit_btn_group')
 
                 <button class="btn btn-success px-4" data-bs-toggle="modal" data-bs-target="#addProjectModal">
                     Add New Project
@@ -60,7 +59,7 @@
             </div>
 
             <div class="table-responsive">
-                <table class="table table-bordered text-center align-middle">
+                <table class="table table-bordered text-center align-middle data-table">
                     <thead class="table-light">
                         <tr>
                             <th>Project ID</th>
@@ -86,7 +85,6 @@
 
             <!-- Bottom Controls -->
             <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light border-top">
-                @include('others.limit_btn_group')
 
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAssignModal">
                     Add Technician
@@ -102,7 +100,7 @@
             </div>
 
             <div class="table-responsive">
-                <table class="table table-bordered text-center align-middle">
+                <table class="table table-bordered text-center align-middle data-table">
                     <thead class="table-light">
                         <tr>
                             <th>Project ID</th>
@@ -126,7 +124,6 @@
 
             <!-- Bottom Controls -->
             <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light border-top">
-                @include('others.limit_btn_group')
             </div>
 
         </div>

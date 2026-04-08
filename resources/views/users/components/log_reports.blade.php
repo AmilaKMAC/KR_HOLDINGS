@@ -5,29 +5,21 @@
         <div class="d-grid gap-4 col-8 mx-auto">
 
 
-                <button class="btn btn-primary p-4" data-bs-toggle="modal" data-bs-target="#technicianModal">
-                    Technician Performance
+                <button class="btn btn-dark p-4" data-bs-toggle="modal" data-bs-target="#systemModal">
+                    System Activity Log
                 </button>
 
-                <button class="btn btn-success p-4" data-bs-toggle="modal" data-bs-target="#projectModal">
-                    Project Progress
-                </button>
-
-                <button class="btn btn-warning p-4" data-bs-toggle="modal" data-bs-target="#attendanceModal">
-                    Attendance Summary
-                </button>
-
-                <button class="btn btn-info p-4" data-bs-toggle="modal" data-bs-target="#partnerModal">
-                    Partner Companies
+                <button class="btn btn-secondary p-4" data-bs-toggle="modal" data-bs-target="#userModal">
+                    User Activity Report
                 </button>
 
 
-                <!-- MODAL 3: TECHNICIAN PERFORMANCE -->
-                <div class="modal fade" id="technicianModal" tabindex="-1">
+                <!-- MODAL 1: SYSTEM ACTIVITY LOG -->
+                <div class="modal fade" id="systemModal" tabindex="-1">
                     <div class="modal-dialog modal-xl modal-dialog-centered">
                         <div class="modal-content">
-                            <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title">Technician Performance Report</h5>
+                            <div class="modal-header bg-dark text-white">
+                                <h5 class="modal-title">System Activity Log</h5>
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
@@ -35,74 +27,25 @@
                                     <table class="table table-bordered table-hover text-center align-middle data-table">
                                         <thead class="table-light">
                                             <tr>
-                                                <th>Tech ID</th>
-                                                <th>Technician Name</th>
-                                                <th>Total Projects</th>
-                                                <th>Completed</th>
-                                                <th>Pending</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($technicians ?? [] as $idx => $t)
-                                                <tr>
-                                                    <td>{{ $t['id'] }}</td>
-                                                    <td>{{ $t['name'] }}</td>
-                                                    <td>{{ $t['total'] }}</td>
-                                                    <td>{{ $t['completed'] }}</td>
-                                                    <td>{{ $t['pending'] }}</td>
-                                                    <td>
-                                                        <button class="btn btn-sm btn-outline-primary"
-                                                            onclick="showDetail('technician', {{ $idx }}, 'technicianModal')">View</button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="d-flex gap-2 mt-2">
-                                    <button class="btn btn-outline-dark btn-sm"
-                                        onclick="printModal('technicianModal', 'Technician Performance Report')">Print</button>
-                                    <button class="btn btn-outline-success btn-sm">Export Excel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MODAL 4: PROJECT PROGRESS -->
-                <div class="modal fade" id="projectModal" tabindex="-1">
-                    <div class="modal-dialog modal-xl modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-success text-white">
-                                <h5 class="modal-title">Project Progress Summary</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-center align-middle data-table">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Project ID</th>
-                                                <th>Customer Name</th>
-                                                <th>Location</th>
-                                                <th>Capacity</th>
+                                                <th>ID</th>
+                                                <th>Event</th>
+                                                <th>Module</th>
+                                                <th>Severity</th>
                                                 <th>Status</th>
-                                                <th>Action</th>
+                                                <th>Triggered By</th>
+                                                <th>Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($projects ?? [] as $idx => $p)
+                                            @foreach ($systemLogs ?? [] as $log)
                                                 <tr>
-                                                    <td>{{ $p['id'] }}</td>
-                                                    <td>{{ $p['customer'] }}</td>
-                                                    <td>{{ $p['location'] }}</td>
-                                                    <td>{{ $p['capacity'] }}</td>
-                                                    <td>{{ $p['status'] }}</td>
-                                                    <td>
-                                                        <button class="btn btn-sm btn-outline-primary"
-                                                            onclick="showDetail('project', {{ $idx }}, 'projectModal')">View</button>
-                                                    </td>
+                                                    <td>{{ $log['id'] }}</td>
+                                                    <td>{{ $log['event'] }}</td>
+                                                    <td>{{ $log['module'] }}</td>
+                                                    <td>{{ $log['severity'] }}</td>
+                                                    <td>{{ $log['status'] }}</td>
+                                                    <td>{{ $log['triggered_by'] }}</td>
+                                                    <td>{{ $log['date'] }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -110,7 +53,7 @@
                                 </div>
                                 <div class="d-flex gap-2 mt-2">
                                     <button class="btn btn-outline-dark btn-sm"
-                                        onclick="printModal('projectModal', 'Project Progress Summary')">Print</button>
+                                        onclick="printModal('systemModal', 'System Activity Log')">Print</button>
                                     <button class="btn btn-outline-success btn-sm">Export Excel</button>
                                 </div>
                             </div>
@@ -118,40 +61,40 @@
                     </div>
                 </div>
 
-                <!-- MODAL 5: ATTENDANCE SUMMARY -->
-                <div class="modal fade" id="attendanceModal" tabindex="-1">
+                <!-- MODAL 2: USER ACTIVITY REPORT -->
+                <div class="modal fade" id="userModal" tabindex="-1">
                     <div class="modal-dialog modal-xl modal-dialog-centered">
                         <div class="modal-content">
-                            <div class="modal-header bg-warning text-dark">
-                                <h5 class="modal-title">Attendance Summary</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            <div class="modal-header bg-secondary text-white">
+                                <h5 class="modal-title">User Activity Report</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover text-center align-middle data-table">
                                         <thead class="table-light">
                                             <tr>
-                                                <th>Emp ID</th>
-                                                <th>Employee</th>
-                                                <th>Present</th>
-                                                <th>Absent</th>
-                                                <th>Leave</th>
-                                                <th>Month</th>
+                                                <th>User ID</th>
+                                                <th>Name</th>
+                                                <th>Role</th>
+                                                <th>Username</th>
+                                                <th>Status</th>
+                                                <th>Created At</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($attendance ?? [] as $idx => $a)
+                                            @foreach ($users ?? [] as $idx => $u)
                                                 <tr>
-                                                    <td>{{ $a['id'] }}</td>
-                                                    <td>{{ $a['name'] }}</td>
-                                                    <td>{{ $a['present'] }}</td>
-                                                    <td>{{ $a['absent'] }}</td>
-                                                    <td>{{ $a['leave'] }}</td>
-                                                    <td>February 2026</td>
+                                                    <td>{{ $u['id'] }}</td>
+                                                    <td>{{ $u['name'] }}</td>
+                                                    <td>{{ $u['role'] }}</td>
+                                                    <td>{{ $u['email'] }}</td>
+                                                    <td>{{ $u['status'] }}</td>
+                                                    <td>{{ $u['created'] }}</td>
                                                     <td>
                                                         <button class="btn btn-sm btn-outline-primary"
-                                                            onclick="showDetail('attendance', {{ $idx }}, 'attendanceModal')">View</button>
+                                                            onclick="showDetail('user', {{ $idx }}, 'userModal')">View</button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -160,66 +103,14 @@
                                 </div>
                                 <div class="d-flex gap-2 mt-2">
                                     <button class="btn btn-outline-dark btn-sm"
-                                        onclick="printModal('attendanceModal', 'Attendance Summary')">Print</button>
+                                        onclick="printModal('userModal', 'User Activity Report')">Print</button>
                                     <button class="btn btn-outline-success btn-sm">Export Excel</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- MODAL 6: PARTNER COMPANIES -->
-                <div class="modal fade" id="partnerModal" tabindex="-1">
-                    <div class="modal-dialog modal-xl modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title">Partner Company Report</h5>
-                                <button type="button" class="btn-close btn-close-white"
-                                    data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-center align-middle data-table">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Partner ID</th>
-                                                <th>Company Name</th>
-                                                <th>Total Projects</th>
-                                                <th>Completed</th>
-                                                <th>Ongoing</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($partners ?? [] as $idx => $p)
-                                                <tr>
-                                                    <td>{{ $p['id'] }}</td>
-                                                    <td>{{ $p['company'] }}</td>
-                                                    <td>{{ $p['total'] }}</td>
-                                                    <td>{{ $p['completed'] }}</td>
-                                                    <td>{{ $p['ongoing'] }}</td>
-                                                    <td>
-                                                        <button class="btn btn-sm btn-outline-primary"
-                                                            onclick="showDetail('partner', {{ $idx }}, 'partnerModal')">View</button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="d-flex gap-2 mt-2">
-                                    <button class="btn btn-outline-dark btn-sm"
-                                        onclick="printModal('partnerModal', 'Partner Company Report')">Print</button>
-                                    <button class="btn btn-outline-success btn-sm">Export Excel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-        </div>
-    </div>
-
+           
 
     <!-- DETAIL MODAL (shared for both roles) -->
     <div class="modal fade" id="detailModal" tabindex="-1">
