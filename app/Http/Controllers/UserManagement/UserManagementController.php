@@ -26,7 +26,7 @@ class UserManagementController extends Controller
 
         $roles = UserRole::whereIn('iduser_role', [1, 2, 3])->get();
 
-        $technicianLevels = TechnicianLevel::all(); // added
+        $technicianLevels = TechnicianLevel::all(); 
 
         return view('users.components.user_management',
             compact('users', 'technicians', 'roles', 'technicianLevels'),
@@ -193,7 +193,7 @@ class UserManagementController extends Controller
 
         $technician->update($data);
 
-        // Also update the technician registration level
+        // Update the technician level
         $technician->TechnicianRegistration?->update([
             'technician_level_idtechnician_level' => $request->experience_level,
         ]);
