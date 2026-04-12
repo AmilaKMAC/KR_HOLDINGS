@@ -79,7 +79,7 @@ public  function updateSolarCapacity(Request $request, $id){
 // Store Aditional Work
 public function storeAdditionalWork(Request $request){
     $request->validate([
-        'work_description' => 'required|string|max:255',
+        'description' => 'required|string|max:255',
         'rate' => 'required|numeric|min:0'
     ]);
 

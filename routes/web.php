@@ -18,6 +18,7 @@ use App\Http\Controllers\Reports\ReportsController;
 use App\Http\Controllers\SystemMonitoring\SystemMonitoringController;
 use App\Http\Controllers\SystemSettings\SystemSettingsController;
 use App\Http\Controllers\TechnicianPerformance\TechnicianPerformanceController;
+use App\Http\Controllers\ProjectManagement\AssignTechnicianController;
 use App\Http\Controllers\UserManagement\UserManagementController;
 use App\Http\Controllers\Reports\LogController;
 use Illuminate\Support\Facades\Route;
@@ -65,7 +66,14 @@ Route::middleware(['auth', 'role:2'])->group(function () {
 // ================= PROJECT COORDINATOR (role: 3) =================
 Route::middleware(['auth', 'role:3'])->group(function () {
     Route::get('/coordinator', [CoordinatorController::class, 'index'])->name('coordinator.dashboard')->defaults('title', 'Dashboard');
-    Route::get('/project_management', [ProjectManagementController::class, 'index'])->name('project_management.index')->defaults('title', 'Project Management');
+
+
+Route::get('/project_management', [ProjectManagementController::class, 'index'])->name('project_management.index')->defaults('title', 'Project Management');
+    Route::post('/project_management/store', [ProjectManagementController::class, 'store'])->name('project_management.store');
+    Route::post('/project_management/update/{id}', [ProjectManagementController::class, 'update'])->name('project_management.update');
+    Route::post('/project_management/assign', [AssignTechnicianController::class, 'store'])->name('project_management.assign');
+
+    Route::post('/project_management/assign', [AssignTechnicianController::class, 'store'])->name('project_management.assign');
     Route::get('/attendance_approval', [AttendanceApprovalController::class, 'index'])->name('attendance_approval.index')->defaults('title', 'Attendance Approval');
     Route::get('/proof_of_work_approval', [WorkApprovalController::class, 'index'])->name('proof_of_work_approval.index')->defaults('title', 'Proof of Work Approval');
 });
@@ -73,7 +81,7 @@ Route::middleware(['auth', 'role:3'])->group(function () {
 // ================= TECHNICIAN (role: 4) =================
 Route::middleware(['auth', 'role:4'])->group(function () {
     Route::get('/technician', [TechnicianController::class, 'index'])->name('technician.dashboard')->defaults('title', 'Dashboard');
-    Route::get('/assign_projects', [AssignProjectController::class, 'index'])->name('assign_projects.index')->defaults('title', 'Assign Projects');
+    Route::get('/assign_projects', [AssignTechnicianController::class, 'index'])->name('assign_projects.index')->defaults('title', 'Assign Projects');
     Route::get('/attendance', [AttendanceMarkController::class, 'index'])->name('attendance.index')->defaults('title', 'Attendance');
     Route::get('/proof_of_work', [ImageUploadController::class, 'index'])->name('proof_of_work.index')->defaults('title', 'Image Upload');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index')->defaults('title', 'Profile');
