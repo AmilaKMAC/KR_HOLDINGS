@@ -3,6 +3,7 @@
 namespace App\Models\ProjectManagement;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\UserManagement\User;
 
 class Cancellation extends Model
 {
@@ -24,5 +25,10 @@ class Cancellation extends Model
     public function assignTechnician()
     {
         return $this->belongsTo(AssignTechnician::class, 'assign_technician_idassign_technician', 'idassign_technician');
+    }
+
+        public function User()
+    {
+        return $this->belongsTo(User::class, 'user_iduser', 'iduser');
     }
 }
