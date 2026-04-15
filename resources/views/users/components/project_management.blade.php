@@ -73,7 +73,7 @@
                             @forelse ($projects as $project)
                                 <tr>
                                     <td>P{{ str_pad($project->idProject, 3, '0', STR_PAD_LEFT) }}</td>
-                                    <td>
+                                
                                     <td>
                                         @if ($project->assignedTechnicians->isNotEmpty())
                                             @foreach ($project->assignedTechnicians as $assign)
@@ -87,7 +87,7 @@
                                             <span class="text-muted">No technicians assigned</span>
                                         @endif
                                     </td>
-                                    </td>
+                                    
                                     <td>
                                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
                                             data-bs-target="#editAssignModal{{ $project->idProject }}">
@@ -131,8 +131,8 @@
                                 <tr>
                                     <td>P{{ str_pad($cancel->project?->idProject, 3, '0', STR_PAD_LEFT) }}</td>
                                     <td>
-                                        {{ ucwords(strtolower($cancel->assignTechnician?->technician?->first_name ?? 'N/A')) }}
-                                        {{ ucwords(strtolower($cancel->assignTechnician?->technician?->last_name ?? '')) }}
+                                        {{ ucwords(strtolower($cancel->assign_technician->user?->first_name ?? 'N/A')) }}
+                                        {{ ucwords(strtolower($cancel->assign_technician->user?->last_name ?? '')) }}
                                     </td>
                                     <td>{{ $cancel->reason }}</td>
                                 </tr>

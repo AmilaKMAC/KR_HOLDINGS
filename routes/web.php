@@ -9,18 +9,17 @@ use App\Http\Controllers\Dashboard\ExecutiveController;
 use App\Http\Controllers\Dashboard\TechnicianController;
 use App\Http\Controllers\PaymentAndSalary\PaymentAndSalaryController;
 use App\Http\Controllers\Profile\ProfileController;
-use App\Http\Controllers\ProjectManagement\AssignProjectController;
+use App\Http\Controllers\ProjectManagement\AssignTechnicianController;
 use App\Http\Controllers\ProjectManagement\ProjectManagementController;
 use App\Http\Controllers\Proof\ImageUploadController;
 use App\Http\Controllers\Proof\WorkApprovalController;
 use App\Http\Controllers\Proof\WorkReviewController;
+use App\Http\Controllers\Reports\LogController;
 use App\Http\Controllers\Reports\ReportsController;
 use App\Http\Controllers\SystemMonitoring\SystemMonitoringController;
 use App\Http\Controllers\SystemSettings\SystemSettingsController;
 use App\Http\Controllers\TechnicianPerformance\TechnicianPerformanceController;
-use App\Http\Controllers\ProjectManagement\AssignTechnicianController;
 use App\Http\Controllers\UserManagement\UserManagementController;
-use App\Http\Controllers\Reports\LogController;
 use Illuminate\Support\Facades\Route;
 
 // ================= PUBLIC =================
@@ -32,7 +31,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ================= ADMIN (role: 1) =================
-// role_id 1 = Admin
+
 Route::middleware(['auth', 'role:1'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard')->defaults('title', 'Dashboard');
     Route::get('/userManagement', [UserManagementController::class, 'index'])->name('userManagement.index')->defaults('title', 'User Management');
@@ -67,8 +66,7 @@ Route::middleware(['auth', 'role:2'])->group(function () {
 Route::middleware(['auth', 'role:3'])->group(function () {
     Route::get('/coordinator', [CoordinatorController::class, 'index'])->name('coordinator.dashboard')->defaults('title', 'Dashboard');
 
-
-Route::get('/project_management', [ProjectManagementController::class, 'index'])->name('project_management.index')->defaults('title', 'Project Management');
+    Route::get('/project_management', [ProjectManagementController::class, 'index'])->name('project_management.index')->defaults('title', 'Project Management');
     Route::post('/project_management/store', [ProjectManagementController::class, 'store'])->name('project_management.store');
     Route::post('/project_management/update/{id}', [ProjectManagementController::class, 'update'])->name('project_management.update');
     Route::post('/project_management/assign', [AssignTechnicianController::class, 'store'])->name('project_management.assign');
