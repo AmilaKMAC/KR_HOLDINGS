@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ProjectManagementController extends Controller
 {
-    public function index()
+ public function index()
     {
         $projects = Project::with([
             'Solar',
@@ -24,6 +24,7 @@ class ProjectManagementController extends Controller
         $cancellations = Cancellation::with([
             'project',
             'assignTechnician.technician',
+            
         ])->get();
 
         $solarOptions      = Solar::all();
@@ -46,7 +47,6 @@ class ProjectManagementController extends Controller
             'contact'                           => 'required|string|max:15',
             'solar_idsolar'                     => 'required|integer',
             'partner_company_idpartner_company' => 'required|integer',
-            'description'                       => 'required|string|max:255',
         ]);
 
         $partner = PartnerCompany::find($request->partner_company_idpartner_company);
@@ -57,6 +57,7 @@ class ProjectManagementController extends Controller
             'contact'                           => $request->contact,
             'solar_idsolar'                     => $request->solar_idsolar,
             'partner_company_idpartner_company' => $request->partner_company_idpartner_company,
+            'partner_company'                   => $partner?->company_name,
             'description'                       => $request->description,
             'user_iduser'                       => Auth::id(),
         ]);
@@ -84,6 +85,7 @@ class ProjectManagementController extends Controller
             'solar_idsolar'                     => $request->solar_idsolar,
             'partner_company_idpartner_company' => $request->partner_company_idpartner_company,
             'partner_company'                   => $partner?->company_name,
+            'description'                       => $request->description,
         ]);
 
         return redirect()->route('project_management.index')
