@@ -1,116 +1,90 @@
 @extends('layout.app')
 
 @section('content')
-    <div class="container-fluid py-4">
-
-        <!-- ================= PROJECT TABLE ================= -->
-        <div class="row justify-content-center">
-            <div class="col-10">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center fw-bold bg-dark text-white">
-                        Projects Details
-                    </div>
-
-                    <!-- TABLE -->
-                    <div class="table-responsive">
-                        <table class="table table-bordered align-middle text-center data-table">
-                            <thead class="table-light">
+    <div class="container-fluid mt-4">
+        <div class="card shadow-sm">
+            <div class="card-header fw-bold text-center bg-dark text-white">
+                My Assigned Projects
+            </div>
+            <div class="p-2">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover text-center align-middle data-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Project ID</th>
+                                <th>Customer Name</th>
+                                <th>Location</th>
+                                <th>Contact</th>
+                                <th>Capacity</th>
+                                <th>Partner</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($assignments as $assignment)
                                 <tr>
-                                    <th>Project ID</th>
-                                    <th>Customer Name</th>
-                                    <th>Location</th>
-                                    <th>Contact</th>
-                                    <th>Capacity</th>
-                                    <th>Partner</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr>
-                                    <td>P01</td>
-                                    <td>SK Lal</td>
-                                    <td>Colombo</td>
-                                    <td>076xxxxxxx</td>
-                                    <td>5kW</td>
-                                    <td>Hayleys</td>
-                                    <td><span class="badge bg-warning text-dark">Pending</span></td>
+                                    <td>P{{ str_pad($assignment->project?->idProject, 3, '0', STR_PAD_LEFT) }}</td>
+                                    <td>{{ ucwords(strtolower($assignment->project?->customer_name ?? '')) }}</td>
+                                    <td>{{ $assignment->project?->location ?? 'N/A' }}</td>
+                                    <td>{{ $assignment->project?->contact ?? 'N/A' }}</td>
+                                    <td>{{ $assignment->project?->Solar?->capacity ?? 'N/A' }} kW</td>
+                                    <td>{{ $assignment->project?->Partner?->company_name ?? 'N/A' }}</td>
                                     <td>
-                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#cancelModal">
+                                        <button class="btn btn-sm btn-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#cancelModal{{ $assignment->idassign_technician }}">
                                             Cancel
                                         </button>
                                     </td>
                                 </tr>
-
+                            @empty
                                 <tr>
-                                    <td>P02</td>
-                                    <td>RS Silva</td>
-                                    <td>Gampaha</td>
-                                    <td>070xxxxxxx</td>
-                                    <td>10kW</td>
-                                    <td>Hayleys</td>
-                                    <td><span class="badge bg-success">Completed</span></td>
-                                    <td>-</td>
+                                    <td colspan="7" class="text-center text-muted">No projects assigned</td>
                                 </tr>
-
-                                <tr>
-                                    <td>P03</td>
-                                    <td>AJ Rahal</td>
-                                    <td>Kandy</td>
-                                    <td>071xxxxxxx</td>
-                                    <td>7kW</td>
-                                    <td>Hayleys</td>
-                                    <td><span class="badge bg-warning text-dark">Pending</span></td>
-                                    <td>
-                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#cancelModal">
-                                            Cancel
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Bottom Controls -->
-                    <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light border-top">
-
-                    </div>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-
     </div>
 
 
-    <!-- ================= CANCELLATION MODAL ================= -->
-    <div class="modal fade" id="cancelModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow">
-
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Cancel Project</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <!-- ========================== CANCEL MODALS ========================== -->
+    @foreach ($assignments as $assignment)
+        <div class="modal fade" id="cancelModal{{ $assignment->idassign_technician }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Cancel Project Assignment</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="POST" action="{{ route('assign_projects.cancel') }}">
+                        @csrf
+                        <input type="hidden"
+                            name="assign_technician_idassign_technician"
+                            value="{{ $assignment->idassign_technician }}">
+                        <div class="modal-body">
+                            <p class="mb-3">
+                                Are you sure you want to cancel your assignment for
+                                <strong>
+                                    P{{ str_pad($assignment->project?->idProject, 3, '0', STR_PAD_LEFT) }}
+                                    — {{ $assignment->project?->customer_name }}
+                                </strong>?
+                            </p>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Reason for Cancellation</label>
+                                <textarea name="reason" class="form-control" rows="3"
+                                    placeholder="Enter reason..." required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Keep</button>
+                            <button type="submit" class="btn btn-danger">Yes, Cancel</button>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="modal-body">
-                    <label class="form-label fw-semibold">Reason for Cancellation</label>
-                    <textarea class="form-control" rows="4" placeholder="Enter cancellation reason..."></textarea>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">
-                        Close
-                    </button>
-                    <button class="btn btn-danger">
-                        Confirm Cancel
-                    </button>
-                </div>
-
             </div>
         </div>
-    </div>
-    <!-- ====================================================== -->
+    @endforeach
 @endsection

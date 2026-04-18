@@ -73,7 +73,6 @@
                             @forelse ($projects as $project)
                                 <tr>
                                     <td>P{{ str_pad($project->idProject, 3, '0', STR_PAD_LEFT) }}</td>
-                                
                                     <td>
                                         @if ($project->assignedTechnicians->isNotEmpty())
                                             @foreach ($project->assignedTechnicians as $assign)
@@ -87,12 +86,16 @@
                                             <span class="text-muted">No technicians assigned</span>
                                         @endif
                                     </td>
-                                    
                                     <td>
-                                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
-                                            data-bs-target="#editAssignModal{{ $project->idProject }}">
-                                            Edit
-                                        </button>
+                                        {{-- Only show Edit button if technicians are assigned --}}
+                                        @if ($project->assignedTechnicians->isNotEmpty())
+                                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                                data-bs-target="#editAssignModal{{ $project->idProject }}">
+                                                Edit
+                                            </button>
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
@@ -104,50 +107,58 @@
                     </table>
                 </div>
                 <div class="d-flex justify-content-end px-3 py-2 bg-light border-top">
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAssignModal">
-                        + Add Technician
-                    </button>
+                    @if ($projects->contains(fn($p) => $p->assignedTechnicians->isEmpty()))
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAssignModal">
+                            + Add Technician
+                        </button>
+                    @else
+                        <button class="btn btn-primary" disabled title="All projects have technicians assigned">
+                            + Add Technician
+                        </button>
+                    @endif
                 </div>
             </div>
         </div>
 
-        <!-- ================= CANCELLATION ================= -->
-        <div class="card shadow-sm mb-5">
-            <div class="card-header fw-bold text-center bg-primary text-white">
-                Cancellation
-            </div>
-            <div class="p-2">
-                <div class="table-responsive">
-                    <table class="table table-bordered text-center align-middle data-table">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Project ID</th>
-                                <th>Technician</th>
-                                <th>Reason</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($cancellations as $cancel)
-                                <tr>
-                                    <td>P{{ str_pad($cancel->project?->idProject, 3, '0', STR_PAD_LEFT) }}</td>
-                                    <td>
-                                        {{ ucwords(strtolower($cancel->assign_technician->user?->first_name ?? 'N/A')) }}
-                                        {{ ucwords(strtolower($cancel->assign_technician->user?->last_name ?? '')) }}
-                                    </td>
-                                    <td>{{ $cancel->reason }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="3" class="text-center text-muted">No cancellations found</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
+<!-- ================= CANCELLATION ================= -->
+<div class="card shadow-sm mb-5">
+    <div class="card-header fw-bold text-center bg-primary text-white">
+        Cancellation
     </div>
+    <div class="p-2">
+        <div class="table-responsive">
+            <table class="table table-bordered text-center align-middle data-table">
+                <thead class="table-light">
+                    <tr>
+                        <th>Project ID</th>
+                        <th>Technician</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($cancellations as $cancel)
+                        <tr>
+                            <td>P{{ str_pad($cancel->project?->idProject, 3, '0', STR_PAD_LEFT) }}</td>
+                            <td>
+                                @if ($cancel->assignTechnician?->technician)
+                                    {{ ucwords(strtolower($cancel->assignTechnician->technician->first_name)) }}
+                                    {{ ucwords(strtolower($cancel->assignTechnician->technician->last_name)) }}
+                                @else
+                                    N/A
+                                @endif
+                            </td>
+                            <td>{{ $cancel->reason }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">No cancellations found</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
     <div class="mt-3"></div>
 
 
@@ -296,10 +307,12 @@
                             <select name="Project_idProject" class="form-select" required>
                                 <option value="">Select Project</option>
                                 @foreach ($projects as $project)
-                                    <option value="{{ $project->idProject }}">
-                                        P{{ str_pad($project->idProject, 3, '0', STR_PAD_LEFT) }}
-                                        — {{ $project->customer_name }}
-                                    </option>
+                                    @if ($project->assignedTechnicians->isEmpty())
+                                        <option value="{{ $project->idProject }}">
+                                            P{{ str_pad($project->idProject, 3, '0', STR_PAD_LEFT) }}
+                                            — {{ $project->customer_name }}
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
