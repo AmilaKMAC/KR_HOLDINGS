@@ -12,8 +12,13 @@ class AssignTechnician extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'project_idProject',
+        'Project_idProject',
         'user_iduser',
+        'status',
+    ];
+
+    protected $attributes = [
+        'status' => 'active',
     ];
 
     public function technician()

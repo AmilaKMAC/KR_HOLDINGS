@@ -24,6 +24,7 @@ class Project extends Model
         'partner_company',
         'partner_company_idpartner_company',
         'user_iduser',
+        
     ];
 
     public function Solar()
