@@ -63,7 +63,6 @@ Route::middleware(['auth', 'role:2'])->group(function () {
 });
 
 // ================= PROJECT COORDINATOR (role: 3) =================
-// ================= PROJECT COORDINATOR (role: 3) =================
 Route::middleware(['auth', 'role:3'])->group(function () {
     Route::get('/coordinator', [CoordinatorController::class, 'index'])->name('coordinator.dashboard')->defaults('title', 'Dashboard');
     Route::get('/project_management', [ProjectManagementController::class, 'index'])->name('project_management.index')->defaults('title', 'Project Management');
@@ -71,6 +70,9 @@ Route::middleware(['auth', 'role:3'])->group(function () {
     Route::post('/project_management/update/{id}', [ProjectManagementController::class, 'update'])->name('project_management.update');
     Route::post('/project_management/assign', [AssignTechnicianController::class, 'store'])->name('project_management.assign');
     Route::get('/attendance_approval', [AttendanceApprovalController::class, 'index'])->name('attendance_approval.index')->defaults('title', 'Attendance Approval');
+    Route::post('/attendance_approval/approve', [AttendanceApprovalController::class, 'approve'])->name('attendance_approval.approve');
+    Route::get('/attendance_approval/history/{userId}', [AttendanceApprovalController::class, 'history'])->name('attendance_approval.history');
+
     Route::get('/proof_of_work_approval', [WorkApprovalController::class, 'index'])->name('proof_of_work_approval.index')->defaults('title', 'Proof of Work Approval');
 });
 
@@ -90,6 +92,8 @@ Route::middleware(['auth', 'role:4'])->group(function () {
     Route::get('/assign_projects', [AssignTechnicianController::class, 'index'])->name('assign_projects.index')->defaults('title', 'Assign Projects');
     Route::post('/assign_projects/cancel', [AssignTechnicianController::class, 'cancel'])->name('assign_projects.cancel');
     Route::get('/attendance', [AttendanceMarkController::class, 'index'])->name('attendance.index')->defaults('title', 'Attendance');
+    Route::post('/attendance/mark', [AttendanceMarkController::class, 'mark'])->name('attendance.mark');
+
     Route::get('/proof_of_work', [ImageUploadController::class, 'index'])->name('proof_of_work.index')->defaults('title', 'Image Upload');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index')->defaults('title', 'Profile');
 });
