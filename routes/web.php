@@ -73,17 +73,9 @@ Route::middleware(['auth', 'role:3'])->group(function () {
     Route::post('/attendance_approval/approve', [AttendanceApprovalController::class, 'approve'])->name('attendance_approval.approve');
     Route::get('/attendance_approval/history/{userId}', [AttendanceApprovalController::class, 'history'])->name('attendance_approval.history');
 
-    Route::get('/proof_of_work_approval', [WorkApprovalController::class, 'index'])->name('proof_of_work_approval.index')->defaults('title', 'Proof of Work Approval');
-});
-
-// ================= TECHNICIAN (role: 4) =================
-Route::middleware(['auth', 'role:4'])->group(function () {
-    Route::get('/technician', [TechnicianController::class, 'index'])->name('technician.dashboard')->defaults('title', 'Dashboard');
-    Route::get('/assign_projects', [AssignTechnicianController::class, 'index'])->name('assign_projects.index')->defaults('title', 'Assign Projects');
-    Route::post('/assign_projects/cancel', [AssignTechnicianController::class, 'cancel'])->name('assign_projects.cancel');
-    Route::get('/attendance', [AttendanceMarkController::class, 'index'])->name('attendance.index')->defaults('title', 'Attendance');
-    Route::get('/proof_of_work', [ImageUploadController::class, 'index'])->name('proof_of_work.index')->defaults('title', 'Image Upload');
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index')->defaults('title', 'Profile');
+    Route::get('/proof_of_work_approval', [WorkApprovalController::class, 'index'])->name('proof_of_work_approval.index')->defaults('title', 'Proof of Work Approval')  ;
+    Route::post('/proof_of_work_approval/approve', [WorkApprovalController::class, 'approve'])->name('proof_of_work_approval.approve');
+    Route::post('/proof_of_work_approval/unapprove', [WorkApprovalController::class, 'unapprove'])->name('proof_of_work_approval.unapprove');
 });
 
 // ================= TECHNICIAN (role: 4) =================
@@ -94,6 +86,7 @@ Route::middleware(['auth', 'role:4'])->group(function () {
     Route::get('/attendance', [AttendanceMarkController::class, 'index'])->name('attendance.index')->defaults('title', 'Attendance');
     Route::post('/attendance/mark', [AttendanceMarkController::class, 'mark'])->name('attendance.mark');
 
-    Route::get('/proof_of_work', [ImageUploadController::class, 'index'])->name('proof_of_work.index')->defaults('title', 'Image Upload');
+    Route::get('/proof_of_work', [ImageUploadController::class, 'index'])->name('proof_of_work.index')->defaults('title', 'Proof of Work');
+    Route::post('/proof_of_work/upload', [ImageUploadController::class, 'upload'])->name('proof_of_work.upload');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index')->defaults('title', 'Profile');
 });
