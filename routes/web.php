@@ -49,6 +49,9 @@ Route::middleware(['auth', 'role:1'])->group(function () {
     Route::post('/system_settings/partner_company', [SystemSettingsController::class, 'storePartnerCompany'])->name('system_settings.storePartnerCompany');
     Route::put('/system_settings/partner_company/{id}', [SystemSettingsController::class, 'updatePartnerCompany'])->name('system_settings.updatePartnerCompany');
     Route::get('/system_monitoring', [SystemMonitoringController::class, 'index'])->name('system_monitoring.index')->defaults('title', 'System Monitoring');
+    Route::post('/system_monitoring/backup', [SystemMonitoringController::class, 'backup'])->name('system_monitoring.backup');
+    Route::post('/system_monitoring/backup_all', [SystemMonitoringController::class, 'backupAll'])->name('system_monitoring.backupAll');
+    Route::get('/system_monitoring/download/{id}', [SystemMonitoringController::class, 'downloadBackup'])->name('system_monitoring.download');
     Route::post('/force-logout/{id}', [SystemMonitoringController::class, 'forceLogout'])->name('system_monitoring.forceLogout');
     Route::get('/log_reports', [LogController::class, 'index'])->name('log_reports.index')->defaults('title', 'Log Reports');
 });
@@ -73,7 +76,7 @@ Route::middleware(['auth', 'role:3'])->group(function () {
     Route::post('/attendance_approval/approve', [AttendanceApprovalController::class, 'approve'])->name('attendance_approval.approve');
     Route::get('/attendance_approval/history/{userId}', [AttendanceApprovalController::class, 'history'])->name('attendance_approval.history');
 
-    Route::get('/proof_of_work_approval', [WorkApprovalController::class, 'index'])->name('proof_of_work_approval.index')->defaults('title', 'Proof of Work Approval')  ;
+    Route::get('/proof_of_work_approval', [WorkApprovalController::class, 'index'])->name('proof_of_work_approval.index')->defaults('title', 'Proof of Work Approval');
     Route::post('/proof_of_work_approval/approve', [WorkApprovalController::class, 'approve'])->name('proof_of_work_approval.approve');
     Route::post('/proof_of_work_approval/unapprove', [WorkApprovalController::class, 'unapprove'])->name('proof_of_work_approval.unapprove');
 });

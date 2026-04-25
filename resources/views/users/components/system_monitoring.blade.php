@@ -149,43 +149,98 @@
             </div>
 
             <div class="modal-body">
+
+                @if(session('success'))
+                    <div class="alert alert-success py-2">{{ session('success') }}</div>
+                @endif
+                @if(session('error'))
+                    <div class="alert alert-danger py-2">{{ session('error') }}</div>
+                @endif
+
+                @php
+                    $categories = [
+                        'user_data'          => 'User Data',
+                        'project_data'       => 'Project Data',
+                        'attendance_records' => 'Attendance Records',
+                        'payment_summaries'  => 'Payment Summaries',
+                        'uploaded_photos'    => 'Uploaded Photos',
+                    ];
+                @endphp
+
                 <table class="table table-bordered text-center align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Category</th>
+                            <th>Last Backup</th>
+                            <th>Size</th>
+                            <th>Status</th>
+                            <th>Backup</th>
+                            <th>Download</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr>
-                            <td>User Data</td>
-                            <td><button class="btn btn-outline-dark btn-sm">Backup</button></td>
-                        </tr>
-                        <tr>
-                            <td>Project Data</td>
-                            <td><button class="btn btn-outline-dark btn-sm">Backup</button></td>
-                        </tr>
-                        <tr>
-                            <td>Attendance Records</td>
-                            <td><button class="btn btn-outline-dark btn-sm">Backup</button></td>
-                        </tr>
-                        <tr>
-                            <td>Payment Summaries</td>
-                            <td><button class="btn btn-outline-dark btn-sm">Backup</button></td>
-                        </tr>
-                        <tr>
-                            <td>Uploaded Photos</td>
-                            <td><button class="btn btn-outline-dark btn-sm">Backup</button></td>
-                        </tr>
+                        @foreach ($categories as $key => $label)
+                            @php
+                                $last = $backups->where('backup_category', $key)->sortByDesc('backup_date')->first();
+                            @endphp
+                            <tr>
+                                <td>{{ $label }}</td>
+                                <td>
+                                    {{ $last ? \Carbon\Carbon::parse($last->backup_date)->format('d M Y, h:i A') : 'Never' }}
+                                </td>
+                                <td>
+                                    {{ $last?->file_size ? number_format($last->file_size / 1024, 2) . ' KB' : '—' }}
+                                </td>
+                                <td>
+                                    @if($last?->status == 1)
+                                        <span class="badge bg-success">Completed</span>
+                                    @elseif($last?->status == 0 && $last)
+                                        <span class="badge bg-danger"
+                                            title="{{ $last->error_message }}">Failed</span>
+                                    @else
+                                        <span class="badge bg-secondary">No Backup</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <form method="POST"
+                                        action="{{ route('system_monitoring.backup') }}">
+                                        @csrf
+                                        <input type="hidden" name="backup_category" value="{{ $key }}">
+                                        <button type="submit" class="btn btn-outline-dark btn-sm">
+                                            Backup
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>
+                                    @if($last?->status == 1 && $last?->file_path)
+                                        <a href="{{ route('system_monitoring.download', $last->iddata_backups) }}"
+                                            class="btn btn-outline-primary btn-sm">
+                                            Download
+                                        </a>
+                                    @else
+                                        <span class="text-muted">—</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
 
-                <div class="text-center mt-4 p-3">
-                    <button class="btn btn-dark m-2">Backup All</button>
-                    <button class="btn btn-outline-primary m-2">Download Backup</button>
+                <div class="text-center mt-3">
+                    <form method="POST"
+                        action="{{ route('system_monitoring.backupAll') }}"
+                        class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-dark m-2">Backup All</button>
+                    </form>
                     <button class="btn btn-secondary m-2"
                         data-bs-toggle="modal"
                         data-bs-target="#backupScheduleModal">
                         Set Backup Schedule
                     </button>
-                    <button class="btn btn-success m-2">Restore Data</button>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
 </div>

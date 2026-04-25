@@ -172,9 +172,9 @@
                                 <div class="row g-2 mb-3">
                                     @foreach ($imgs as $img)
                                         <div class="col-6 col-md-3">
-                                            <img src="{{ Storage::url($img->image_path) }}"
-                                                class="img-fluid rounded shadow-sm"
-                                                style="height:130px;object-fit:cover;width:100%;">
+                                            <img src="{{ asset($img->image_path) }}" class="img-fluid rounded shadow-sm"
+                                                style="height:130px;object-fit:cover;width:100%;cursor:pointer;"
+                                                onclick="openLightbox('{{ asset($img->image_path) }}')">
                                         </div>
                                     @endforeach
                                 </div>
@@ -219,5 +219,25 @@
             </div>
         </div>
     @endforeach
+
+    <div class="modal fade" id="lightboxModal" tabindex="-1" style="z-index:1090;">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content bg-dark border-0">
+                <div class="modal-header border-0">
+                    <button class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center pb-4">
+                    <img id="lightboxImg" src="" class="img-fluid rounded" style="max-height:75vh;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openLightbox(src) {
+            document.getElementById('lightboxImg').src = src;
+            new bootstrap.Modal(document.getElementById('lightboxModal')).show();
+        }
+    </script>
 
 @endsection
