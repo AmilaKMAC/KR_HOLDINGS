@@ -82,7 +82,8 @@
             pageLength: 10,
             lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'All']],
             columnDefs: [
-                { orderable: false, targets: -1 }
+                { orderable: false, targets: -1 },
+                { defaultContent: '', targets: '_all' }
             ]
         });
     });
