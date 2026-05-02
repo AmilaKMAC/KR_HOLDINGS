@@ -63,10 +63,10 @@ class ImageUploadController extends Controller
     }
 
     // Get or create proof record
-    $proof = ProofOfWork::where('Project_idProject', $projectId)->first();
+    $proof = ProofOfWork::query()->where('Project_idProject', $projectId)->first();
 
     if (!$proof) {
-        $proof = ProofOfWork::create([
+        $proof = ProofOfWork::query()->create([
             'Project_idProject' => $projectId,
             'user_iduser'       => $userId,
             'approval'          => 0,
@@ -80,7 +80,7 @@ class ImageUploadController extends Controller
         if (empty($files)) continue;
 
         // Check if section already uploaded
-        $sectionAlreadyUploaded = ProofImage::where('proof_of_work_idproof_of_work', $proof->idproof_of_work)
+        $sectionAlreadyUploaded = ProofImage::query()->where('proof_of_work_idproof_of_work', $proof->idproof_of_work)
             ->where('section', $sectionKey)
             ->exists();
 
@@ -104,7 +104,7 @@ class ImageUploadController extends Controller
             $image->move($dir, $filename);
             $imagePath = 'uploads/proof/' . $projectId . '/' . $sectionKey . '/' . $filename;
 
-            ProofImage::create([
+            ProofImage::query()->create([
                 'proof_of_work_idproof_of_work' => $proof->idproof_of_work,
                 'section'                       => $sectionKey,
                 'image_path'                    => $imagePath,
