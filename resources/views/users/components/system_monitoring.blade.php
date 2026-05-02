@@ -248,7 +248,7 @@
 
 <!-- ================= BACKUP SCHEDULE MODAL ================= -->
 <div class="modal fade" id="backupScheduleModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content p-4">
 
             <div class="modal-header border-0">
@@ -256,27 +256,107 @@
                 <button class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            <div class="modal-body text-center">
-                <label class="mb-2">Select Frequency</label>
-                <select class="form-select w-75 mx-auto mb-3">
-                    <option>Daily</option>
-                    <option>Weekly</option>
-                    <option>Monthly</option>
-                </select>
+            <form method="POST" action="{{ route('system_monitoring.saveSchedule') }}">
+                @csrf
+                <div class="modal-body">
 
-                <label class="mb-2">Select Time</label>
-                <input type="time" class="form-control w-75 mx-auto">
-            </div>
+                    @php
+                        $scheduleCategories = [
+                            'user_data'          => 'User Data',
+                            'project_data'       => 'Project Data',
+                            'attendance_records' => 'Attendance Records',
+                            'payment_summaries'  => 'Payment Summaries',
+                            'uploaded_photos'    => 'Uploaded Photos',
+                        ];
+                    @endphp
 
-            <div class="modal-footer border-0 justify-content-center">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary">Save Schedule</button>
-            </div>
+                    <table class="table table-bordered align-middle text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Category</th>
+                                <th>Frequency</th>
+                                <th>Time</th>
+                                <th>Retain (days)</th>
+                                <th>Last Run</th>
+                                <th>Next Run</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($scheduleCategories as $key => $label)
+                                @php
+                                    $s = $schedules->where('backup_category', $key)->first();
+                                @endphp
+                                <tr>
+                                    <td class="fw-semibold text-start">{{ $label }}</td>
+
+                                    {{-- Hidden category input --}}
+                                    <input type="hidden"
+                                        name="schedules[{{ $key }}][backup_category]"
+                                        value="{{ $key }}">
+
+                                    <td>
+                                        <select name="schedules[{{ $key }}][frequency]"
+                                                class="form-select form-select-sm">
+                                            <option value="daily"
+                                                {{ $s?->frequency === 'daily' ? 'selected' : '' }}>
+                                                Daily
+                                            </option>
+                                            <option value="weekly"
+                                                {{ $s?->frequency === 'weekly' ? 'selected' : '' }}>
+                                                Weekly
+                                            </option>
+                                            <option value="monthly"
+                                                {{ $s?->frequency === 'monthly' ? 'selected' : '' }}>
+                                                Monthly
+                                            </option>
+                                        </select>
+                                    </td>
+
+                                    <td>
+                                        <input type="time"
+                                            name="schedules[{{ $key }}][schedule_time]"
+                                            class="form-control form-control-sm"
+                                            value="{{ $s?->schedule_time ? \Carbon\Carbon::parse($s->schedule_time)->format('H:i') : '02:00' }}"
+                                            required>
+                                    </td>
+
+                                    <td>
+                                        <input type="number"
+                                            name="schedules[{{ $key }}][retention_days]"
+                                            class="form-control form-control-sm text-center"
+                                            min="1"
+                                            placeholder="∞"
+                                            value="{{ $s?->retention_date ? \Carbon\Carbon::parse($s->retention_date)->diffInDays(now()) : '' }}">
+                                    </td>
+
+                                    <td class="text-muted small">
+                                        {{ $s?->last_run
+                                            ? \Carbon\Carbon::parse($s->last_run)->format('d M Y, h:i A')
+                                            : '—' }}
+                                    </td>
+
+                                    <td class="text-muted small">
+                                        {{ $s?->next_run
+                                            ? \Carbon\Carbon::parse($s->next_run)->format('d M Y, h:i A')
+                                            : '—' }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-dark px-4">Save All Schedules</button>
+                </div>
+            </form>
 
         </div>
     </div>
 </div>
-
 
 <!-- ================= STORAGE USAGE MODAL ================= -->
 <div class="modal fade" id="storageUsageModal">
@@ -325,10 +405,12 @@
 
 <script>
     // Force logout — set form action dynamically
-    document.getElementById('logoutModal').addEventListener('show.bs.modal', function (event) {
-        const userId = event.relatedTarget.getAttribute('data-user');
-        document.getElementById('logoutForm').action = '/KR_HOLDINGS/public/force-logout/' + userId;
-    });
+document.getElementById('logoutModal').addEventListener('show.bs.modal', function (event) {
+    const userId = event.relatedTarget.getAttribute('data-user');
+
+    let form = document.getElementById('logoutForm');
+    form.action = "{{ url('force-logout') }}/" + userId;
+});
 
     // Charts
     let pieChart, lineChart;
