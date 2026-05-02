@@ -37,7 +37,7 @@ public function storeTechnicianLevel(Request $request)
 }
 
 // Update Technician Level
-public function updateTechnicianLevel(Request $request, $id)
+public function updateTechnicianLevel(Request $request, int $id)
 {
     $request->validate([
         'basic_salary' => 'required|numeric|min:0'
@@ -64,9 +64,9 @@ public function storeSolarCapacity(Request $request){
 }
 
 // Update Solar Capacity
-public  function updateSolarCapacity(Request $request, $id){
+public  function updateSolarCapacity(Request $request, int $id){
     $request->validate([
-        'capacity' => 'required|numeric|min:0'
+        'capacity' => 'required|string|min:0'
     ]);
 
     $solarCapacity = Solar::findOrFail($id);
@@ -89,9 +89,9 @@ public function storeAdditionalWork(Request $request){
 }
 
 // Update Additional Work
-public function updateAdditionalWork(Request $request, $id){
+public function updateAdditionalWork(Request $request, int $id){
     $request->validate([
-        'work_description' => 'required|string|max:255',
+        'work_description' => 'string|max:255',
         'rate' => 'required|numeric|min:0'
     ]);
 
@@ -116,7 +116,7 @@ public function storePartnerCompany(Request $request){
 }
 
 // Update Partner Company
-public function updatePartnerCompany(Request $request, $id){
+public function updatePartnerCompany(Request $request, int $id){
     $request->validate([
         'company_name' => 'required|string|max:255',
     ]);
