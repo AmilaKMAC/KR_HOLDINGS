@@ -7,6 +7,8 @@ use App\Models\SystemSettings\Solar;
 use App\Models\SystemSettings\PartnerCompany;
 use App\Models\UserManagement\User;
 use App\Models\ProjectManagement\Cancellation;
+use App\Models\Proof\WorkCompletion;
+
 
 class Project extends Model
 {
@@ -17,6 +19,7 @@ class Project extends Model
     protected $fillable = [
         'customer_name',
         'location',
+        'site_url',
         'contact',
         'description',
         'solar_idsolar',
@@ -24,6 +27,7 @@ class Project extends Model
         'partner_company',
         'partner_company_idpartner_company',
         'user_iduser',
+        'status',
         
     ];
 
@@ -50,5 +54,10 @@ class Project extends Model
     public function cancellations()
     {
         return $this->hasMany(Cancellation::class, 'Project_idProject', 'idProject');
+    }
+
+        public function workCompletion()
+    {
+        return $this->hasOne(WorkCompletion::class, 'Project_idProject', 'idProject');
     }
 }
