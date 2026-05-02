@@ -15,4 +15,9 @@ class AdditionalWork extends Model
         'description',
         'rate'
     ];
+
+    public function additionalWorks()
+    {
+        return $this->belongsToMany(AdditionalWork::class,'proof_additional_work','idproof_of_work','idadditional_work');
+    }
 }

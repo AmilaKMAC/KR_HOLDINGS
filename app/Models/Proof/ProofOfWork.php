@@ -1,10 +1,10 @@
 <?php
+
 namespace App\Models\Proof;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ProjectManagement\Project;
-use App\Models\SystemSettings\PartnerCompany;
-use App\Models\SystemSettings\Solar;
+use App\Models\SystemSettings\AdditionalWork;
 use App\Models\UserManagement\User;
 
 class ProofOfWork extends Model
@@ -17,7 +17,6 @@ class ProofOfWork extends Model
         'Project_idProject',
         'user_iduser',
         'approval',
-        'additional_work_idadditional_work',
     ];
 
     public function project()
@@ -35,8 +34,13 @@ class ProofOfWork extends Model
         return $this->hasMany(ProofImage::class, 'proof_of_work_idproof_of_work', 'idproof_of_work');
     }
 
-    public function additionalWork()
+    public function additionalWorks()
     {
-        return $this->belongsTo(\App\Models\SystemSettings\AdditionalWork::class, 'additional_work_idadditional_work', 'idadditional_work');
+        return $this->belongsToMany(
+            AdditionalWork::class,
+            'proof_additional_work',  // pivot table
+            'Project_idProject',      // FK on pivot → projects
+            'idadditional_work'       // FK on pivot → additional_work
+        )->withTimestamps();
     }
 }

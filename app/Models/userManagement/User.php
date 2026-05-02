@@ -45,4 +45,15 @@ class User extends Authenticatable
     public function UserRole() {
         return $this->belongsTo(UserRole::class, 'user_role_iduser_role', 'iduser_role');
     }
+
+    // app/Models/UserManagement/User.php
+
+public function assignedProjects()
+{
+    return $this->hasMany(
+        \App\Models\ProjectManagement\AssignTechnician::class,
+        'user_iduser',
+        'iduser'
+    )->where('status', 1)->with('project');
+}
 }

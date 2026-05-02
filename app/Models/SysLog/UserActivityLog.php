@@ -23,6 +23,7 @@ class UserActivityLog extends Model
         'device',
         'login_time',
         'logout_time',
+        'session_id',
     ];
 
     public function User()
