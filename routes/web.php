@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\Attendance\AttendanceApprovalController;
 use App\Http\Controllers\Attendance\AttendanceMarkController;
 use App\Http\Controllers\Authentication\AuthController;
@@ -52,6 +51,8 @@ Route::middleware(['auth', 'role:1'])->group(function () {
     Route::post('/system_monitoring/backup', [SystemMonitoringController::class, 'backup'])->name('system_monitoring.backup');
     Route::post('/system_monitoring/backup_all', [SystemMonitoringController::class, 'backupAll'])->name('system_monitoring.backupAll');
     Route::get('/system_monitoring/download/{id}', [SystemMonitoringController::class, 'downloadBackup'])->name('system_monitoring.download');
+    Route::post('/system_monitoring/save_schedule', [SystemMonitoringController::class, 'saveSchedule'])
+        ->name('system_monitoring.saveSchedule');
     Route::post('/force-logout/{id}', [SystemMonitoringController::class, 'forceLogout'])->name('system_monitoring.forceLogout');
     Route::get('/log_reports', [LogController::class, 'index'])->name('log_reports.index')->defaults('title', 'Log Reports');
 });
@@ -75,10 +76,13 @@ Route::middleware(['auth', 'role:3'])->group(function () {
     Route::get('/attendance_approval', [AttendanceApprovalController::class, 'index'])->name('attendance_approval.index')->defaults('title', 'Attendance Approval');
     Route::post('/attendance_approval/approve', [AttendanceApprovalController::class, 'approve'])->name('attendance_approval.approve');
     Route::get('/attendance_approval/history/{userId}', [AttendanceApprovalController::class, 'history'])->name('attendance_approval.history');
+    Route::post('/attendance_approval/manual_mark', [AttendanceApprovalController::class, 'manualMark'])->name('attendance_approval.manualMark');
 
     Route::get('/proof_of_work_approval', [WorkApprovalController::class, 'index'])->name('proof_of_work_approval.index')->defaults('title', 'Proof of Work Approval');
     Route::post('/proof_of_work_approval/approve', [WorkApprovalController::class, 'approve'])->name('proof_of_work_approval.approve');
     Route::post('/proof_of_work_approval/unapprove', [WorkApprovalController::class, 'unapprove'])->name('proof_of_work_approval.unapprove');
+    Route::post('/proof-of-work/save-additional-work', [WorkApprovalController::class, 'saveAdditionalWork'])
+    ->name('proof_of_work_approval.save_additional_work');
 });
 
 // ================= TECHNICIAN (role: 4) =================
