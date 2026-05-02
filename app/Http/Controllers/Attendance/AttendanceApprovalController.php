@@ -23,7 +23,7 @@ public function index()
     ->get();
 
     // Today's attendance keyed by user_iduser
-    $todayAttendance = Attendance::with(['project'])
+    $todayAttendance = Attendance::query()->with(['project'])
         ->whereIn('user_iduser', $technicians->pluck('iduser'))
         ->where('date', $today)
         ->get()
@@ -31,7 +31,7 @@ public function index()
 
     // ALL attendance history including today grouped by user_iduser
     // for summary counts in history table
-    $allAttendance = Attendance::with(['project'])
+    $allAttendance = Attendance::query()->with(['project'])
         ->whereIn('user_iduser', $technicians->pluck('iduser'))
         ->where('date', '<=', $today)  // include today
         ->orderBy('date', 'desc')
@@ -39,7 +39,7 @@ public function index()
         ->groupBy('user_iduser');
 
     // Past attendance only (excluding today) for history modal detail
-    $pastAttendance = Attendance::with(['project'])
+    $pastAttendance = Attendance::query()->with(['project'])
         ->whereIn('user_iduser', $technicians->pluck('iduser'))
         ->where('date', '<', $today)
         ->orderBy('date', 'desc')
@@ -69,14 +69,16 @@ public function index()
         return redirect()->back()->with('success', 'Attendance updated successfully!');
     }
 
-    public function history($userId)
+    public function history(Request $userId)
     {
-        $attendances = Attendance::with('project')
+        $attendances = Attendance::query()
+            ->with('project')
             ->where('user_iduser', $userId)
             ->orderBy('date', 'desc')
             ->get();
 
-        $user = User::findOrFail($userId);
+        $user = User::query()
+            ->findOrFail($userId);
 
         return response()->json([
             'user'        => $user->first_name . ' ' . $user->last_name,
@@ -102,7 +104,8 @@ public function index()
             'attendance'        => 'required|in:0,1',
         ]);
 
-        $existing = Attendance::where('user_iduser', $request->user_iduser)
+        $existing = Attendance::query()
+            ->where('user_iduser', $request->user_iduser)
             ->where('date', $request->date)
             ->first();
 

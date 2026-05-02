@@ -16,12 +16,13 @@ public function index()
     {
         $today = now()->format('Y-m-d');
 
-        $todayAttendance = Attendance::where('user_iduser', Auth::id())
+        $todayAttendance = Attendance::query()
+            ->where('user_iduser', Auth::id())
             ->where('date', $today)
             ->first();
 
         // Get only active assigned projects for this technician
-        $assignedProjects = AssignTechnician::with('project.Solar')
+        $assignedProjects = AssignTechnician::query()->with('project.Solar')
             ->where('user_iduser', Auth::id())
             ->where('status', 1)
             ->get();
@@ -42,7 +43,8 @@ public function index()
 
         $today = now()->format('Y-m-d');
 
-        $existing = Attendance::where('user_iduser', Auth::id())
+        $existing = Attendance::query()
+            ->where('user_iduser', Auth::id())
             ->where('date', $today)
             ->first();
 
