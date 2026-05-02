@@ -7,38 +7,38 @@ use App\Models\ProjectManagement\AssignTechnician;
 use App\Models\ProjectManagement\Cancellation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class AssignTechnicianController extends Controller
 {
-    // For technician dashboard - show only their assigned projects
-    public function index()
-    {
+public function index()
+{
+    $assignments = AssignTechnician::with([
+        'project.Solar',
+        'project.Partner',
+        'project.assignedTechnicians.technician',
+    ])
+        ->join('project', 'assign_technician.Project_idProject', '=', 'project.idProject')
+        ->where('assign_technician.user_iduser', Auth::id())
+        ->where('assign_technician.status', 1)
+        ->orderBy('project.status', 'asc') // ongoing (0) first, completed (1) last
+        ->select('assign_technician.*')    // avoid column conflicts
+        ->get();
 
-        $assignments = AssignTechnician::with([
-            'project.Solar',
-            'project.Partner',
-        ])
-            ->where('user_iduser', Auth::id())
-            ->where('status', 1)
-            ->get();
+    return view('users.components.assign_projects', [
+        'title'       => 'Assign Projects',
+        'assignments' => $assignments,
+    ]);
+}
 
-        return view('users.components.assign_projects', [
-            'title' => 'Assign Projects',
-            'assignments' => $assignments,
-        ]);
-    }
-
-    // Store technician assignments
     public function store(Request $request)
     {
         $request->validate([
             'Project_idProject' => 'required|integer',
-            'technicians' => 'array',
+            'technicians'       => 'array',
         ]);
 
         // Delete old active assignments for this project
-        AssignTechnician::where('Project_idProject', $request->Project_idProject)
+        AssignTechnician::query()->where('Project_idProject', $request->Project_idProject)
             ->where('status', 1)
             ->delete();
 
@@ -46,8 +46,8 @@ class AssignTechnicianController extends Controller
         foreach ($request->technicians ?? [] as $techId) {
             AssignTechnician::create([
                 'Project_idProject' => $request->Project_idProject,
-                'user_iduser' => $techId,
-                'status' => 1,
+                'user_iduser'       => $techId,
+                'status'            => 1,
             ]);
         }
 
@@ -55,33 +55,28 @@ class AssignTechnicianController extends Controller
             ->with('success', 'Technicians assigned successfully!');
     }
 
-    // Technician cancels their assigned project
-   public function cancel(Request $request)
-{
+    public function cancel(Request $request)
+    {
+        $request->validate([
+            'assign_technician_idassign_technician' => 'required|integer',
+            'reason'                                => 'required|string|max:255',
+        ]);
 
-    $request->validate([
-        'assign_technician_idassign_technician' => 'required|integer',
-        'reason'                                => 'required|string|max:255',
-    ]);
+        $assignment = AssignTechnician::query()->where('idassign_technician', $request->assign_technician_idassign_technician)
+            ->where('user_iduser', Auth::id())
+            ->firstOrFail();
 
-    $assignment = AssignTechnician::where('idassign_technician', $request->assign_technician_idassign_technician)
-        ->where('user_iduser', Auth::id())
-        ->firstOrFail();
+        // Save to cancellation table
+        Cancellation::create([
+            'Project_idProject'                     => $assignment->Project_idProject,
+            'assign_technician_idassign_technician' => $assignment->idassign_technician,
+            'reason'                                => $request->reason,
+        ]);
 
+        // Mark assignment as cancelled
+        $assignment->update(['status' => 0]);
 
-
-    // 1. Save to cancellation table first (before deleting)
-    Cancellation::create([
-        'Project_idProject'                     => $assignment->Project_idProject,
-        'assign_technician_idassign_technician' => $assignment->idassign_technician,
-        'reason'                                => $request->reason,
-    ]);
-    
-
-    // 2. Cancel the Project
-$assignment->update(['status' => 0]);
-
-    return redirect()->route('assign_projects.index')
-        ->with('success', 'Project cancelled successfully!');
-}
+        return redirect()->route('assign_projects.index')
+            ->with('success', 'Project cancelled successfully!');
+    }
 }
