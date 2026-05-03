@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Attendance\AttendanceApprovalController;
 use App\Http\Controllers\Attendance\AttendanceMarkController;
 use App\Http\Controllers\Authentication\AuthController;
@@ -54,6 +55,7 @@ Route::middleware(['auth', 'role:1'])->group(function () {
     Route::post('/system_monitoring/save_schedule', [SystemMonitoringController::class, 'saveSchedule'])
         ->name('system_monitoring.saveSchedule');
     Route::post('/force-logout/{id}', [SystemMonitoringController::class, 'forceLogout'])->name('system_monitoring.forceLogout');
+    Route::get('/review/download/{id}', [WorkReviewController::class, 'download'])->name('review_photos.download');
     Route::get('/log_reports', [LogController::class, 'index'])->name('log_reports.index')->defaults('title', 'Log Reports');
 });
 
@@ -62,6 +64,7 @@ Route::middleware(['auth', 'role:2'])->group(function () {
     Route::get('/executive', [ExecutiveController::class, 'index'])->name('executive.dashboard')->defaults('title', 'Dashboard');
     Route::get('/technician_performance', [TechnicianPerformanceController::class, 'index'])->name('technician_performance.index')->defaults('title', 'Technician Performance');
     Route::get('/payment', [PaymentAndSalaryController::class, 'index'])->name('payment_and_salary.index')->defaults('title', 'Payment and Salary');
+    Route::get('/review/download/{id}', [WorkReviewController::class, 'download'])->name('review_photos.download'); // BEFORE /review
     Route::get('/review', [WorkReviewController::class, 'index'])->name('review_photos.index')->defaults('title', 'Review Photos');
     Route::get('/Reports', [ReportsController::class, 'index'])->name('reports.index')->defaults('title', 'Reports');
 });
@@ -82,7 +85,7 @@ Route::middleware(['auth', 'role:3'])->group(function () {
     Route::post('/proof_of_work_approval/approve', [WorkApprovalController::class, 'approve'])->name('proof_of_work_approval.approve');
     Route::post('/proof_of_work_approval/unapprove', [WorkApprovalController::class, 'unapprove'])->name('proof_of_work_approval.unapprove');
     Route::post('/proof-of-work/save-additional-work', [WorkApprovalController::class, 'saveAdditionalWork'])
-    ->name('proof_of_work_approval.save_additional_work');
+        ->name('proof_of_work_approval.save_additional_work');
 });
 
 // ================= TECHNICIAN (role: 4) =================
