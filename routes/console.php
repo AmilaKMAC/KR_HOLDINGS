@@ -15,3 +15,8 @@ Artisan::command('inspire', function () {
 Schedule::command('backup:auto')->everyMinute();
 
 Schedule::command('attendance:mark-absent')->dailyAt('23:59');
+
+Schedule::command('payments:generate-monthly')
+    ->monthlyOn(1, '00:00')
+    ->withoutOverlapping()
+    ->runInBackground();

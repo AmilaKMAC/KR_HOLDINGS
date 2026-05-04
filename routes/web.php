@@ -31,7 +31,6 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ================= ADMIN (role: 1) =================
-
 Route::middleware(['auth', 'role:1'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard')->defaults('title', 'Dashboard');
     Route::get('/userManagement', [UserManagementController::class, 'index'])->name('userManagement.index')->defaults('title', 'User Management');
@@ -52,8 +51,7 @@ Route::middleware(['auth', 'role:1'])->group(function () {
     Route::post('/system_monitoring/backup', [SystemMonitoringController::class, 'backup'])->name('system_monitoring.backup');
     Route::post('/system_monitoring/backup_all', [SystemMonitoringController::class, 'backupAll'])->name('system_monitoring.backupAll');
     Route::get('/system_monitoring/download/{id}', [SystemMonitoringController::class, 'downloadBackup'])->name('system_monitoring.download');
-    Route::post('/system_monitoring/save_schedule', [SystemMonitoringController::class, 'saveSchedule'])
-        ->name('system_monitoring.saveSchedule');
+    Route::post('/system_monitoring/save_schedule', [SystemMonitoringController::class, 'saveSchedule'])->name('system_monitoring.saveSchedule');
     Route::post('/force-logout/{id}', [SystemMonitoringController::class, 'forceLogout'])->name('system_monitoring.forceLogout');
     Route::get('/review/download/{id}', [WorkReviewController::class, 'download'])->name('review_photos.download');
     Route::get('/log_reports', [LogController::class, 'index'])->name('log_reports.index')->defaults('title', 'Log Reports');
@@ -63,8 +61,14 @@ Route::middleware(['auth', 'role:1'])->group(function () {
 Route::middleware(['auth', 'role:2'])->group(function () {
     Route::get('/executive', [ExecutiveController::class, 'index'])->name('executive.dashboard')->defaults('title', 'Dashboard');
     Route::get('/technician_performance', [TechnicianPerformanceController::class, 'index'])->name('technician_performance.index')->defaults('title', 'Technician Performance');
-    Route::get('/payment', [PaymentAndSalaryController::class, 'index'])->name('payment_and_salary.index')->defaults('title', 'Payment and Salary');
-    Route::get('/review/download/{id}', [WorkReviewController::class, 'download'])->name('review_photos.download'); // BEFORE /review
+
+    // Payment and Salary
+    Route::get('/payment-salary', [PaymentAndSalaryController::class, 'index'])->name('payment_and_salary.index')->defaults('title', 'Payment and Salary');
+    Route::get('/payment-salary/history/{userId}', [PaymentAndSalaryController::class, 'history'])->name('payment_and_salary.history')->defaults('title', 'Payment History');
+    Route::post('/payment-salary/status/{idpayment}', [PaymentAndSalaryController::class, 'updateStatus'])->name('payment_and_salary.updateStatus');
+    Route::post('/payment-salary/other-payment/{idpayment}', [PaymentAndSalaryController::class, 'updateOtherPayment'])->name('payment_and_salary.updateOtherPayment');
+
+    Route::get('/review/download/{id}', [WorkReviewController::class, 'download'])->name('review_photos.download');
     Route::get('/review', [WorkReviewController::class, 'index'])->name('review_photos.index')->defaults('title', 'Review Photos');
     Route::get('/Reports', [ReportsController::class, 'index'])->name('reports.index')->defaults('title', 'Reports');
 });
@@ -80,12 +84,10 @@ Route::middleware(['auth', 'role:3'])->group(function () {
     Route::post('/attendance_approval/approve', [AttendanceApprovalController::class, 'approve'])->name('attendance_approval.approve');
     Route::get('/attendance_approval/history/{userId}', [AttendanceApprovalController::class, 'history'])->name('attendance_approval.history');
     Route::post('/attendance_approval/manual_mark', [AttendanceApprovalController::class, 'manualMark'])->name('attendance_approval.manualMark');
-
     Route::get('/proof_of_work_approval', [WorkApprovalController::class, 'index'])->name('proof_of_work_approval.index')->defaults('title', 'Proof of Work Approval');
     Route::post('/proof_of_work_approval/approve', [WorkApprovalController::class, 'approve'])->name('proof_of_work_approval.approve');
     Route::post('/proof_of_work_approval/unapprove', [WorkApprovalController::class, 'unapprove'])->name('proof_of_work_approval.unapprove');
-    Route::post('/proof-of-work/save-additional-work', [WorkApprovalController::class, 'saveAdditionalWork'])
-        ->name('proof_of_work_approval.save_additional_work');
+    Route::post('/proof-of-work/save-additional-work', [WorkApprovalController::class, 'saveAdditionalWork'])->name('proof_of_work_approval.save_additional_work');
 });
 
 // ================= TECHNICIAN (role: 4) =================
@@ -95,7 +97,6 @@ Route::middleware(['auth', 'role:4'])->group(function () {
     Route::post('/assign_projects/cancel', [AssignTechnicianController::class, 'cancel'])->name('assign_projects.cancel');
     Route::get('/attendance', [AttendanceMarkController::class, 'index'])->name('attendance.index')->defaults('title', 'Attendance');
     Route::post('/attendance/mark', [AttendanceMarkController::class, 'mark'])->name('attendance.mark');
-
     Route::get('/proof_of_work', [ImageUploadController::class, 'index'])->name('proof_of_work.index')->defaults('title', 'Proof of Work');
     Route::post('/proof_of_work/upload', [ImageUploadController::class, 'upload'])->name('proof_of_work.upload');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index')->defaults('title', 'Profile');

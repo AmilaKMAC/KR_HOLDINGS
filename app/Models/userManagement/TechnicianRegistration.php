@@ -1,6 +1,7 @@
 <?php
 namespace App\Models\UserManagement;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SystemSettings\TechnicianLevel;
 
 class TechnicianRegistration extends Model
 {
@@ -12,4 +13,13 @@ class TechnicianRegistration extends Model
         'user_role_iduser_role',
         'technician_level_idtechnician_level'
     ];
+
+    public function technicianLevel()
+{
+    return $this->belongsTo(
+        TechnicianLevel::class,
+        'technician_level_idtechnician_level',
+        'idtechnician_level'
+    );
+}
 }

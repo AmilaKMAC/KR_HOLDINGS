@@ -8,6 +8,7 @@ use App\Models\SystemSettings\PartnerCompany;
 use App\Models\UserManagement\User;
 use App\Models\ProjectManagement\Cancellation;
 use App\Models\Proof\WorkCompletion;
+use App\Models\SystemSettings\AdditionalWork;
 
 
 class Project extends Model
@@ -60,4 +61,14 @@ class Project extends Model
     {
         return $this->hasOne(WorkCompletion::class, 'Project_idProject', 'idProject');
     }
+
+    // In Project model:
+public function additionalWorks()
+{
+    return $this->belongsToMany(
+        AdditionalWork::class,
+        'proof_additional_work',   
+        'Project_idProject',      
+    );
+}
 }
