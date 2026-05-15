@@ -3,20 +3,26 @@
 namespace App\Http\Controllers\PaymentAndSalary;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendance\Attendance;
+use App\Models\PaymentAndSalary\Payment;
+use App\Models\UserManagement\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PaymentAndSalaryController extends Controller
 {
+    // Flat attendance rate per day (replace with per-technician DB lookup later)
+    const ATTENDANCE_RATE = 1000;
+
     // =========================================================================
     // INDEX — current month, all technicians
     // =========================================================================
     public function index()
     {
-        $now         = Carbon::now();
-        $month       = (int) $now->month;
-        $year        = (int) $now->year;
+        $now   = Carbon::now();
+        $month = (int) $now->month;
+        $year  = (int) $now->year;
+
         $technicians = $this->getTechnicianList($month, $year);
 
         return view('users.components.payment_and_salary', [
@@ -37,30 +43,33 @@ class PaymentAndSalaryController extends Controller
 
         $technicians = $this->getTechnicianList($month, $year);
 
-        $selectedTechnician = DB::table('user')
-            ->where('iduser', $userId)
-            ->select('iduser',
-                DB::raw("CONCAT(first_name, ' ', COALESCE(last_name, '')) as name"))
-            ->first();
+        $selectedTechnician = User::select('iduser', 'first_name', 'last_name')
+            ->selectRaw("CONCAT(first_name, ' ', COALESCE(last_name, '')) as name")
+            ->findOrFail($userId);
 
         $currentPayment = $this->paymentDetailQuery()
-            ->where('p.user_iduser', $userId)
-            ->where('p.month', $month)
-            ->where('p.year', $year)
+            ->where('user_iduser', $userId)
+            ->where('month', $month)
+            ->where('year', $year)
             ->first();
 
+        if ($currentPayment) {
+            $currentPayment = $this->appendAttendance($currentPayment);
+        }
+
         $previousPayments = $this->paymentDetailQuery()
-            ->where('p.user_iduser', $userId)
+            ->where('user_iduser', $userId)
             ->where(function ($q) use ($month, $year) {
-                $q->where('p.year', '<', $year)
+                $q->where('year', '<', $year)
                   ->orWhere(function ($q2) use ($month, $year) {
-                      $q2->where('p.year', $year)
-                         ->where('p.month', '<', $month);
+                      $q2->where('year', $year)
+                         ->where('month', '<', $month);
                   });
             })
-            ->orderByDesc('p.year')
-            ->orderByDesc('p.month')
-            ->get();
+            ->orderByDesc('year')
+            ->orderByDesc('month')
+            ->get()
+            ->map(fn($p) => $this->appendAttendance($p));
 
         return view('users.components.payment_and_salary', [
             'title'              => 'Payment and Salary',
@@ -80,8 +89,7 @@ class PaymentAndSalaryController extends Controller
     {
         $request->validate(['payment_status' => 'required|in:0,1']);
 
-        DB::table('payment')
-            ->where('idpayment', $idpayment)
+        Payment::findOrFail($idpayment)
             ->update(['payment_status' => (int) $request->payment_status]);
 
         return redirect()->back()->with('success', 'Payment status updated.');
@@ -89,150 +97,212 @@ class PaymentAndSalaryController extends Controller
 
     // =========================================================================
     // UPDATE OTHER PAYMENT
-    // grand_total = basic_salary + process_total + other_payment
+    // grand_total = basic_salary + (days_attended × attendance_rate)
+    //             + sum(all process totals) + other_payment
     // =========================================================================
     public function updateOtherPayment(Request $request, int $idpayment)
     {
         $request->validate(['other_payment' => 'required|numeric|min:0']);
 
-        $payment = DB::table('payment')->where('idpayment', $idpayment)->first();
+        $payment = Payment::with([
+            'paymentProcesses.technicianLevel',
+            'paymentProcesses.solar',
+            'paymentProcesses.additionalWork',
+        ])->findOrFail($idpayment);
 
-        if (!$payment) {
-            return redirect()->back()->with('error', 'Payment record not found.');
-        }
-
-        $processTotal = (float) (DB::table('payment_process')
-            ->where('idpayment', $idpayment)
-            ->value('total') ?? 0);
+        $processTotal    = (float) $payment->paymentProcesses->sum('total');
+        $daysAttended    = $this->getDaysAttended($payment->user_iduser, $payment->month, $payment->year);
+        $attendanceBonus = $daysAttended * self::ATTENDANCE_RATE;
 
         $grandTotal = round(
-            (float) $payment->basic_salary + $processTotal + (float) $request->other_payment,
+            (float) $payment->basic_salary
+            + $attendanceBonus
+            + $processTotal
+            + (float) $request->other_payment,
             2
         );
 
-        DB::table('payment')
-            ->where('idpayment', $idpayment)
-            ->update([
-                'other_payment' => $request->other_payment,
-                'total'         => $grandTotal,
-            ]);
+        $payment->update([
+            'other_payment' => $request->other_payment,
+            'total'         => $grandTotal,
+        ]);
 
         return redirect()->back()->with('success', 'Other payment updated.');
     }
 
     // =========================================================================
-    // PRIVATE — main table: all technicians LEFT JOIN current month payment
-    // attendance = 1 means present, approval = 1 means coordinator approved
+    // PRIVATE — build technician list with current-month payment data
     // =========================================================================
     private function getTechnicianList(int $month, int $year)
     {
-        return DB::table('user as u')
-            ->join('technician_registration as tr',
-                'u.technician_registration_idtechnician_registration', '=',
-                'tr.idtechnician_registration')
-            ->join('technician_level as tl',
-                'tr.technician_level_idtechnician_level', '=',
-                'tl.idtechnician_level')
-            ->leftJoin('payment as p', function ($join) use ($month, $year) {
-                $join->on('p.user_iduser', '=', 'u.iduser')
-                     ->where('p.month', '=', $month)
-                     ->where('p.year', '=', $year);
-            })
-            ->leftJoin('payment_process as pp', 'pp.idpayment', '=', 'p.idpayment')
-            ->leftJoin('solar as s', 'pp.solar_idsolar', '=', 's.idsolar')
-            ->leftJoin('additional_work as aw',
-                'pp.additional_work_idadditional_work', '=', 'aw.idadditional_work')
-            ->where('u.user_role_iduser_role', 4)
-            ->where('u.status', 1)
-            ->select(
-                'u.iduser',
-                DB::raw("CONCAT(u.first_name, ' ', COALESCE(u.last_name, '')) as name"),
-                'tl.basic_salary as level_basic_salary',
-                'p.idpayment',
-                'p.month',
-                'p.year',
-                'p.basic_salary',
-                'p.other_payment',
-                'p.payment_status',
-                'p.total',
-                'pp.idpayment_process',
-                'pp.total as process_total',
-                'aw.rate as additional_work_rate',
-                's.rate as solar_rate',
+        $totalWorkingDays = $this->getTotalWorkingDays($month, $year);
 
-                // Days this technician was present (attendance=1) AND approved (approval=1)
-                DB::raw("(
-                    SELECT COUNT(DISTINCT a.date)
-                    FROM attendance a
-                    WHERE a.user_iduser  = u.iduser
-                      AND a.attendance   = 1
-                      AND a.approval     = 1
-                      AND MONTH(a.date)  = {$month}
-                      AND YEAR(a.date)   = {$year}
-                ) as days_attended"),
-
-                // Total working days = distinct dates any technician was present & approved
-                DB::raw("(
-                    SELECT COUNT(DISTINCT a.date)
-                    FROM attendance a
-                    WHERE a.attendance  = 1
-                      AND a.approval    = 1
-                      AND MONTH(a.date) = {$month}
-                      AND YEAR(a.date)  = {$year}
-                ) as total_working_days")
-            )
+        $technicians = User::with([
+                'TechnicianRegistration.technicianLevel',
+                'payments' => function ($q) use ($month, $year) {
+                    $q->with([
+                        'paymentProcesses.technicianLevel',
+                        'paymentProcesses.solar',
+                        'paymentProcesses.additionalWork',
+                    ])
+                    ->where('month', $month)
+                    ->where('year', $year);
+                },
+            ])
+            ->where('user_role_iduser_role', 4)
+            ->where('status', 1)
             ->get();
+
+        return $technicians->map(function ($user) use ($month, $year, $totalWorkingDays) {
+
+            $daysAttended    = $this->getDaysAttended($user->iduser, $month, $year);
+            $attendanceBonus = $daysAttended * self::ATTENDANCE_RATE;
+
+            $payment          = $user->payments->first();
+            $paymentProcesses = $payment?->paymentProcesses ?? collect();
+            $techLevel        = $user->TechnicianRegistration?->technicianLevel;
+
+            // Sum all project totals
+            $processTotal = $paymentProcesses->sum('total');
+
+            $grandTotal = $payment ? round(
+                (float) $payment->basic_salary
+                + $attendanceBonus
+                + (float) $processTotal
+                + (float) ($payment->other_payment ?? 0),
+                2
+            ) : null;
+
+            return (object) [
+                'iduser'             => $user->iduser,
+                'name'               => trim($user->first_name . ' ' . $user->last_name),
+                'level_basic_salary' => $techLevel?->basic_salary ?? 0,
+                'attendance_rate'    => self::ATTENDANCE_RATE,
+
+                // Payment fields
+                'idpayment'          => $payment?->idpayment,
+                'month'              => $payment?->month,
+                'year'               => $payment?->year,
+                'basic_salary'       => $payment?->basic_salary,
+                'other_payment'      => $payment?->other_payment,
+                'payment_status'     => $payment?->payment_status,
+                'total'              => $grandTotal,
+
+                // All project rows for this month
+                'process_total'      => $processTotal ?: null,
+                'payment_processes'  => $paymentProcesses,
+
+                // Attendance
+                'days_attended'      => $daysAttended,
+                'attendance_bonus'   => $attendanceBonus,
+                'total_working_days' => $totalWorkingDays,
+            ];
+        });
     }
 
     // =========================================================================
-    // PRIVATE — detail query for modal (only technicians with payment records)
+    // PRIVATE — base query for payment detail (modal use)
     // =========================================================================
     private function paymentDetailQuery()
     {
-        return DB::table('payment as p')
-            ->join('payment_process as pp', 'p.idpayment', '=', 'pp.idpayment')
-            ->join('user as u', 'p.user_iduser', '=', 'u.iduser')
-            ->join('technician_level as tl',
-                'pp.technician_level_idtechnician_level', '=', 'tl.idtechnician_level')
-            ->join('solar as s', 'pp.solar_idsolar', '=', 's.idsolar')
-            ->join('additional_work as aw',
-                'pp.additional_work_idadditional_work', '=', 'aw.idadditional_work')
-            ->select(
-                'u.iduser',
-                DB::raw("CONCAT(u.first_name, ' ', COALESCE(u.last_name, '')) as name"),
-                'p.idpayment',
-                'p.month',
-                'p.year',
-                'p.payment_status',
-                'p.basic_salary',
-                'p.other_payment',
-                'p.total',
-                'pp.idpayment_process',
-                'pp.total as process_total',
-                'tl.basic_salary as level_basic_salary',
-                'aw.rate as additional_work_rate',
-                's.rate as solar_rate',
+        return Payment::with([
+            'paymentProcesses.technicianLevel',
+            'paymentProcesses.solar',
+            'paymentProcesses.additionalWork',
+            'paymentProcesses.project',
+            'user',
+        ]);
+    }
 
-                // Days present & approved for the payment's specific month/year
-                DB::raw('(
-                    SELECT COUNT(DISTINCT a.date)
-                    FROM attendance a
-                    WHERE a.user_iduser  = p.user_iduser
-                      AND a.attendance   = 1
-                      AND a.approval     = 1
-                      AND MONTH(a.date)  = p.month
-                      AND YEAR(a.date)   = p.year
-                ) as days_attended'),
+    // =========================================================================
+    // PRIVATE — append attendance + bonus onto a Payment, return stdClass
+    // FIX: ensure all sub-relations are loaded before accessing them
+    // =========================================================================
+    private function appendAttendance(Payment $payment): object
+    {
+        // Ensure sub-relations are loaded (guards against lazy-load missing nested relations)
+        if (! $payment->relationLoaded('paymentProcesses')) {
+            $payment->load([
+                'paymentProcesses.technicianLevel',
+                'paymentProcesses.solar',
+                'paymentProcesses.additionalWork',
+                'paymentProcesses.project',
+            ]);
+        } else {
+            // Sub-relations may still be missing even if paymentProcesses is loaded
+            $payment->paymentProcesses->each(function ($process) {
+                if (! $process->relationLoaded('solar')) {
+                    $process->load('solar');
+                }
+                if (! $process->relationLoaded('additionalWork')) {
+                    $process->load('additionalWork');
+                }
+                if (! $process->relationLoaded('technicianLevel')) {
+                    $process->load('technicianLevel');
+                }
+                if (! $process->relationLoaded('project')) {
+                    $process->load('project');
+                }
+            });
+        }
 
-                // Total working days for the payment's specific month/year
-                DB::raw('(
-                    SELECT COUNT(DISTINCT a.date)
-                    FROM attendance a
-                    WHERE a.attendance  = 1
-                      AND a.approval    = 1
-                      AND MONTH(a.date) = p.month
-                      AND YEAR(a.date)  = p.year
-                ) as total_working_days')
-            );
+        $daysAttended     = $this->getDaysAttended($payment->user_iduser, $payment->month, $payment->year);
+        $totalWorkingDays = $this->getTotalWorkingDays($payment->month, $payment->year);
+        $attendanceBonus  = $daysAttended * self::ATTENDANCE_RATE;
+
+        $processes    = $payment->paymentProcesses ?? collect();
+        $processTotal = $processes->sum('total');
+
+        $grandTotal = round(
+            (float) $payment->basic_salary
+            + $attendanceBonus
+            + (float) $processTotal
+            + (float) ($payment->other_payment ?? 0),
+            2
+        );
+
+        return (object) [
+            'iduser'             => $payment->user_iduser,
+            'name'               => trim(($payment->user->first_name ?? '') . ' ' . ($payment->user->last_name ?? '')),
+            'idpayment'          => $payment->idpayment,
+            'month'              => $payment->month,
+            'year'               => $payment->year,
+            'payment_status'     => $payment->payment_status,
+            'basic_salary'       => $payment->basic_salary,
+            'other_payment'      => $payment->other_payment,
+            'total'              => $grandTotal,
+            'level_basic_salary' => $processes->first()?->technicianLevel?->basic_salary ?? 0,
+            'attendance_rate'    => self::ATTENDANCE_RATE,
+            'process_total'      => $processTotal ?: null,
+            'payment_processes'  => $processes,
+            'days_attended'      => $daysAttended,
+            'attendance_bonus'   => $attendanceBonus,
+            'total_working_days' => $totalWorkingDays,
+        ];
+    }
+
+    // =========================================================================
+    // PRIVATE — days a specific technician was present & approved
+    // =========================================================================
+    private function getDaysAttended(int $userId, int $month, int $year): int
+    {
+        return Attendance::presentAndApproved()
+            ->where('user_iduser', $userId)
+            ->whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->distinct('date')
+            ->count('date');
+    }
+
+    // =========================================================================
+    // PRIVATE — total distinct working days for a month/year
+    // =========================================================================
+    private function getTotalWorkingDays(int $month, int $year): int
+    {
+        return Attendance::presentAndApproved()
+            ->whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->distinct('date')
+            ->count('date');
     }
 }
