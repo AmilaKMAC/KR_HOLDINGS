@@ -7,6 +7,7 @@ use App\Models\UserManagement\User;
 use App\Models\SystemSettings\Solar;
 use App\Models\SystemSettings\AdditionalWork;
 use App\Models\SystemSettings\TechnicianLevel;
+use App\Models\ProjectManagement\Project;
 
 class PaymentProcess extends Model
 {
@@ -48,4 +49,9 @@ class PaymentProcess extends Model
     {
         return $this->belongsTo(AdditionalWork::class, 'additional_work_idadditional_work', 'idadditional_work');
     }
+
+    public function project()
+{
+    return $this->belongsTo(Project::class, 'project_id', 'idProject');
+}
 }

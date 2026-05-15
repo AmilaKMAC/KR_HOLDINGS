@@ -22,4 +22,6 @@ class TechnicianRegistration extends Model
         'idtechnician_level'
     );
 }
+
+
 }

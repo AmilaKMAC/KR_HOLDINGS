@@ -27,8 +27,8 @@ class Payment extends Model
         return $this->belongsTo(User::class, 'user_iduser', 'iduser');
     }
 
-    public function paymentProcess()
+    public function paymentProcesses()
     {
-        return $this->hasOne(PaymentProcess::class, 'idpayment', 'idpayment');
+        return $this->hasMany(PaymentProcess::class, 'idpayment', 'idpayment');
     }
 }

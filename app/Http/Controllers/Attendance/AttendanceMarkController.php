@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Attendance\Attendance;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ProjectManagement\AssignTechnician;
+use App\Models\ProjectManagement\Project;
 
 
 
@@ -40,6 +41,13 @@ public function index()
         $request->validate([
             'project_idProject' => 'required|integer',
         ]);
+
+
+            $project = Project::findOrFail($request->project_idProject);
+    if ($project->status == 1) {
+        return redirect()->route('attendance.index')
+            ->with('error', 'Cannot mark attendance for a completed project.');
+    }
 
         $today = now()->format('Y-m-d');
 

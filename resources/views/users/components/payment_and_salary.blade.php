@@ -3,20 +3,6 @@
 @section('content')
     <div class="container-fluid py-4">
 
-        {{-- ── Flash messages ── --}}
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-
         {{-- ── Main table ── --}}
         <div class="row justify-content-center">
             <div class="col-12 col-xxl-11">
@@ -37,13 +23,10 @@
                                         Attendance
                                         <br><small class="fw-normal text-muted">(present / working days)</small>
                                     </th>
-                                    <th>
-                                        Basic Salary
-                                        <br><small class="fw-normal text-muted">(pro-rated)</small>
-                                    </th>
+                                    <th>Basic Salary</th>
                                     <th>
                                         Projects Total
-                                        <br><small class="fw-normal text-muted">(Solar + Additional)</small>
+                                        <br><small class="fw-normal text-muted">(all projects)</small>
                                     </th>
                                     <th>Other Payment</th>
                                     <th>Grand Total</th>
@@ -58,7 +41,7 @@
                                         <td>{{ $tech->iduser }}</td>
                                         <td class="text-start">{{ $tech->name }}</td>
 
-                                        {{-- Month / Year: only if payment exists --}}
+                                        {{-- Month / Year --}}
                                         <td>
                                             @if ($tech->month && $tech->year)
                                                 {{ DateTime::createFromFormat('!m', $tech->month)->format('F') }}
@@ -68,43 +51,52 @@
                                             @endif
                                         </td>
 
-                                        {{-- Attendance: always shown live regardless of payment --}}
+                                        {{-- Attendance --}}
                                         <td>
                                             @if ($tech->days_attended > 0 || $tech->total_working_days > 0)
                                                 <span class="fw-semibold">{{ $tech->days_attended }}</span>
                                                 / {{ $tech->total_working_days }} days
-                                            @else
-                                                <span class="text-muted">—</span>
-                                            @endif
-                                        </td>
 
-                                        {{-- Basic salary: stored pro-rated value --}}
-                                        <td>
-                                            @if ($tech->basic_salary !== null)
-                                                {{ number_format($tech->basic_salary, 2) }} LKR
+
                                                 <div class="text-muted" style="font-size:11px">
-                                                    {{ number_format($tech->level_basic_salary, 2) }}
-                                                    × {{ $tech->days_attended }}/{{ $tech->total_working_days ?: 1 }}
+                                                    {{ number_format($tech->attendance_bonus, 2) }} LKR 
                                                 </div>
                                             @else
                                                 <span class="text-muted">—</span>
                                             @endif
                                         </td>
 
-                                        {{-- Projects total: solar + additional work --}}
+                                        {{-- Basic Salary --}}
+                                        <td>
+                                            @if ($tech->basic_salary !== null)
+                                                {{ number_format($tech->basic_salary, 2) }} LKR
+                
+                                            @else
+                                                <span class="text-muted">—</span>
+                                            @endif
+                                        </td>
+
+
+
+                                        {{-- Projects Total with Details button --}}
                                         <td>
                                             @if ($tech->process_total !== null)
                                                 {{ number_format($tech->process_total, 2) }} LKR
                                                 <div class="text-muted" style="font-size:11px">
-                                                    Solar: {{ number_format($tech->solar_rate ?? 0, 2) }}
-                                                    + Addl: {{ number_format($tech->additional_work_rate ?? 0, 2) }}
+                                                    {{ $tech->payment_processes->count() }}
+                                                    project(s)
                                                 </div>
+                                                <button type="button" class="btn btn-sm btn-outline-info mt-1"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#projectModal_{{ $tech->idpayment }}">
+                                                    <i class="bi bi-eye"></i> Details
+                                                </button>
                                             @else
                                                 <span class="text-muted">—</span>
                                             @endif
                                         </td>
 
-                                        {{-- Other payment --}}
+                                        {{-- Other Payment --}}
                                         <td>
                                             @if ($tech->idpayment)
                                                 {{ number_format($tech->other_payment ?? 0, 2) }} LKR
@@ -113,12 +105,13 @@
                                             @endif
                                         </td>
 
-                                        {{-- Grand total = basic_salary + process_total + other_payment --}}
+                                        {{-- Grand Total --}}
                                         <td class="fw-semibold">
                                             @if ($tech->total !== null)
                                                 {{ number_format($tech->total, 2) }} LKR
                                                 <div class="text-muted" style="font-size:10px">
                                                     {{ number_format($tech->basic_salary, 2) }}
+                                                    + {{ number_format($tech->attendance_bonus, 2) }}
                                                     + {{ number_format($tech->process_total ?? 0, 2) }}
                                                     + {{ number_format($tech->other_payment ?? 0, 2) }}
                                                 </div>
@@ -130,7 +123,8 @@
                                         {{-- Status --}}
                                         <td>
                                             @if ($tech->idpayment)
-                                                <span class="badge {{ $tech->payment_status == 1 ? 'bg-success' : 'bg-warning text-dark' }}">
+                                                <span
+                                                    class="badge {{ $tech->payment_status == 1 ? 'bg-success' : 'bg-warning text-dark' }}">
                                                     {{ $tech->payment_status == 1 ? 'Paid' : 'Pending' }}
                                                 </span>
                                             @else
@@ -138,7 +132,7 @@
                                             @endif
                                         </td>
 
-                                        {{-- Update status --}}
+                                        {{-- Update Status --}}
                                         <td>
                                             @if ($tech->idpayment)
                                                 <form method="POST"
@@ -166,7 +160,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="11" class="text-muted py-4">No technicians found.</td>
+                                        <td colspan="12" class="text-muted py-4">No technicians found.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -180,13 +174,72 @@
     </div>
 
 
+{{-- ── Project detail modals for main table ── --}}
+@foreach ($technicians as $tech)
+    @if ($tech->idpayment && $tech->process_total !== null)
+        <div class="modal fade" id="projectModal_{{ $tech->idpayment }}" tabindex="-1" aria-modal="true" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content shadow">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title fw-semibold">
+                            Project Details &mdash; {{ $tech->name }}
+                            @if ($tech->month)
+                                &mdash; {{ DateTime::createFromFormat('!m', $tech->month)->format('F') }} {{ $tech->year }}
+                            @endif
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered text-center align-middle mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Solar Capacity</th>
+                                    <th>Solar Rate (LKR)</th>
+                                    <th>Additional Work</th>
+                                    <th>Additional Rate (LKR)</th>
+                                    <th>Project Total (LKR)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($tech->payment_processes as $index => $process)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>
+                                            <span class="badge bg-warning text-dark">
+                                                {{ $process->solar->capacity ?? '—' }} kW
+                                            </span>
+                                        </td>
+                                        <td>{{ number_format($process->solar->rate ?? 0, 2) }}</td>
+                                        <td>{{ $process->additionalWork->description ?? '—' }}</td>
+                                        <td>{{ number_format($process->additionalWork->rate ?? 0, 2) }}</td>
+                                        <td class="fw-semibold">{{ number_format($process->total, 2) }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <th colspan="5" class="text-end">Projects Total</th>
+                                    <th>{{ number_format($tech->process_total, 2) }} LKR</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+@endforeach
+
+
     {{-- =========================================================================
-         BILL HISTORY MODAL
-         Rendered only when history() passes $openModal = true
-    ========================================================================= --}}
+     BILL HISTORY MODAL
+========================================================================= --}}
     @isset($openModal)
-        <div class="modal fade" id="billModal" tabindex="-1"
-            aria-labelledby="billModalLabel" aria-modal="true" role="dialog">
+        <div class="modal fade" id="billModal" tabindex="-1" aria-labelledby="billModalLabel" aria-modal="true" role="dialog">
             <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content shadow">
 
@@ -194,8 +247,7 @@
                         <h5 class="modal-title fw-semibold" id="billModalLabel">
                             Payment History &mdash; {{ $selectedTechnician->name ?? '' }}
                         </h5>
-                        <a href="{{ route('payment_and_salary.index') }}"
-                            class="btn-close btn-close-white" title="Close"></a>
+                        <a href="{{ route('payment_and_salary.index') }}" class="btn-close btn-close-white" title="Close"></a>
                     </div>
 
                     <div class="modal-body">
@@ -215,18 +267,11 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>Month / Year</th>
-                                        <th>
-                                            Attendance
-                                            <br><small class="fw-normal text-muted">(present / working days)</small>
+                                        <th>Attendance<br><small class="fw-normal text-muted">(present / working days)</small>
                                         </th>
-                                        <th>
-                                            Basic Salary
-                                            <br><small class="fw-normal text-muted">(pro-rated)</small>
-                                        </th>
-                                        <th>
-                                            Projects Total
-                                            <br><small class="fw-normal text-muted">(Solar + Additional)</small>
-                                        </th>
+                                        <th>Basic Salary<br><small class="fw-normal text-muted">(pro-rated)</small></th>
+                                        <th>Attendance Bonus</th>
+                                        <th>Projects Total<br><small class="fw-normal text-muted">(all projects)</small></th>
                                         <th>Other Payment</th>
                                         <th>Grand Total</th>
                                         <th>Status</th>
@@ -236,79 +281,81 @@
                                 </thead>
                                 <tbody>
                                     @if ($currentPayment)
+                                        @php $payment = $currentPayment; @endphp
+                                        {{-- FIX: removed the erroneous @include that caused the 500 error --}}
                                         <tr>
                                             <td>
-                                                {{ DateTime::createFromFormat('!m', $currentPayment->month)->format('F') }}
-                                                {{ $currentPayment->year }}
+                                                {{ DateTime::createFromFormat('!m', $payment->month)->format('F') }}
+                                                {{ $payment->year }}
                                             </td>
-
-                                            {{-- Attendance + formula --}}
                                             <td>
-                                                <span class="fw-semibold">{{ $currentPayment->days_attended }}</span>
-                                                / {{ $currentPayment->total_working_days }} days
+                                                <span class="fw-semibold">{{ $payment->days_attended }}</span>
+                                                / {{ $payment->total_working_days }} days
                                                 <div class="text-muted" style="font-size:11px">
-                                                    {{ number_format($currentPayment->level_basic_salary, 2) }}
-                                                    × {{ $currentPayment->days_attended }}
-                                                    / {{ $currentPayment->total_working_days ?: 1 }}
+                                                    {{ number_format($payment->level_basic_salary, 2) }}
+                                                    × {{ $payment->days_attended }}
+                                                    / {{ $payment->total_working_days ?: 1 }}
                                                 </div>
                                             </td>
-
-                                            {{-- Stored pro-rated basic salary --}}
-                                            <td>{{ number_format($currentPayment->basic_salary, 2) }} LKR</td>
-
-                                            {{-- Projects total --}}
+                                            <td>{{ number_format($payment->basic_salary, 2) }} LKR</td>
                                             <td>
-                                                {{ number_format($currentPayment->process_total, 2) }} LKR
+                                                {{ number_format($payment->attendance_bonus, 2) }} LKR
                                                 <div class="text-muted" style="font-size:11px">
-                                                    Solar: {{ number_format($currentPayment->solar_rate, 2) }}
-                                                    + Addl: {{ number_format($currentPayment->additional_work_rate, 2) }}
+                                                    {{ $payment->days_attended }} ×
+                                                    {{ number_format($payment->attendance_rate, 2) }}
                                                 </div>
                                             </td>
-
-                                            {{-- Other payment --}}
-                                            <td>{{ number_format($currentPayment->other_payment, 2) }} LKR</td>
-
-                                            {{-- Grand total with breakdown --}}
+                                            <td>
+                                                @if ($payment->process_total !== null)
+                                                    {{ number_format($payment->process_total, 2) }} LKR
+                                                    <div class="text-muted" style="font-size:11px">
+                                                        {{ $payment->payment_processes->count() }} project(s)
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-info mt-1"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#projectModal_hist_{{ $payment->idpayment }}">
+                                                        <i class="bi bi-eye"></i> Details
+                                                    </button>
+                                                @else
+                                                    <span class="text-muted">—</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ number_format($payment->other_payment ?? 0, 2) }} LKR</td>
                                             <td class="fw-semibold">
-                                                {{ number_format($currentPayment->total, 2) }} LKR
+                                                {{ number_format($payment->total, 2) }} LKR
                                                 <div class="text-muted" style="font-size:10px">
-                                                    {{ number_format($currentPayment->basic_salary, 2) }}
-                                                    + {{ number_format($currentPayment->process_total, 2) }}
-                                                    + {{ number_format($currentPayment->other_payment, 2) }}
+                                                    {{ number_format($payment->basic_salary, 2) }}
+                                                    + {{ number_format($payment->attendance_bonus, 2) }}
+                                                    + {{ number_format($payment->process_total ?? 0, 2) }}
+                                                    + {{ number_format($payment->other_payment ?? 0, 2) }}
                                                 </div>
                                             </td>
-
-                                            {{-- Status --}}
                                             <td>
-                                                <span class="badge {{ $currentPayment->payment_status == 1 ? 'bg-success' : 'bg-warning text-dark' }}">
-                                                    {{ $currentPayment->payment_status == 1 ? 'Paid' : 'Pending' }}
+                                                <span
+                                                    class="badge {{ $payment->payment_status == 1 ? 'bg-success' : 'bg-warning text-dark' }}">
+                                                    {{ $payment->payment_status == 1 ? 'Paid' : 'Pending' }}
                                                 </span>
                                             </td>
-
-                                            {{-- Update status --}}
                                             <td>
                                                 <form method="POST"
-                                                    action="{{ route('payment_and_salary.updateStatus', $currentPayment->idpayment) }}">
+                                                    action="{{ route('payment_and_salary.updateStatus', $payment->idpayment) }}">
                                                     @csrf
                                                     <input type="hidden" name="payment_status"
-                                                        value="{{ $currentPayment->payment_status == 1 ? 0 : 1 }}">
+                                                        value="{{ $payment->payment_status == 1 ? 0 : 1 }}">
                                                     <button type="submit"
-                                                        class="btn btn-sm {{ $currentPayment->payment_status == 1 ? 'btn-outline-warning' : 'btn-primary' }}">
-                                                        Mark as {{ $currentPayment->payment_status == 1 ? 'Pending' : 'Paid' }}
+                                                        class="btn btn-sm {{ $payment->payment_status == 1 ? 'btn-outline-warning' : 'btn-primary' }}">
+                                                        Mark as {{ $payment->payment_status == 1 ? 'Pending' : 'Paid' }}
                                                     </button>
                                                 </form>
                                             </td>
-
-                                            {{-- Update other_payment --}}
                                             <td style="min-width:180px">
                                                 <form method="POST"
-                                                    action="{{ route('payment_and_salary.updateOtherPayment', $currentPayment->idpayment) }}">
+                                                    action="{{ route('payment_and_salary.updateOtherPayment', $payment->idpayment) }}">
                                                     @csrf
                                                     <div class="input-group input-group-sm">
-                                                        <input type="number" name="other_payment"
-                                                            class="form-control"
-                                                            value="{{ $currentPayment->other_payment }}"
-                                                            min="0" step="0.01" placeholder="0.00">
+                                                        <input type="number" name="other_payment" class="form-control"
+                                                            value="{{ $payment->other_payment }}" min="0"
+                                                            step="0.01" placeholder="0.00">
                                                         <button type="submit" class="btn btn-warning">Save</button>
                                                     </div>
                                                 </form>
@@ -316,7 +363,7 @@
                                         </tr>
                                     @else
                                         <tr>
-                                            <td colspan="9" class="text-muted py-3">
+                                            <td colspan="10" class="text-muted py-3">
                                                 No payment record for this month yet.
                                                 Records are created automatically when projects are approved.
                                             </td>
@@ -334,18 +381,11 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>Month / Year</th>
-                                        <th>
-                                            Attendance
-                                            <br><small class="fw-normal text-muted">(present / working days)</small>
+                                        <th>Attendance<br><small class="fw-normal text-muted">(present / working days)</small>
                                         </th>
-                                        <th>
-                                            Basic Salary
-                                            <br><small class="fw-normal text-muted">(pro-rated)</small>
-                                        </th>
-                                        <th>
-                                            Projects Total
-                                            <br><small class="fw-normal text-muted">(Solar + Additional)</small>
-                                        </th>
+                                        <th>Basic Salary<br><small class="fw-normal text-muted">(pro-rated)</small></th>
+                                        <th>Attendance Bonus</th>
+                                        <th>Projects Total<br><small class="fw-normal text-muted">(all projects)</small></th>
                                         <th>Other Payment</th>
                                         <th>Grand Total</th>
                                         <th>Status</th>
@@ -360,8 +400,6 @@
                                                 {{ DateTime::createFromFormat('!m', $payment->month)->format('F') }}
                                                 {{ $payment->year }}
                                             </td>
-
-                                            {{-- Attendance + formula --}}
                                             <td>
                                                 <span class="fw-semibold">{{ $payment->days_attended }}</span>
                                                 / {{ $payment->total_working_days }} days
@@ -371,40 +409,45 @@
                                                     / {{ $payment->total_working_days ?: 1 }}
                                                 </div>
                                             </td>
-
-                                            {{-- Stored pro-rated basic salary --}}
                                             <td>{{ number_format($payment->basic_salary, 2) }} LKR</td>
-
-                                            {{-- Projects total --}}
                                             <td>
-                                                {{ number_format($payment->process_total, 2) }} LKR
+                                                {{ number_format($payment->attendance_bonus, 2) }} LKR
                                                 <div class="text-muted" style="font-size:11px">
-                                                    Solar: {{ number_format($payment->solar_rate, 2) }}
-                                                    + Addl: {{ number_format($payment->additional_work_rate, 2) }}
+                                                    {{ $payment->days_attended }} ×
+                                                    {{ number_format($payment->attendance_rate, 2) }}
                                                 </div>
                                             </td>
-
-                                            {{-- Other payment --}}
-                                            <td>{{ number_format($payment->other_payment, 2) }} LKR</td>
-
-                                            {{-- Grand total with breakdown --}}
+                                            <td>
+                                                @if ($payment->process_total !== null)
+                                                    {{ number_format($payment->process_total, 2) }} LKR
+                                                    <div class="text-muted" style="font-size:11px">
+                                                        {{ $payment->payment_processes->count() }} project(s)
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-info mt-1"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#projectModal_hist_{{ $payment->idpayment }}">
+                                                        <i class="bi bi-eye"></i> Details
+                                                    </button>
+                                                @else
+                                                    <span class="text-muted">—</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ number_format($payment->other_payment ?? 0, 2) }} LKR</td>
                                             <td class="fw-semibold">
                                                 {{ number_format($payment->total, 2) }} LKR
                                                 <div class="text-muted" style="font-size:10px">
                                                     {{ number_format($payment->basic_salary, 2) }}
-                                                    + {{ number_format($payment->process_total, 2) }}
-                                                    + {{ number_format($payment->other_payment, 2) }}
+                                                    + {{ number_format($payment->attendance_bonus, 2) }}
+                                                    + {{ number_format($payment->process_total ?? 0, 2) }}
+                                                    + {{ number_format($payment->other_payment ?? 0, 2) }}
                                                 </div>
                                             </td>
-
-                                            {{-- Status --}}
                                             <td>
-                                                <span class="badge {{ $payment->payment_status == 1 ? 'bg-success' : 'bg-warning text-dark' }}">
+                                                <span
+                                                    class="badge {{ $payment->payment_status == 1 ? 'bg-success' : 'bg-warning text-dark' }}">
                                                     {{ $payment->payment_status == 1 ? 'Paid' : 'Pending' }}
                                                 </span>
                                             </td>
-
-                                            {{-- Update status --}}
                                             <td>
                                                 <form method="POST"
                                                     action="{{ route('payment_and_salary.updateStatus', $payment->idpayment) }}">
@@ -417,17 +460,14 @@
                                                     </button>
                                                 </form>
                                             </td>
-
-                                            {{-- Update other_payment --}}
                                             <td style="min-width:180px">
                                                 <form method="POST"
                                                     action="{{ route('payment_and_salary.updateOtherPayment', $payment->idpayment) }}">
                                                     @csrf
                                                     <div class="input-group input-group-sm">
-                                                        <input type="number" name="other_payment"
-                                                            class="form-control"
-                                                            value="{{ $payment->other_payment }}"
-                                                            min="0" step="0.01" placeholder="0.00">
+                                                        <input type="number" name="other_payment" class="form-control"
+                                                            value="{{ $payment->other_payment }}" min="0"
+                                                            step="0.01" placeholder="0.00">
                                                         <button type="submit" class="btn btn-warning">Save</button>
                                                     </div>
                                                 </form>
@@ -435,7 +475,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="9" class="text-muted py-3">No previous bills found.</td>
+                                            <td colspan="10" class="text-muted py-3">No previous bills found.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -445,21 +485,94 @@
                     </div>{{-- /modal-body --}}
 
                     <div class="modal-footer">
-                        <a href="{{ route('payment_and_salary.index') }}" class="btn btn-secondary">
-                            Close
-                        </a>
+                        <a href="{{ route('payment_and_salary.index') }}" class="btn btn-secondary">Close</a>
                     </div>
 
                 </div>
             </div>
         </div>
 
+        {{-- ── Project detail modals for history rows ── --}}
+        @php
+            $historyPayments = collect();
+            if ($currentPayment) {
+                $historyPayments->push($currentPayment);
+            }
+            foreach ($previousPayments as $p) {
+                $historyPayments->push($p);
+            }
+        @endphp
+
+        @foreach ($historyPayments as $payment)
+            @if ($payment->idpayment && $payment->process_total !== null)
+                <div class="modal fade" id="projectModal_hist_{{ $payment->idpayment }}" tabindex="-1" aria-modal="true"
+                    role="dialog">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content shadow">
+
+                            <div class="modal-header bg-info text-white">
+                                <h5 class="modal-title fw-semibold">
+                                    Project Details &mdash;
+                                    {{ DateTime::createFromFormat('!m', $payment->month)->format('F') }}
+                                    {{ $payment->year }}
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <table class="table table-bordered text-center align-middle mb-0">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Solar Capacity</th>
+                                            <th>Solar Rate (LKR)</th>
+                                            <th>Additional Work</th>
+                                            <th>Additional Rate (LKR)</th>
+                                            <th>Project Total (LKR)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($payment->payment_processes as $index => $process)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>
+                                                    <span class="badge bg-warning text-dark">
+                                                        {{ $process->solar->capacity ?? '—' }} kW
+                                                    </span>
+                                                </td>
+                                                <td>{{ number_format($process->solar->rate ?? 0, 2) }}</td>
+                                                <td>{{ $process->additionalWork->description ?? '—' }}</td>
+                                                <td>{{ number_format($process->additionalWork->rate ?? 0, 2) }}</td>
+                                                <td class="fw-semibold">{{ number_format($process->total, 2) }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot class="table-light">
+                                        <tr>
+                                            <th colspan="5" class="text-end">Projects Total</th>
+                                            <th>{{ number_format($payment->process_total, 2) }} LKR</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            @endif
+        @endforeach
+
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 new bootstrap.Modal(document.getElementById('billModal'), {
                     backdrop: 'static'
                 }).show();
             });
         </script>
     @endisset
+
 @endsection

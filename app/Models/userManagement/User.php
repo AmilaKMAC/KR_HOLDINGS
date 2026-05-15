@@ -3,6 +3,9 @@
 namespace App\Models\UserManagement;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\ProjectManagement\AssignTechnician;
+use App\Models\PaymentAndSalary\Payment;
+use App\Models\Attendance\Attendance;
 
 class User extends Authenticatable
 {
@@ -30,7 +33,6 @@ class User extends Authenticatable
         'technician_registration_idtechnician_registration',
     ];
 
-    // Tell Laravel to use 'username' instead of 'email' for auth
     public function getAuthIdentifierName() { return 'iduser'; }
     public function getAuthPassword()       { return $this->password; }
 
@@ -46,14 +48,21 @@ class User extends Authenticatable
         return $this->belongsTo(UserRole::class, 'user_role_iduser_role', 'iduser_role');
     }
 
-    // app/Models/UserManagement/User.php
 
 public function assignedProjects()
 {
     return $this->hasMany(
-        \App\Models\ProjectManagement\AssignTechnician::class,
+        AssignTechnician::class,
         'user_iduser',
         'iduser'
     )->where('status', 1)->with('project');
+}
+
+public function payments() {
+    return $this->hasMany(Payment::class, 'user_iduser', 'iduser');
+}
+
+public function attendances() {
+    return $this->hasMany(Attendance::class, 'user_iduser', 'iduser');
 }
 }

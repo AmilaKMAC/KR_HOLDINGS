@@ -29,4 +29,8 @@ class Attendance extends Model
     {
         return $this->belongsTo(Project::class, 'project_idProject', 'idProject');
     }
+
+    public function scopePresentAndApproved($query) {
+    return $query->where('attendance', 1)->where('approval', 1);
+}
 }

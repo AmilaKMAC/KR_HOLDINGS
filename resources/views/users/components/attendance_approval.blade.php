@@ -3,13 +3,6 @@
 @section('content')
     <div class="container-fluid px-2 px-md-4 px-lg-5 mt-4">
 
-        @if (session('success'))
-            <div class="alert alert-success py-2">{{ session('success') }}</div>
-        @endif
-        @if (session('error'))
-            <div class="alert alert-danger py-2">{{ session('error') }}</div>
-        @endif
-
         {{-- ===== TABLE 1: TODAY'S ATTENDANCE ===== --}}
         <div class="card shadow-sm mb-4">
             <div class="card-header text-center fw-bold bg-dark text-white">
