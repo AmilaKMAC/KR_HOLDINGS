@@ -9,16 +9,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProofOfWork extends Model
 {
-    protected $table      = 'proof_of_work';
+    protected $table = 'proof_of_work';
+
     protected $primaryKey = 'idproof_of_work';
-    public $timestamps    = false;
+
+    public $timestamps = false;
 
     protected $fillable = [
         'Project_idProject',
         'user_iduser',
         'approval',
-        'additional_work_idadditional_work',
-        'section',
+        'unapprove_reason',
+
     ];
 
     public function project()
@@ -42,8 +44,8 @@ class ProofOfWork extends Model
         return $this->belongsToMany(
             AdditionalWork::class,
             'proof_additional_work',
-            'Project_idProject', 
-            'idadditional_work'           
+            'Project_idProject',
+            'idadditional_work'
         );
     }
 }

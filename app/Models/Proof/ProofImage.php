@@ -13,6 +13,8 @@ class ProofImage extends Model
         'proof_of_work_idproof_of_work',
         'section',
         'image_path',
+            'is_reuploaded',
+
     ];
 
     public function proofOfWork()

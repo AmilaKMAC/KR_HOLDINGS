@@ -13,6 +13,8 @@ class WorkCompletion extends Model
     protected $fillable = [
         'Project_idProject',
         'completion_date',
+                'approval',
+
     ];
 
     public function project()
@@ -24,4 +26,10 @@ class WorkCompletion extends Model
     {
         return $this->hasMany(WorkCompletionTechnician::class, 'work_completion_idwork_completion', 'idwork_completion');
     }
+
+        public function images()
+    {
+        return $this->hasMany(WorkCompletionTechnician::class, 'work_completion_idwork_completion', 'idwork_completion');
+    }
+
 }

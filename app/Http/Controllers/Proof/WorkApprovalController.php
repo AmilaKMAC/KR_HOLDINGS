@@ -91,34 +91,38 @@ class WorkApprovalController extends Controller
     // =========================================================================
     // UNAPPROVE
     // =========================================================================
-    public function unapprove(Request $request)
-    {
-        $request->validate([
-            'idproof_of_work' => 'required|integer',
-        ]);
+public function unapprove(Request $request)
+{
+    $request->validate([
+        'idproof_of_work'  => 'required|integer',
+        'unapprove_reason' => 'required|string|max:500',
+    ]);
 
-        $proofOfWork = ProofOfWork::findOrFail($request->idproof_of_work);
+    $proofOfWork = ProofOfWork::findOrFail($request->idproof_of_work);
 
-        $proofOfWork->update(['approval' => 0]);
-        $proofOfWork->project->update(['status' => 0]);
-        $proofOfWork->additionalWorks()->detach();
+    $proofOfWork->update([
+        'approval'         => 0,
+        'unapprove_reason' => $request->unapprove_reason,
+    ]);
 
-        WorkCompletion::query()
-            ->where('Project_idProject', $proofOfWork->Project_idProject)
-            ->delete();
+    $proofOfWork->project->update(['status' => 0]);
+    $proofOfWork->additionalWorks()->detach();
 
-        $assignedTechnicians = AssignTechnician::query()
-            ->where('Project_idProject', $proofOfWork->Project_idProject)
-            ->get();
+    WorkCompletion::query()
+        ->where('Project_idProject', $proofOfWork->Project_idProject)
+        ->delete();
 
-        foreach ($assignedTechnicians as $assigned) {
-            $this->recalculateMonthlyPayment($assigned->user_iduser);
-        }
+    $assignedTechnicians = AssignTechnician::query()
+        ->where('Project_idProject', $proofOfWork->Project_idProject)
+        ->get();
 
-        return redirect()->route('proof_of_work_approval.index')
-            ->with('success', 'Approval revoked and payments recalculated.');
+    foreach ($assignedTechnicians as $assigned) {
+        $this->recalculateMonthlyPayment($assigned->user_iduser);
     }
 
+    return redirect()->route('proof_of_work_approval.index')
+        ->with('success', 'Approval revoked. Technician notified to re-upload.');
+}
     // =========================================================================
     // SAVE ADDITIONAL WORK
     // =========================================================================
@@ -139,6 +143,8 @@ class WorkApprovalController extends Controller
         return redirect()->route('proof_of_work_approval.index')
             ->with('success', 'Additional work saved successfully!');
     }
+
+    
 
     // =========================================================================
     // RECALCULATE MONTHLY PAYMENT

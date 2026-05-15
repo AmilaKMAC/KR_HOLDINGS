@@ -2,17 +2,20 @@
 
 namespace App\Models\Proof;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\UserManagement\User;
+use Illuminate\Database\Eloquent\Model;
 
 class WorkCompletionTechnician extends Model
 {
     protected $table = 'work_completion_technician';
+
     protected $primaryKey = 'idwork_completion_technician';
 
     protected $fillable = [
         'work_completion_idwork_completion',
         'user_iduser',
+        'image_path',
+        'uploaded_at',
     ];
 
     public function workCompletion()
@@ -24,4 +27,6 @@ class WorkCompletionTechnician extends Model
     {
         return $this->belongsTo(User::class, 'user_iduser', 'iduser');
     }
+
+
 }

@@ -110,14 +110,11 @@
                                 </button>
                             </td>
                             <td>
-                                <form method="POST" action="{{ route('proof_of_work_approval.unapprove') }}">
-                                    @csrf
-                                    <input type="hidden" name="idproof_of_work" value="{{ $proof->idproof_of_work }}">
-                                    <button type="submit" class="btn btn-sm btn-warning"
-                                            onclick="return confirm('Revoke approval?')">
-                                        Unapprove
-                                    </button>
-                                </form>
+                                <button class="btn btn-sm btn-warning"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#unapproveModal{{ $proof->idproof_of_work }}">
+                                    Unapprove
+                                </button>
                             </td>
                         </tr>
                     @empty
@@ -164,11 +161,14 @@
                 </div>
                 <div class="modal-body">
                     @foreach ($sectionLabels as $key => $label)
-                        @php $imgs = $proof->images->where('section', $key); @endphp
-                        @if ($imgs->isNotEmpty())
+                        @php
+                            $currentImgs  = $proof->images->where('section', $key)->where('is_reuploaded', 0);
+                            $previousImgs = $proof->images->where('section', $key)->where('is_reuploaded', 1);
+                        @endphp
+                        @if ($currentImgs->isNotEmpty())
                             <h6 class="fw-bold text-primary mt-3">{{ $label }}</h6>
-                            <div class="row g-2 mb-3">
-                                @foreach ($imgs as $img)
+                            <div class="row g-2 mb-2">
+                                @foreach ($currentImgs as $img)
                                     <div class="col-6 col-md-3">
                                         <img src="{{ asset($img->image_path) }}"
                                              class="img-fluid rounded shadow-sm"
@@ -177,6 +177,28 @@
                                     </div>
                                 @endforeach
                             </div>
+                            {{-- Show previous images collapsed --}}
+                            @if ($previousImgs->isNotEmpty())
+                                <div class="mb-3">
+                                    <a class="text-muted small"
+                                       data-bs-toggle="collapse"
+                                       href="#prevImgs{{ $proof->idproof_of_work }}_{{ $key }}">
+                                        View {{ $previousImgs->count() }} previous image(s)
+                                    </a>
+                                    <div class="collapse" id="prevImgs{{ $proof->idproof_of_work }}_{{ $key }}">
+                                        <div class="row g-2 mt-1">
+                                            @foreach ($previousImgs as $img)
+                                                <div class="col-6 col-md-3">
+                                                    <img src="{{ asset($img->image_path) }}"
+                                                         class="img-fluid rounded shadow-sm opacity-50"
+                                                         style="height:130px;object-fit:cover;width:100%;cursor:pointer;"
+                                                         onclick="openLightbox('{{ asset($img->image_path) }}')">
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                         @endif
                     @endforeach
                 </div>
@@ -187,8 +209,7 @@
         </div>
     </div>
 
-    {{-- ===== 2. APPROVE MODAL (additional works + approve) ===== --}}
-    {{-- Only render for pending proofs --}}
+    {{-- ===== 2. APPROVE MODAL ===== --}}
     @if ($proof->approval == 0)
         <div class="modal fade" id="approveModal{{ $proof->idproof_of_work }}" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
@@ -204,12 +225,9 @@
                         @csrf
                         <input type="hidden" name="idproof_of_work" value="{{ $proof->idproof_of_work }}">
                         <div class="modal-body" style="max-height:400px; overflow-y:auto;">
-
                             <p class="text-muted small mb-3">
                                 Select any additional work completed for this project, then click Approve.
-                                Additional work is optional.
                             </p>
-
                             @forelse ($additionalWorkOptions as $work)
                                 <div class="form-check mb-2">
                                     <input class="form-check-input"
@@ -225,11 +243,49 @@
                             @empty
                                 <p class="text-muted mb-0">No additional work options available.</p>
                             @endforelse
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-success">Approve</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- ===== 3. UNAPPROVE MODAL ===== --}}
+    @if ($proof->approval == 1)
+        <div class="modal fade" id="unapproveModal{{ $proof->idproof_of_work }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title">
+                            Unapprove — P{{ str_pad($proof->project?->idProject, 3, '0', STR_PAD_LEFT) }}
+                            {{ ucwords(strtolower($proof->project?->customer_name)) }}
+                        </h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="POST" action="{{ route('proof_of_work_approval.unapprove') }}">
+                        @csrf
+                        <input type="hidden" name="idproof_of_work" value="{{ $proof->idproof_of_work }}">
+                        <div class="modal-body">
+                            <p class="text-muted small mb-3">
+                                Provide a reason for revoking approval. The technician will see
+                                this and must re-upload images.
+                            </p>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Reason for Unapproval</label>
+                                <textarea name="unapprove_reason"
+                                          class="form-control"
+                                          rows="3"
+                                          placeholder="Enter reason..."
+                                          required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-warning">Confirm Unapprove</button>
                         </div>
                     </form>
                 </div>
