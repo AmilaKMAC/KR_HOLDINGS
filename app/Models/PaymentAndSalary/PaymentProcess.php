@@ -4,10 +4,9 @@ namespace App\Models\PaymentAndSalary;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\UserManagement\User;
-use App\Models\SystemSettings\Solar;
-use App\Models\SystemSettings\AdditionalWork;
 use App\Models\SystemSettings\TechnicianLevel;
 use App\Models\ProjectManagement\Project;
+use App\Models\PaymentAndSalary\PaymentProcessAdditionalWork;
 
 class PaymentProcess extends Model
 {
@@ -18,10 +17,8 @@ class PaymentProcess extends Model
     protected $fillable = [
         'user_iduser',
         'idpayment',
+        'project_idProject',
         'technician_level_idtechnician_level',
-        'solar_idsolar',
-        'additional_work_idadditional_work',
-        'others',
         'total',
     ];
 
@@ -40,18 +37,13 @@ class PaymentProcess extends Model
         return $this->belongsTo(TechnicianLevel::class, 'technician_level_idtechnician_level', 'idtechnician_level');
     }
 
-    public function solar()
-    {
-        return $this->belongsTo(Solar::class, 'solar_idsolar', 'idsolar');
-    }
-
-    public function additionalWork()
-    {
-        return $this->belongsTo(AdditionalWork::class, 'additional_work_idadditional_work', 'idadditional_work');
-    }
-
     public function project()
-{
-    return $this->belongsTo(Project::class, 'project_id', 'idProject');
-}
+    {
+        return $this->belongsTo(Project::class, 'project_idProject', 'idProject');
+    }
+
+    public function additionalWorks()
+    {
+        return $this->hasMany(PaymentProcessAdditionalWork::class, 'payment_process_idpayment_process', 'idpayment_process');
+    }
 }

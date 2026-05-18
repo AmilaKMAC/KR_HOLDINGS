@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\UserManagement\User;
 use App\Models\ProjectManagement\Project;
 
+use League\Uri\Builder;
+
 class Attendance extends Model
 {
     protected $table = 'attendance';
@@ -30,7 +32,7 @@ class Attendance extends Model
         return $this->belongsTo(Project::class, 'project_idProject', 'idProject');
     }
 
-    public function scopePresentAndApproved($query) {
+    public function scopePresentAndApproved(object $query) {
     return $query->where('attendance', 1)->where('approval', 1);
 }
 }

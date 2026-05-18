@@ -56,10 +56,8 @@
                                             @if ($tech->days_attended > 0 || $tech->total_working_days > 0)
                                                 <span class="fw-semibold">{{ $tech->days_attended }}</span>
                                                 / {{ $tech->total_working_days }} days
-
-
                                                 <div class="text-muted" style="font-size:11px">
-                                                    {{ number_format($tech->attendance_bonus, 2) }} LKR 
+                                                    {{ number_format($tech->attendance_bonus, 2) }} LKR
                                                 </div>
                                             @else
                                                 <span class="text-muted">—</span>
@@ -70,21 +68,17 @@
                                         <td>
                                             @if ($tech->basic_salary !== null)
                                                 {{ number_format($tech->basic_salary, 2) }} LKR
-                
                                             @else
                                                 <span class="text-muted">—</span>
                                             @endif
                                         </td>
-
-
 
                                         {{-- Projects Total with Details button --}}
                                         <td>
                                             @if ($tech->process_total !== null)
                                                 {{ number_format($tech->process_total, 2) }} LKR
                                                 <div class="text-muted" style="font-size:11px">
-                                                    {{ $tech->payment_processes->count() }}
-                                                    project(s)
+                                                    {{ $tech->payment_processes->count() }} project(s)
                                                 </div>
                                                 <button type="button" class="btn btn-sm btn-outline-info mt-1"
                                                     data-bs-toggle="modal"
@@ -174,70 +168,93 @@
     </div>
 
 
-{{-- ── Project detail modals for main table ── --}}
-@foreach ($technicians as $tech)
-    @if ($tech->idpayment && $tech->process_total !== null)
-        <div class="modal fade" id="projectModal_{{ $tech->idpayment }}" tabindex="-1" aria-modal="true" role="dialog">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content shadow">
-                    <div class="modal-header bg-info text-white">
-                        <h5 class="modal-title fw-semibold">
-                            Project Details &mdash; {{ $tech->name }}
-                            @if ($tech->month)
-                                &mdash; {{ DateTime::createFromFormat('!m', $tech->month)->format('F') }} {{ $tech->year }}
-                            @endif
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <table class="table table-bordered text-center align-middle mb-0">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Solar Capacity</th>
-                                    <th>Solar Rate (LKR)</th>
-                                    <th>Additional Work</th>
-                                    <th>Additional Rate (LKR)</th>
-                                    <th>Project Total (LKR)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($tech->payment_processes as $index => $process)
+    {{-- ── Project detail modals for main table ── --}}
+    @foreach ($technicians as $tech)
+        @if ($tech->idpayment && $tech->process_total !== null)
+            <div class="modal fade" id="projectModal_{{ $tech->idpayment }}" tabindex="-1" aria-modal="true"
+                role="dialog">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content shadow">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title fw-semibold">
+                                Project Details &mdash; {{ $tech->name }}
+                                @if ($tech->month)
+                                    &mdash; {{ DateTime::createFromFormat('!m', $tech->month)->format('F') }}
+                                    {{ $tech->year }}
+                                @endif
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-bordered text-center align-middle mb-0">
+                                <thead class="table-dark">
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>
-                                            <span class="badge bg-warning text-dark">
-                                                {{ $process->solar->capacity ?? '—' }} kW
-                                            </span>
-                                        </td>
-                                        <td>{{ number_format($process->solar->rate ?? 0, 2) }}</td>
-                                        <td>{{ $process->additionalWork->description ?? '—' }}</td>
-                                        <td>{{ number_format($process->additionalWork->rate ?? 0, 2) }}</td>
-                                        <td class="fw-semibold">{{ number_format($process->total, 2) }}</td>
+                                        <th>#</th>
+                                        <th>Customer Name</th>
+                                        <th>Solar Capacity</th>
+                                        <th>Solar Rate (LKR)</th>
+                                        <th>Additional Work</th>
+                                        <th>Additional Rate (LKR)</th>
+                                        <th>Project Total (LKR)</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot class="table-light">
-                                <tr>
-                                    <th colspan="5" class="text-end">Projects Total</th>
-                                    <th>{{ number_format($tech->process_total, 2) }} LKR</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </thead>
+                                <tbody>
+                                    @foreach ($tech->payment_processes as $index => $process)
+                                        @php $solar = $process->project->solar ?? null; @endphp
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ $process->project->customer_name ?? '—' }}</td>
+                                            <td>
+                                                <span class="badge bg-warning text-dark">
+                                                    {{ $solar->capacity ?? '—' }} kW
+                                                </span>
+                                            </td>
+                                            <td>{{ number_format($solar->rate ?? 0, 2) }}</td>
+                                            {{-- Additional Works as badges --}}
+                                            <td>
+                                                @forelse ($process->additionalWorks as $aw)
+                                                    <span class="badge bg-secondary me-1 mb-1">
+                                                        {{ $aw->additionalWork->description ?? '—' }}
+                                                    </span>
+                                                @empty
+                                                    <span class="text-muted">—</span>
+                                                @endforelse
+                                            </td>
+                                            {{-- Additional Rates as badges --}}
+                                            <td>
+                                                @forelse ($process->additionalWorks as $aw)
+                                                    <span>
+                                                        {{ number_format($aw->additionalWork->rate, 2) }}
+                                                    </span>
+                                                @empty
+                                                    <span class="text-muted">—</span>
+                                                @endforelse
+                                            </td>
+                                            <td class="fw-semibold">{{ number_format($process->total, 2) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <th colspan="6" class="text-end">Projects Total</th>
+                                        <th>{{ number_format($tech->process_total, 2) }} LKR</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    @endif
-@endforeach
+        @endif
+    @endforeach
 
 
     {{-- =========================================================================
      BILL HISTORY MODAL
-========================================================================= --}}
+    ========================================================================= --}}
     @isset($openModal)
         <div class="modal fade" id="billModal" tabindex="-1" aria-labelledby="billModalLabel" aria-modal="true" role="dialog">
             <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
@@ -270,7 +287,6 @@
                                         <th>Attendance<br><small class="fw-normal text-muted">(present / working days)</small>
                                         </th>
                                         <th>Basic Salary<br><small class="fw-normal text-muted">(pro-rated)</small></th>
-                                        <th>Attendance Bonus</th>
                                         <th>Projects Total<br><small class="fw-normal text-muted">(all projects)</small></th>
                                         <th>Other Payment</th>
                                         <th>Grand Total</th>
@@ -282,7 +298,6 @@
                                 <tbody>
                                     @if ($currentPayment)
                                         @php $payment = $currentPayment; @endphp
-                                        {{-- FIX: removed the erroneous @include that caused the 500 error --}}
                                         <tr>
                                             <td>
                                                 {{ DateTime::createFromFormat('!m', $payment->month)->format('F') }}
@@ -292,19 +307,12 @@
                                                 <span class="fw-semibold">{{ $payment->days_attended }}</span>
                                                 / {{ $payment->total_working_days }} days
                                                 <div class="text-muted" style="font-size:11px">
-                                                    {{ number_format($payment->level_basic_salary, 2) }}
-                                                    × {{ $payment->days_attended }}
-                                                    / {{ $payment->total_working_days ?: 1 }}
+                                                    {{ number_format($payment->attendance_bonus, 2) }} LKR
+
                                                 </div>
                                             </td>
                                             <td>{{ number_format($payment->basic_salary, 2) }} LKR</td>
-                                            <td>
-                                                {{ number_format($payment->attendance_bonus, 2) }} LKR
-                                                <div class="text-muted" style="font-size:11px">
-                                                    {{ $payment->days_attended }} ×
-                                                    {{ number_format($payment->attendance_rate, 2) }}
-                                                </div>
-                                            </td>
+
                                             <td>
                                                 @if ($payment->process_total !== null)
                                                     {{ number_format($payment->process_total, 2) }} LKR
@@ -363,7 +371,7 @@
                                         </tr>
                                     @else
                                         <tr>
-                                            <td colspan="10" class="text-muted py-3">
+                                            <td colspan="9" class="text-muted py-3">
                                                 No payment record for this month yet.
                                                 Records are created automatically when projects are approved.
                                             </td>
@@ -384,7 +392,6 @@
                                         <th>Attendance<br><small class="fw-normal text-muted">(present / working days)</small>
                                         </th>
                                         <th>Basic Salary<br><small class="fw-normal text-muted">(pro-rated)</small></th>
-                                        <th>Attendance Bonus</th>
                                         <th>Projects Total<br><small class="fw-normal text-muted">(all projects)</small></th>
                                         <th>Other Payment</th>
                                         <th>Grand Total</th>
@@ -404,19 +411,12 @@
                                                 <span class="fw-semibold">{{ $payment->days_attended }}</span>
                                                 / {{ $payment->total_working_days }} days
                                                 <div class="text-muted" style="font-size:11px">
-                                                    {{ number_format($payment->level_basic_salary, 2) }}
-                                                    × {{ $payment->days_attended }}
-                                                    / {{ $payment->total_working_days ?: 1 }}
+                                                    {{ number_format($payment->attendance_bonus, 2) }} LKR
+
                                                 </div>
                                             </td>
                                             <td>{{ number_format($payment->basic_salary, 2) }} LKR</td>
-                                            <td>
-                                                {{ number_format($payment->attendance_bonus, 2) }} LKR
-                                                <div class="text-muted" style="font-size:11px">
-                                                    {{ $payment->days_attended }} ×
-                                                    {{ number_format($payment->attendance_rate, 2) }}
-                                                </div>
-                                            </td>
+
                                             <td>
                                                 @if ($payment->process_total !== null)
                                                     {{ number_format($payment->process_total, 2) }} LKR
@@ -475,7 +475,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="10" class="text-muted py-3">No previous bills found.</td>
+                                            <td colspan="9" class="text-muted py-3">No previous bills found.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -524,6 +524,7 @@
                                     <thead class="table-dark">
                                         <tr>
                                             <th>#</th>
+                                            <th>Customer Name</th>
                                             <th>Solar Capacity</th>
                                             <th>Solar Rate (LKR)</th>
                                             <th>Additional Work</th>
@@ -533,23 +534,43 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($payment->payment_processes as $index => $process)
+                                            @php $solar = $process->project->solar ?? null; @endphp
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
+                                                <td>{{ $process->project->customer_name ?? '—' }}</td>
                                                 <td>
                                                     <span class="badge bg-warning text-dark">
-                                                        {{ $process->solar->capacity ?? '—' }} kW
+                                                        {{ $solar->capacity ?? '—' }} kW
                                                     </span>
                                                 </td>
-                                                <td>{{ number_format($process->solar->rate ?? 0, 2) }}</td>
-                                                <td>{{ $process->additionalWork->description ?? '—' }}</td>
-                                                <td>{{ number_format($process->additionalWork->rate ?? 0, 2) }}</td>
+                                                <td>{{ number_format($solar->rate ?? 0, 2) }}</td>
+                                                {{-- Additional Works as badges --}}
+                                                <td>
+                                                    @forelse ($process->additionalWorks as $aw)
+                                                        <span class="badge bg-secondary me-1 mb-1">
+                                                            {{ $aw->additionalWork->description ?? '—' }}
+                                                        </span>
+                                                    @empty
+                                                        <span class="text-muted">—</span>
+                                                    @endforelse
+                                                </td>
+                                                {{-- Additional Rates as badges --}}
+                                                <td>
+                                                    @forelse ($process->additionalWorks as $aw)
+                                                        <span">
+                                                            {{ number_format($aw->additionalWork->rate, 2) }}
+                                                            </span>
+                                                        @empty
+                                                            <span class="text-muted">—</span>
+                                                    @endforelse
+                                                </td>
                                                 <td class="fw-semibold">{{ number_format($process->total, 2) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                     <tfoot class="table-light">
                                         <tr>
-                                            <th colspan="5" class="text-end">Projects Total</th>
+                                            <th colspan="6" class="text-end">Projects Total</th>
                                             <th>{{ number_format($payment->process_total, 2) }} LKR</th>
                                         </tr>
                                     </tfoot>

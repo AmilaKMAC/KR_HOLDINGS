@@ -13,14 +13,12 @@ class GenerateMonthlyPayments extends Command
 
     public function handle(): void
     {
-        // Default to last month so it runs at the end/start of month boundary
         $month     = $this->option('month') ?? Carbon::now()->subMonth()->format('Y-m');
         $startDate = Carbon::parse($month . '-01')->startOfMonth();
         $endDate   = Carbon::parse($month . '-01')->endOfMonth();
 
         $this->info("Generating payments for: {$startDate->format('F Y')}");
 
-        // Get all technicians (role 4) who have at least one approved proof this month
         $technicians = DB::table('user as u')
             ->join('technician_registration as tr',
                 'u.technician_registration_idtechnician_registration', '=', 'tr.idtechnician_registration')
@@ -40,11 +38,10 @@ class GenerateMonthlyPayments extends Command
 
         foreach ($technicians as $technician) {
 
-            // Skip if payment already generated for this technician this month
             $exists = DB::table('payment')
                 ->where('user_iduser', $technician->iduser)
-                ->whereYear('date', $startDate->year)
-                ->whereMonth('date', $startDate->month)
+                ->where('month', $startDate->month)
+                ->where('year', $startDate->year)
                 ->exists();
 
             if ($exists) {
@@ -53,70 +50,93 @@ class GenerateMonthlyPayments extends Command
                 continue;
             }
 
-            // Get all approved proofs for this technician this month
-            $approvedProofs = DB::table('proof_of_work as pw')
-                ->join('project as pr', 'pw.Project_idProject', '=', 'pr.idProject')
+            // Fixed: wct.user_iduser moved out of closure into where()
+            $projects = DB::table('assign_technician as at')
+                ->join('project as pr', 'at.Project_idProject', '=', 'pr.idProject')
                 ->join('solar as s', 'pr.solar_idsolar', '=', 's.idsolar')
-                ->join('additional_work as aw', 'pw.additional_work_idadditional_work', '=', 'aw.idadditional_work')
-                ->where('pw.user_iduser', $technician->iduser)
-                ->where('pw.approval', 1)
-                ->whereBetween('pw.uploaded_at', [$startDate, $endDate])
+                ->join('work_completion as wc', 'wc.Project_idProject', '=', 'pr.idProject')
+                ->join('work_completion_technician as wct', 'wct.work_completion_idwork_completion', '=', 'wc.idwork_completion')
+                ->where('at.user_iduser', $technician->iduser)
+                ->where('wct.user_iduser', $technician->iduser)
+                ->where('at.status', 1)
+                ->where('wc.approval', 1)
+                ->whereMonth('wc.completion_date', $startDate->month)
+                ->whereYear('wc.completion_date', $startDate->year)
                 ->select(
+                    'pr.idProject',
                     'pr.solar_idsolar',
-                    's.rate as solar_rate',
-                    'pw.additional_work_idadditional_work',
-                    'aw.rate as additional_work_rate'
+                    's.rate as solar_rate'
                 )
+                ->distinct()
                 ->get();
 
-            if ($approvedProofs->isEmpty()) {
-                $this->line("  Skipped (no approved work): User {$technician->iduser}");
+            if ($projects->isEmpty()) {
+                $this->line("  Skipped (no assigned projects with work): User {$technician->iduser}");
                 $skipped++;
                 continue;
             }
 
-            // Sum solar rates from distinct projects worked on this month
-            $totalSolarRate = $approvedProofs->unique('solar_idsolar')->sum('solar_rate');
+            DB::transaction(function () use ($technician, $projects, $startDate) {
 
-            // Sum all additional work rates for this month
-            $totalAdditionalWork = $approvedProofs->sum('additional_work_rate');
+                $grandProcessTotal = 0;
 
-            // others = 0 by default, executive fills it later
-            $others   = 0;
-            $total    = $technician->basic_salary + $totalSolarRate + $totalAdditionalWork + $others;
-
-            // Use the first additional_work_id as the FK reference (pivot for the dominant one)
-            $firstAdditionalWorkId = $approvedProofs->first()->additional_work_idadditional_work;
-            $firstSolarId          = $approvedProofs->first()->solar_idsolar;
-
-            DB::transaction(function () use (
-                $technician,
-                $firstSolarId,
-                $firstAdditionalWorkId,
-                $total,
-                $others,
-                $startDate
-            ) {
-                // Insert payment row (date = last day of the month)
                 $idpayment = DB::table('payment')->insertGetId([
                     'user_iduser'    => $technician->iduser,
+                    'month'          => $startDate->month,
+                    'year'           => $startDate->year,
+                    'basic_salary'   => $technician->basic_salary,
+                    'other_payment'  => 0,
                     'date'           => $startDate->copy()->endOfMonth()->toDateString(),
-                    'payment_status' => 0, // Pending
+                    'payment_status' => 0,
+                    'process_total'  => 0,
+                    'total'          => 0,
                 ]);
 
-                // Insert payment_process row linked to payment
-                DB::table('payment_process')->insert([
-                    'user_iduser'                         => $technician->iduser,
-                    'idpayment'                           => $idpayment,
-                    'technician_level_idtechnician_level' => $technician->technician_level_idtechnician_level,
-                    'solar_idsolar'                       => $firstSolarId,
-                    'additional_work_idadditional_work'   => $firstAdditionalWorkId,
-                    'others'                              => $others,
-                    'total'                               => $total,
-                ]);
+                foreach ($projects as $project) {
+
+                    $additionalWorks = DB::table('proof_additional_work as paw')
+                        ->join('additional_work as aw', 'paw.idadditional_work', '=', 'aw.idadditional_work')
+                        ->where('paw.Project_idProject', $project->idProject)
+                        ->select(
+                            'aw.idadditional_work',
+                            'aw.rate'
+                        )
+                        ->get();
+
+                    $additionalWorkTotal = $additionalWorks->sum('rate');
+                    $projectTotal        = round($project->solar_rate + $additionalWorkTotal, 2);
+                    $grandProcessTotal  += $projectTotal;
+
+                    $idpaymentProcess = DB::table('payment_process')->insertGetId([
+                        'user_iduser'                         => $technician->iduser,
+                        'idpayment'                           => $idpayment,
+                        'project_idProject'                   => $project->idProject,
+                        'technician_level_idtechnician_level' => $technician->technician_level_idtechnician_level,
+                        'total'                               => $projectTotal,
+                    ]);
+
+                    foreach ($additionalWorks as $aw) {
+                        DB::table('payment_process_additional_work')->insert([
+                            'payment_process_idpayment_process' => $idpaymentProcess,
+                            'additional_work_idadditional_work' => $aw->idadditional_work,
+                            'rate'                              => $aw->rate,
+                            'created_at'                        => now(),
+                            'updated_at'                        => now(),
+                        ]);
+                    }
+                }
+
+                $grandTotal = round($technician->basic_salary + $grandProcessTotal, 2);
+
+                DB::table('payment')
+                    ->where('idpayment', $idpayment)
+                    ->update([
+                        'process_total' => $grandProcessTotal,
+                        'total'         => $grandTotal,
+                    ]);
             });
 
-            $this->info("  Generated payment for User {$technician->iduser} | Total: {$total}");
+            $this->info("  Generated payment for User {$technician->iduser}");
             $generated++;
         }
 

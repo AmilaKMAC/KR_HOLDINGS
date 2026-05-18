@@ -20,6 +20,7 @@ class Payment extends Model
         'date',
         'payment_status',
         'total',
+        'process_total',
     ];
 
     public function user()
