@@ -153,162 +153,165 @@ public function unapprove(Request $request)
     // Grand Total = basic_salary_earned + solar_total + additional_work_total + other_payment
     // basic_salary_earned = level_basic_salary × (days_attended / total_working_days)
     // =========================================================================
-    private function recalculateMonthlyPayment(int $userId): void
-    {
-        $now        = Carbon::now();
-        $month      = (int) $now->month;
-        $year       = (int) $now->year;
-        $monthStart = $now->copy()->startOfMonth()->toDateString();
-        $monthEnd   = $now->copy()->endOfMonth()->toDateString();
+private function recalculateMonthlyPayment(int $userId): void
+{
+    $now        = Carbon::now();
+    $month      = (int) $now->month;
+    $year       = (int) $now->year;
+    $monthStart = $now->copy()->startOfMonth()->toDateString();
+    $monthEnd   = $now->copy()->endOfMonth()->toDateString();
 
-        // ── 1. Get technician level & full basic salary ───────────────────────
-        $techReg = DB::table('user as u')
-            ->join('technician_registration as tr',
-                'u.technician_registration_idtechnician_registration', '=',
-                'tr.idtechnician_registration')
-            ->join('technician_level as tl',
-                'tr.technician_level_idtechnician_level', '=',
-                'tl.idtechnician_level')
-            ->where('u.iduser', $userId)
-            ->select(
-                'tr.technician_level_idtechnician_level',
-                'tl.basic_salary as level_basic_salary'
-            )
-            ->first();
+    // ── 1. Technician level & basic salary ───────────────────────────────
+    $techReg = DB::table('user as u')
+        ->join('technician_registration as tr',
+            'u.technician_registration_idtechnician_registration', '=',
+            'tr.idtechnician_registration')
+        ->join('technician_level as tl',
+            'tr.technician_level_idtechnician_level', '=',
+            'tl.idtechnician_level')
+        ->where('u.iduser', $userId)
+        ->select(
+            'tr.technician_level_idtechnician_level',
+            'tl.basic_salary as level_basic_salary'
+        )
+        ->first();
 
-        if (!$techReg) return;
+    if (!$techReg) return;
 
-        // ── 2. Total working days this month (present=1 AND approved=1) ──────
-        $totalWorkingDays = DB::table('attendance')
-            ->whereBetween('date', [$monthStart, $monthEnd])
-            ->where('attendance', 1)
-            ->where('approval', 1)
-            ->distinct()
-            ->count('date');
+    // ── 2. Total approved working days this month (all technicians) ──────
+    $totalWorkingDays = DB::table('attendance')
+        ->whereBetween('date', [$monthStart, $monthEnd])
+        ->where('attendance', 1)
+        ->where('approval', 1)
+        ->distinct()
+        ->count('date');
 
-        // Prevent division by zero
-        if ($totalWorkingDays === 0) $totalWorkingDays = 1;
+    if ($totalWorkingDays === 0) $totalWorkingDays = 1;
 
-        // ── 3. Days THIS technician was present AND approved this month ────────
-        $daysAttended = DB::table('attendance')
-            ->where('user_iduser', $userId)
-            ->whereBetween('date', [$monthStart, $monthEnd])
-            ->where('attendance', 1)
-            ->where('approval', 1)
-            ->distinct()
-            ->count('date');
+    // ── 3. Days this technician attended & was approved ──────────────────
+    $daysAttended = DB::table('attendance')
+        ->where('user_iduser', $userId)
+        ->whereBetween('date', [$monthStart, $monthEnd])
+        ->where('attendance', 1)
+        ->where('approval', 1)
+        ->distinct()
+        ->count('date');
 
-        // ── 4. Pro-rated basic salary ─────────────────────────────────────────
-        // basic_salary_earned = level_basic_salary × (days_attended / total_working_days)
-        $basicSalaryEarned = round(
-            ($techReg->level_basic_salary / $totalWorkingDays) * $daysAttended,
-            2
-        );
+    // ── 4. Pro-rated basic salary ─────────────────────────────────────────
+    $basicSalaryEarned = round(
+        ($techReg->level_basic_salary / $totalWorkingDays) * $daysAttended,
+        2
+    );
 
-        // ── 5. All approved projects this technician completed this month ──────
-        $completedProjects = DB::table('work_completion_technician as wct')
-            ->join('work_completion as wc',
-                'wct.work_completion_idwork_completion', '=', 'wc.idwork_completion')
-            ->join('project as pr', 'wc.Project_idProject', '=', 'pr.idProject')
-            ->join('solar as s', 'pr.solar_idsolar', '=', 's.idsolar')
-            ->where('wct.user_iduser', $userId)
-            ->whereBetween('wc.completion_date', [$monthStart, $monthEnd])
-            ->select(
-                'pr.idProject',
-                'pr.solar_idsolar',
-                's.rate as solar_rate'
-            )
+    // ── 5. All approved projects this technician completed this month ─────
+    $completedProjects = DB::table('work_completion_technician as wct')
+        ->join('work_completion as wc',
+            'wct.work_completion_idwork_completion', '=', 'wc.idwork_completion')
+        ->join('project as pr', 'wc.Project_idProject', '=', 'pr.idProject')
+        ->join('solar as s', 'pr.solar_idsolar', '=', 's.idsolar')
+        ->where('wct.user_iduser', $userId)
+        ->whereBetween('wc.completion_date', [$monthStart, $monthEnd])
+        ->select('pr.idProject', 's.rate as solar_rate')
+        ->get()
+        ->unique('idProject');
+
+    // ── 6. Build per-project totals ───────────────────────────────────────
+    $projectBreakdowns = $completedProjects->map(function ($proj) {
+        $additionalWorks = DB::table('proof_additional_work as paw')
+            ->join('additional_work as aw',
+                'paw.idadditional_work', '=', 'aw.idadditional_work')
+            ->where('paw.Project_idProject', $proj->idProject)
+            ->select('aw.idadditional_work', 'aw.rate')
             ->get();
 
-        // ── 6. Solar total: one rate per unique project ───────────────────────
-        $totalSolarRate = $completedProjects->unique('idProject')->sum('solar_rate');
+        return [
+            'idProject'       => $proj->idProject,
+            'solar_rate'      => (float) $proj->solar_rate,
+            'additionalWorks' => $additionalWorks,  // collection of {idadditional_work, rate}
+            'project_total'   => round((float) $proj->solar_rate + $additionalWorks->sum('rate'), 2),
+        ];
+    });
 
-        // ── 7. Additional work total: SUM all rates from pivot for these projects ──
-        $projectIds = $completedProjects->pluck('idProject')->unique()->values();
+    // ── 7. Process total (sum of all project totals) ──────────────────────
+    $processTotal = round($projectBreakdowns->sum('project_total'), 2);
 
-        $totalAdditionalWork = $projectIds->isNotEmpty()
-            ? DB::table('proof_additional_work as paw')
-                ->join('additional_work as aw',
-                    'paw.idadditional_work', '=', 'aw.idadditional_work')
-                ->whereIn('paw.Project_idProject', $projectIds)
-                ->sum('aw.rate')
-            : 0;
+    // ── 8. Upsert payment row ─────────────────────────────────────────────
+    $existingPayment = DB::table('payment')
+        ->where('user_iduser', $userId)
+        ->where('month', $month)
+        ->where('year', $year)
+        ->first();
 
-        $processTotal = round((float)$totalSolarRate + (float)$totalAdditionalWork, 2);
-
-        // ── 8. FK references for payment_process ─────────────────────────────
-        $refSolarId = $completedProjects->isNotEmpty()
-            ? $completedProjects->first()->solar_idsolar
-            : DB::table('solar')->value('idsolar');
-
-        $refAdditionalId = $projectIds->isNotEmpty()
-            ? DB::table('proof_additional_work')
-                ->whereIn('Project_idProject', $projectIds)
-                ->value('idadditional_work')
-            : null;
-
-        $refAdditionalId = $refAdditionalId
-            ?? DB::table('additional_work')->value('idadditional_work');
-
-        // ── 9. Upsert payment + payment_process ──────────────────────────────
-        $existingPayment = DB::table('payment')
-            ->where('user_iduser', $userId)
-            ->where('month', $month)
-            ->where('year', $year)
-            ->first();
-
+    DB::transaction(function () use (
+        $userId, $month, $year, $now,
+        $techReg, $projectBreakdowns,
+        $basicSalaryEarned, $processTotal,
+        $existingPayment
+    ) {
         if ($existingPayment) {
-            // Preserve other_payment already set by executive
             $otherPayment = (float) ($existingPayment->other_payment ?? 0);
             $grandTotal   = round($basicSalaryEarned + $processTotal + $otherPayment, 2);
 
             DB::table('payment')
                 ->where('idpayment', $existingPayment->idpayment)
                 ->update([
-                    'basic_salary' => $basicSalaryEarned,
-                    'total'        => $grandTotal,
-                    'date'         => $now->toDateTimeString(),
+                    'basic_salary'  => $basicSalaryEarned,
+                    'process_total' => $processTotal,
+                    'total'         => $grandTotal,
+                    'date'          => $now->toDateTimeString(),
                 ]);
 
-            DB::table('payment_process')
-                ->where('idpayment', $existingPayment->idpayment)
-                ->update([
-                    'technician_level_idtechnician_level' => $techReg->technician_level_idtechnician_level,
-                    'solar_idsolar'                       => $refSolarId,
-                    'additional_work_idadditional_work'   => $refAdditionalId,
-                    'total'                               => $processTotal,
-                ]);
+            $idpayment = $existingPayment->idpayment;
 
         } else {
-            $otherPayment = 0.00;
-            $grandTotal   = round($basicSalaryEarned + $processTotal, 2);
+            $grandTotal = round($basicSalaryEarned + $processTotal, 2);
 
-            DB::transaction(function () use (
-                $userId, $month, $year, $now,
-                $techReg, $refSolarId, $refAdditionalId,
-                $basicSalaryEarned, $processTotal, $otherPayment, $grandTotal
-            ) {
-                $idpayment = DB::table('payment')->insertGetId([
-                    'user_iduser'    => $userId,
-                    'month'          => $month,
-                    'year'           => $year,
-                    'basic_salary'   => $basicSalaryEarned,
-                    'other_payment'  => $otherPayment,
-                    'total'          => $grandTotal,
-                    'date'           => $now->toDateTimeString(),
-                    'payment_status' => 0,
-                ]);
-
-                DB::table('payment_process')->insert([
-                    'user_iduser'                         => $userId,
-                    'idpayment'                           => $idpayment,
-                    'technician_level_idtechnician_level' => $techReg->technician_level_idtechnician_level,
-                    'solar_idsolar'                       => $refSolarId,
-                    'additional_work_idadditional_work'   => $refAdditionalId,
-                    'others'                              => 0,
-                    'total'                               => $processTotal,
-                ]);
-            });
+            $idpayment = DB::table('payment')->insertGetId([
+                'user_iduser'    => $userId,
+                'month'          => $month,
+                'year'           => $year,
+                'basic_salary'   => $basicSalaryEarned,
+                'other_payment'  => 0.00,
+                'process_total'  => $processTotal,
+                'total'          => $grandTotal,
+                'date'           => $now->toDateTimeString(),
+                'payment_status' => 0,
+            ]);
         }
-    }
+
+        // ── 9. Rebuild payment_process rows cleanly ───────────────────────
+        // Delete old additional works first, then old process rows
+        $oldProcessIds = DB::table('payment_process')
+            ->where('idpayment', $idpayment)
+            ->pluck('idpayment_process');
+
+        if ($oldProcessIds->isNotEmpty()) {
+            DB::table('payment_process_additional_work')
+                ->whereIn('payment_process_idpayment_process', $oldProcessIds)
+                ->delete();
+
+            DB::table('payment_process')
+                ->whereIn('idpayment_process', $oldProcessIds)
+                ->delete();
+        }
+
+        // Insert one payment_process row per project, with its additional works
+        foreach ($projectBreakdowns as $breakdown) {
+            $processId = DB::table('payment_process')->insertGetId([
+                'user_iduser'                         => $userId,
+                'project_idProject'                   => $breakdown['idProject'],
+                'idpayment'                           => $idpayment,
+                'technician_level_idtechnician_level' => $techReg->technician_level_idtechnician_level,
+                'total'                               => $breakdown['project_total'],
+            ]);
+
+            foreach ($breakdown['additionalWorks'] as $aw) {
+                DB::table('payment_process_additional_work')->insert([
+                    'payment_process_idpayment_process' => $processId,
+                    'additional_work_idadditional_work' => $aw->idadditional_work,
+                ]);
+            }
+        }
+    });
+}
 }

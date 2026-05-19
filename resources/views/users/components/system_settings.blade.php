@@ -20,6 +20,10 @@
                 Partner Company
             </button>
 
+            <button class="btn btn-danger text-white p-4" data-bs-toggle="modal" data-bs-target="#attendanceRateModal">
+                Attendance Rate
+            </button>
+
         </div>
     </div>
 
@@ -225,7 +229,8 @@
                         </table>
                     </div>
                     <div class="d-flex justify-content-end mt-2">
-                        <button class="btn btn-success btn-sm" onclick="openNestedModal('partnerModal','addPartnerModal')">
+                        <button class="btn btn-success btn-sm"
+                            onclick="openNestedModal('partnerModal','addPartnerModal')">
                             + Add New
                         </button>
                     </div>
@@ -233,6 +238,34 @@
             </div>
         </div>
     </div>
+
+
+    <!-- ===================== ATTENDANCE_RAT ===================== -->
+    <div class="modal fade" id="attendanceRateModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Attendance Rate</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ route('system_settings.updateAttendanceRate') }}">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Rate per Day (LKR)</label>
+                        <input type="number" name="rate" class="form-control"
+                            value="{{ $attendance_rate->rate ?? '' }}" min="0" step="0.01" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 
     <!-- ================================================== ADD / EDIT MODALS ================================================== -->
@@ -543,7 +576,4 @@
             </div>
         </div>
     @endforeach
-
-
- 
 @endsection

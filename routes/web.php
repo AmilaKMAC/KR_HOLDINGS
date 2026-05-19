@@ -47,6 +47,7 @@ Route::middleware(['auth', 'role:1'])->group(function () {
     Route::put('/system_settings/additional_work/{id}', [SystemSettingsController::class, 'updateAdditionalWork'])->name('system_settings.updateAdditionalWork');
     Route::post('/system_settings/partner_company', [SystemSettingsController::class, 'storePartnerCompany'])->name('system_settings.storePartnerCompany');
     Route::put('/system_settings/partner_company/{id}', [SystemSettingsController::class, 'updatePartnerCompany'])->name('system_settings.updatePartnerCompany');
+    Route::put('/system_settings/attendance_rate', [SystemSettingsController::class, 'updateAttendanceRate'])->name('system_settings.updateAttendanceRate');
     Route::get('/system_monitoring', [SystemMonitoringController::class, 'index'])->name('system_monitoring.index')->defaults('title', 'System Monitoring');
     Route::post('/system_monitoring/backup', [SystemMonitoringController::class, 'backup'])->name('system_monitoring.backup');
     Route::post('/system_monitoring/backup_all', [SystemMonitoringController::class, 'backupAll'])->name('system_monitoring.backupAll');
@@ -62,16 +63,16 @@ Route::middleware(['auth', 'role:2'])->group(function () {
     Route::get('/executive', [ExecutiveController::class, 'index'])->name('executive.dashboard')->defaults('title', 'Dashboard');
     Route::get('/technician_performance', [TechnicianPerformanceController::class, 'index'])->name('technician_performance.index')->defaults('title', 'Technician Performance');
 
-    // Payment and Salary
-    Route::get('/payment-salary', [PaymentAndSalaryController::class, 'index'])->name('payment_and_salary.index')->defaults('title', 'Payment and Salary');
-    Route::get('/payment-salary/history/{userId}', [PaymentAndSalaryController::class, 'history'])->name('payment_and_salary.history')->defaults('title', 'Payment History');
-    Route::post('/payment-salary/status/{idpayment}', [PaymentAndSalaryController::class, 'updateStatus'])->name('payment_and_salary.updateStatus');
-    Route::post('/payment-salary/other-payment/{idpayment}', [PaymentAndSalaryController::class, 'updateOtherPayment'])->name('payment_and_salary.updateOtherPayment');
+    Route::get('/executive/payment-salary', [PaymentAndSalaryController::class, 'index'])->name('payment_and_salary.index')->defaults('title', 'Payment and Salary');
+    Route::get('/executive/payment-salary/history/{userId}', [PaymentAndSalaryController::class, 'history'])->name('payment_and_salary.history')->defaults('title', 'Payment History');
+    Route::post('/executive/payment-salary/status/{idpayment}', [PaymentAndSalaryController::class, 'updateStatus'])->name('payment_and_salary.updateStatus');
+    Route::post('/executive/payment-salary/other-payment/{idpayment}', [PaymentAndSalaryController::class, 'updateOtherPayment'])->name('payment_and_salary.updateOtherPayment');
 
-    Route::get('/review/download/{id}', [WorkReviewController::class, 'download'])->name('review_photos.download');
+    Route::get('/executive/review/download/{id}', [WorkReviewController::class, 'download'])->name('review_photos.download');
     Route::get('/review', [WorkReviewController::class, 'index'])->name('review_photos.index')->defaults('title', 'Review Photos');
     Route::get('/Reports', [ReportsController::class, 'index'])->name('reports.index')->defaults('title', 'Reports');
 });
+
 
 // ================= PROJECT COORDINATOR (role: 3) =================
 Route::middleware(['auth', 'role:3'])->group(function () {
@@ -100,4 +101,5 @@ Route::middleware(['auth', 'role:4'])->group(function () {
     Route::get('/proof_of_work', [ImageUploadController::class, 'index'])->name('proof_of_work.index')->defaults('title', 'Proof of Work');
     Route::post('/proof_of_work/upload', [ImageUploadController::class, 'upload'])->name('proof_of_work.upload');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index')->defaults('title', 'Profile');
+    Route::get('/technician/payment-salary', [PaymentAndSalaryController::class, 'index'])->name('technician.payment_and_salary.index')->defaults('title', 'Payment and Salary');
 });

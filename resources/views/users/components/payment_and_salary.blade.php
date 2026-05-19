@@ -12,7 +12,7 @@
                         <span class="fw-semibold">Technician Payment &mdash; {{ $currentMonth }}</span>
                     </div>
 
-                    <div class="card-body table-responsive p-0">
+                    <div class="card-body table-responsive p-2">
                         <table class="table table-bordered align-middle text-center mb-0 data-table">
                             <thead class="table-light">
                                 <tr>
@@ -39,7 +39,7 @@
                                 @forelse($technicians as $tech)
                                     <tr>
                                         <td>{{ $tech->iduser }}</td>
-                                        <td class="text-start">{{ $tech->name }}</td>
+                                        <td class="text-start">{{ ucwords(strtolower(trim($tech->name))) }}</td>
 
                                         {{-- Month / Year --}}
                                         <td>
@@ -177,7 +177,7 @@
                     <div class="modal-content shadow">
                         <div class="modal-header bg-info text-white">
                             <h5 class="modal-title fw-semibold">
-                                Project Details &mdash; {{ $tech->name }}
+                                Project Details &mdash; {{ ucwords(strtolower(trim($tech->name))) }}
                                 @if ($tech->month)
                                     &mdash; {{ DateTime::createFromFormat('!m', $tech->month)->format('F') }}
                                     {{ $tech->year }}
@@ -185,8 +185,8 @@
                             </h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                         </div>
-                        <div class="modal-body">
-                            <table class="table table-bordered text-center align-middle mb-0">
+                        <div class="modal-body p-2">
+                            <table class="table table-bordered data-table text-center align-middle mb-0">
                                 <thead class="table-dark">
                                     <tr>
                                         <th>#</th>
@@ -203,7 +203,7 @@
                                         @php $solar = $process->project->solar ?? null; @endphp
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
-                                            <td>{{ $process->project->customer_name ?? '—' }}</td>
+                                            <td>{{ ucwords(strtolower(trim($process->project->customer_name ?? '—'))) }}</td>
                                             <td>
                                                 <span class="badge bg-warning text-dark">
                                                     {{ $solar->capacity ?? '—' }} kW
@@ -262,7 +262,7 @@
 
                     <div class="modal-header bg-dark text-white">
                         <h5 class="modal-title fw-semibold" id="billModalLabel">
-                            Payment History &mdash; {{ $selectedTechnician->name ?? '' }}
+                            Payment History &mdash; {{ucwords(strtolower(trim($selectedTechnician->name ?? ''))) }}
                         </h5>
                         <a href="{{ route('payment_and_salary.index') }}" class="btn-close btn-close-white" title="Close"></a>
                     </div>
@@ -279,8 +279,8 @@
                             @endif
                         </h6>
 
-                        <div class="table-responsive mb-4">
-                            <table class="table table-bordered text-center align-middle">
+                        <div class="table-responsive mb-4 p-2">
+                            <table class="table table-bordered data-table text-center align-middle">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Month / Year</th>
@@ -384,8 +384,8 @@
                         {{-- ── Previous Bills ── --}}
                         <h6 class="fw-bold text-success mb-3">Previous Bills</h6>
 
-                        <div class="table-responsive">
-                            <table class="table table-bordered text-center align-middle">
+                        <div class="table-responsive p-2">
+                            <table class="table table-bordered data-table text-center align-middle">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Month / Year</th>
@@ -519,8 +519,8 @@
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                             </div>
 
-                            <div class="modal-body">
-                                <table class="table table-bordered text-center align-middle mb-0">
+                            <div class="modal-body p-2">
+                                <table class="table table-bordered data-table text-center align-middle mb-0">
                                     <thead class="table-dark">
                                         <tr>
                                             <th>#</th>
@@ -537,7 +537,7 @@
                                             @php $solar = $process->project->solar ?? null; @endphp
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
-                                                <td>{{ $process->project->customer_name ?? '—' }}</td>
+                                                <td>{{ ucwords(strtolower(trim($process->project->customer_name ?? '—'))) }}</td>
                                                 <td>
                                                     <span class="badge bg-warning text-dark">
                                                         {{ $solar->capacity ?? '—' }} kW

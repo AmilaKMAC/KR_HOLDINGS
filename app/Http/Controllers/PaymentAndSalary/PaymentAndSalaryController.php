@@ -8,11 +8,17 @@ use App\Models\PaymentAndSalary\Payment;
 use App\Models\UserManagement\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\SystemSettings\AttendanceRate;
 
 class PaymentAndSalaryController extends Controller
 {
-    // Flat attendance rate per day (replace with per-technician DB lookup later)
-    const ATTENDANCE_RATE = 1000;
+    // =========================================================================
+    // PRIVATE — fetch attendance rate from DB
+    // =========================================================================
+    private function getAttendanceRate(): float
+    {
+        return (float) (AttendanceRate::value('rate') ?? 0);
+    }
 
     // =========================================================================
     // INDEX — current month, all technicians
@@ -22,6 +28,23 @@ class PaymentAndSalaryController extends Controller
         $now   = Carbon::now();
         $month = (int) $now->month;
         $year  = (int) $now->year;
+
+        $user = auth()->user();
+
+        if ($user->user_role_iduser_role == 4) {
+            $previousPayments = $this->paymentDetailQuery()
+                ->where('user_iduser', $user->iduser)
+                ->orderByDesc('year')
+                ->orderByDesc('month')
+                ->get()
+                ->map(fn($p) => $this->appendAttendance($p));
+
+            return view('users.components.payment_and_salary', [
+                'title'            => 'Payment and Salary',
+                'previousPayments' => $previousPayments,
+                'currentMonth'     => $now->format('F Y'),
+            ]);
+        }
 
         $technicians = $this->getTechnicianList($month, $year);
 
@@ -104,6 +127,8 @@ class PaymentAndSalaryController extends Controller
     {
         $request->validate(['other_payment' => 'required|numeric|min:0']);
 
+        $attendanceRate = $this->getAttendanceRate();
+
         $payment = Payment::with([
             'paymentProcesses.technicianLevel',
             'paymentProcesses.solar',
@@ -112,7 +137,7 @@ class PaymentAndSalaryController extends Controller
 
         $processTotal    = (float) $payment->paymentProcesses->sum('total');
         $daysAttended    = $this->getDaysAttended($payment->user_iduser, $payment->month, $payment->year);
-        $attendanceBonus = $daysAttended * self::ATTENDANCE_RATE;
+        $attendanceBonus = $daysAttended * $attendanceRate;
 
         $grandTotal = round(
             (float) $payment->basic_salary
@@ -133,120 +158,128 @@ class PaymentAndSalaryController extends Controller
     // =========================================================================
     // PRIVATE — build technician list with current-month payment data
     // =========================================================================
-private function getTechnicianList(int $month, int $year)
-{
-    $totalWorkingDays = $this->getTotalWorkingDays($month, $year);
+    private function getTechnicianList(int $month, int $year)
+    {
+        $totalWorkingDays = $this->getTotalWorkingDays($month, $year);
+        $attendanceRate   = $this->getAttendanceRate();
 
-    $technicians = User::with([
-            'TechnicianRegistration.technicianLevel',
-            'payments' => function ($q) use ($month, $year) {
-                $q->with([
-                    'paymentProcesses.project.solar',
-                    'paymentProcesses.additionalWorks.additionalWork',
-                    'paymentProcesses.technicianLevel',
-                ])
-                ->where('month', $month)
-                ->where('year', $year);
-            },
-        ])
-        ->where('user_role_iduser_role', 4)
-        ->where('status', 1)
-        ->get();
+        $technicians = User::with([
+                'TechnicianRegistration.technicianLevel',
+                'payments' => function ($q) use ($month, $year) {
+                    $q->with([
+                        'paymentProcesses.project.solar',
+                        'paymentProcesses.additionalWorks.additionalWork',
+                        'paymentProcesses.technicianLevel',
+                    ])
+                    ->where('month', $month)
+                    ->where('year', $year);
+                },
+            ])
+            ->where('user_role_iduser_role', 4)
+            ->where('status', 1)
+            ->get();
 
-    return $technicians->map(function ($user) use ($month, $year, $totalWorkingDays) {
+        return $technicians->map(function ($user) use ($month, $year, $totalWorkingDays, $attendanceRate) {
 
-        $daysAttended    = $this->getDaysAttended($user->iduser, $month, $year);
-        $attendanceBonus = $daysAttended * self::ATTENDANCE_RATE;
+            $daysAttended    = $this->getDaysAttended($user->iduser, $month, $year);
+            $attendanceBonus = $daysAttended * $attendanceRate;
 
-        $payment          = $user->payments->first();
-        $paymentProcesses = $payment?->paymentProcesses ?? collect();
-        $techLevel        = $user->TechnicianRegistration?->technicianLevel;
+            $payment          = $user->payments->first();
+            $paymentProcesses = $payment?->paymentProcesses ?? collect();
+            $techLevel        = $user->TechnicianRegistration?->technicianLevel;
 
-        $processTotal = $paymentProcesses->sum('total');
+            $processTotal = $paymentProcesses->sum('total');
 
-        $grandTotal = $payment ? round(
+            $grandTotal = $payment ? round(
+                (float) $payment->basic_salary
+                + $attendanceBonus
+                + (float) $processTotal
+                + (float) ($payment->other_payment ?? 0),
+                2
+            ) : null;
+
+            return (object) [
+                'iduser'             => $user->iduser,
+                'name'               => trim($user->first_name . ' ' . $user->last_name),
+                'level_basic_salary' => $techLevel?->basic_salary ?? 0,
+                'attendance_rate'    => $attendanceRate,
+                'idpayment'          => $payment?->idpayment,
+                'month'              => $payment?->month,
+                'year'               => $payment?->year,
+                'basic_salary'       => $payment?->basic_salary,
+                'other_payment'      => $payment?->other_payment,
+                'payment_status'     => $payment?->payment_status,
+                'total'              => $grandTotal,
+                'process_total'      => $processTotal ?: null,
+                'payment_processes'  => $paymentProcesses,
+                'days_attended'      => $daysAttended,
+                'attendance_bonus'   => $attendanceBonus,
+                'total_working_days' => $totalWorkingDays,
+            ];
+        });
+    }
+
+    // =========================================================================
+    // PRIVATE — reusable payment query with eager loads
+    // =========================================================================
+    private function paymentDetailQuery()
+    {
+        return Payment::with([
+            'paymentProcesses.project.solar',
+            'paymentProcesses.additionalWorks.additionalWork',
+            'paymentProcesses.technicianLevel',
+            'user',
+        ]);
+    }
+
+    // =========================================================================
+    // PRIVATE — append attendance data to a Payment model
+    // =========================================================================
+    private function appendAttendance(Payment $payment): object
+    {
+        if (! $payment->relationLoaded('paymentProcesses')) {
+            $payment->load([
+                'paymentProcesses.project.solar',
+                'paymentProcesses.additionalWorks.additionalWork',
+                'paymentProcesses.technicianLevel',
+            ]);
+        }
+
+        $attendanceRate   = $this->getAttendanceRate();
+        $daysAttended     = $this->getDaysAttended($payment->user_iduser, $payment->month, $payment->year);
+        $totalWorkingDays = $this->getTotalWorkingDays($payment->month, $payment->year);
+        $attendanceBonus  = $daysAttended * $attendanceRate;
+
+        $processes    = $payment->paymentProcesses ?? collect();
+        $processTotal = $processes->sum('total');
+
+        $grandTotal = round(
             (float) $payment->basic_salary
             + $attendanceBonus
             + (float) $processTotal
             + (float) ($payment->other_payment ?? 0),
             2
-        ) : null;
+        );
 
         return (object) [
-            'iduser'             => $user->iduser,
-            'name'               => trim($user->first_name . ' ' . $user->last_name),
-            'level_basic_salary' => $techLevel?->basic_salary ?? 0,
-            'attendance_rate'    => self::ATTENDANCE_RATE,
-            'idpayment'          => $payment?->idpayment,
-            'month'              => $payment?->month,
-            'year'               => $payment?->year,
-            'basic_salary'       => $payment?->basic_salary,
-            'other_payment'      => $payment?->other_payment,
-            'payment_status'     => $payment?->payment_status,
+            'iduser'             => $payment->user_iduser,
+            'name'               => trim(($payment->user->first_name ?? '') . ' ' . ($payment->user->last_name ?? '')),
+            'idpayment'          => $payment->idpayment,
+            'month'              => $payment->month,
+            'year'               => $payment->year,
+            'payment_status'     => $payment->payment_status,
+            'basic_salary'       => $payment->basic_salary,
+            'other_payment'      => $payment->other_payment,
             'total'              => $grandTotal,
+            'level_basic_salary' => $processes->first()?->technicianLevel?->basic_salary ?? 0,
+            'attendance_rate'    => $attendanceRate,
             'process_total'      => $processTotal ?: null,
-            'payment_processes'  => $paymentProcesses,
+            'payment_processes'  => $processes,
             'days_attended'      => $daysAttended,
             'attendance_bonus'   => $attendanceBonus,
             'total_working_days' => $totalWorkingDays,
         ];
-    });
-}
-
-private function paymentDetailQuery()
-{
-    return Payment::with([
-        'paymentProcesses.project.solar',
-        'paymentProcesses.additionalWorks.additionalWork',
-        'paymentProcesses.technicianLevel',
-        'user',
-    ]);
-}
-
-private function appendAttendance(Payment $payment): object
-{
-    if (! $payment->relationLoaded('paymentProcesses')) {
-        $payment->load([
-            'paymentProcesses.project.solar',
-            'paymentProcesses.additionalWorks.additionalWork',
-            'paymentProcesses.technicianLevel',
-        ]);
     }
-
-    $daysAttended     = $this->getDaysAttended($payment->user_iduser, $payment->month, $payment->year);
-    $totalWorkingDays = $this->getTotalWorkingDays($payment->month, $payment->year);
-    $attendanceBonus  = $daysAttended * self::ATTENDANCE_RATE;
-
-    $processes    = $payment->paymentProcesses ?? collect();
-    $processTotal = $processes->sum('total');
-
-    $grandTotal = round(
-        (float) $payment->basic_salary
-        + $attendanceBonus
-        + (float) $processTotal
-        + (float) ($payment->other_payment ?? 0),
-        2
-    );
-
-    return (object) [
-        'iduser'             => $payment->user_iduser,
-        'name'               => trim(($payment->user->first_name ?? '') . ' ' . ($payment->user->last_name ?? '')),
-        'idpayment'          => $payment->idpayment,
-        'month'              => $payment->month,
-        'year'               => $payment->year,
-        'payment_status'     => $payment->payment_status,
-        'basic_salary'       => $payment->basic_salary,
-        'other_payment'      => $payment->other_payment,
-        'total'              => $grandTotal,
-        'level_basic_salary' => $processes->first()?->technicianLevel?->basic_salary ?? 0,
-        'attendance_rate'    => self::ATTENDANCE_RATE,
-        'process_total'      => $processTotal ?: null,
-        'payment_processes'  => $processes,
-        'days_attended'      => $daysAttended,
-        'attendance_bonus'   => $attendanceBonus,
-        'total_working_days' => $totalWorkingDays,
-    ];
-}
 
     // =========================================================================
     // PRIVATE — days a specific technician was present & approved
@@ -268,7 +301,7 @@ private function appendAttendance(Payment $payment): object
     {
         return Attendance::presentAndApproved()
             ->whereYear('date', $year)
-            ->WhereMonth('date', $month)
+            ->whereMonth('date', $month)
             ->distinct('date')
             ->count('date');
     }

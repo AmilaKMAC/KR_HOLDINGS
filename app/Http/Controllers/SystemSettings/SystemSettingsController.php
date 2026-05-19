@@ -8,6 +8,7 @@ use App\Models\SystemSettings\TechnicianLevel;
 use App\Models\SystemSettings\Solar;
 use App\Models\SystemSettings\PartnerCompany;
 use App\Models\SystemSettings\AdditionalWork;
+use App\Models\SystemSettings\AttendanceRate;
 
 class SystemSettingsController extends Controller
 {
@@ -20,7 +21,9 @@ class SystemSettingsController extends Controller
 
         $partner_company = PartnerCompany::all();
 
-        return view('users.components.system_settings', compact('technician_level', 'additional_work', 'solar_capacity', 'partner_company'), ['title' => 'System Settings']);
+$attendance_rate = AttendanceRate::first(); 
+
+        return view('users.components.system_settings', compact('technician_level', 'additional_work', 'solar_capacity', 'partner_company', 'attendance_rate'), ['title' => 'System Settings']);
     }
 
 
@@ -125,5 +128,18 @@ public function updatePartnerCompany(Request $request, int $id){
     $partnerCompany->update($request->all());
 
     return redirect()->route('system_settings.index')->with('success', 'Partner company updated successfully.');
+}
+
+
+// Update Attendance Rate
+
+public function updateAttendanceRate(Request $request)
+{
+    $request->validate(['rate' => 'required|numeric|min:0']);
+
+    AttendanceRate::truncate();
+    AttendanceRate::create(['rate' => $request->rate]);
+
+    return redirect()->back()->with('success', 'Attendance rate updated.');
 }
 }
