@@ -77,19 +77,46 @@
 <!-- DataTables -->
 <script>
     $(document).ready(function () {
-        $('.data-table').DataTable({
-            responsive: true,
-            pageLength: 10,
-            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'All']],
-            columnDefs: [
-                { orderable: false, targets: -1 },
-                { defaultContent: '', targets: '_all' }
-            ]
+
+        function initDataTable(el) {
+            if ($.fn.DataTable.isDataTable(el)) {
+                $(el).DataTable().columns.adjust().responsive.recalc();
+                return;
+            }
+
+            const hasColspan = $(el).find('tbody tr td[colspan]').length > 0;
+            const rowCount   = $(el).find('tbody tr').length;
+            const isEmpty    = rowCount === 0 || hasColspan;
+
+            $(el).DataTable({
+                responsive: !isEmpty,
+                autoWidth: false,
+                pageLength: 10,
+                lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'All']],
+                columnDefs: [
+                    { defaultContent: '', targets: '_all' }
+                ]
+            });
+        }
+
+        // ── Tables directly on the page (not inside modals) ──────────
+        $('body > * .data-table').not('.modal .data-table').each(function () {
+            initDataTable(this);
         });
+
+        // ── Tables inside modals ──────────────────────────────────────
+        $('body').on('shown.bs.modal', function (e) {
+            $(e.target).find('.data-table').each(function () {
+                initDataTable(this);
+            });
+        });
+
     });
 </script>
 
+
 @stack('scripts')
+
 
 </body>
 
