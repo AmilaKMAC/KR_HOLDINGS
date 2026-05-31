@@ -70,9 +70,13 @@ Route::middleware(['auth', 'role:2'])->group(function () {
 
     Route::get('/executive/review/download/{id}', [WorkReviewController::class, 'download'])->name('review_photos.download');
     Route::get('/review', [WorkReviewController::class, 'index'])->name('review_photos.index')->defaults('title', 'Review Photos');
-    Route::get('/Reports', [ReportsController::class, 'index'])->name('reports.index')->defaults('title', 'Reports');
-});
 
+    Route::get('/Reports', [ReportsController::class, 'index'])->name('reports.index')->defaults('title', 'Reports');
+    Route::get('/Reports/detail/technician/{id}', [ReportsController::class, 'technicianDetail'])->name('reports.technician');
+    Route::get('/Reports/detail/project/{id}', [ReportsController::class, 'projectDetail'])->name('reports.project');
+    Route::get('/Reports/detail/attendance/{id}', [ReportsController::class, 'attendanceDetail'])->name('reports.attendance');
+    Route::get('/Reports/detail/partner/{id}', [ReportsController::class, 'partnerDetail'])->name('reports.partner');
+});
 
 // ================= PROJECT COORDINATOR (role: 3) =================
 Route::middleware(['auth', 'role:3'])->group(function () {
