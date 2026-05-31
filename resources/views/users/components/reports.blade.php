@@ -4,430 +4,517 @@
     <div class="container mt-5">
         <div class="d-grid gap-4 col-8 mx-auto">
 
-
-                <button class="btn btn-primary p-4" data-bs-toggle="modal" data-bs-target="#technicianModal">
-                    Technician Performance
-                </button>
-
-                <button class="btn btn-success p-4" data-bs-toggle="modal" data-bs-target="#projectModal">
-                    Project Progress
-                </button>
-
-                <button class="btn btn-warning p-4" data-bs-toggle="modal" data-bs-target="#attendanceModal">
-                    Attendance Summary
-                </button>
-
-                <button class="btn btn-info p-4" data-bs-toggle="modal" data-bs-target="#partnerModal">
-                    Partner Companies
-                </button>
-
-
-                <!-- MODAL 3: TECHNICIAN PERFORMANCE -->
-                <div class="modal fade" id="technicianModal" tabindex="-1">
-                    <div class="modal-dialog modal-xl modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title">Technician Performance Report</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-center align-middle data-table">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Tech ID</th>
-                                                <th>Technician Name</th>
-                                                <th>Total Projects</th>
-                                                <th>Completed</th>
-                                                <th>Pending</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($technicians ?? [] as $idx => $t)
-                                                <tr>
-                                                    <td>{{ $t['id'] }}</td>
-                                                    <td>{{ $t['name'] }}</td>
-                                                    <td>{{ $t['total'] }}</td>
-                                                    <td>{{ $t['completed'] }}</td>
-                                                    <td>{{ $t['pending'] }}</td>
-                                                    <td>
-                                                        <button class="btn btn-sm btn-outline-primary"
-                                                            onclick="showDetail('technician', {{ $idx }}, 'technicianModal')">View</button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="d-flex gap-2 mt-2">
-                                    <button class="btn btn-outline-dark btn-sm"
-                                        onclick="printModal('technicianModal', 'Technician Performance Report')">Print</button>
-                                    <button class="btn btn-outline-success btn-sm">Export Excel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MODAL 4: PROJECT PROGRESS -->
-                <div class="modal fade" id="projectModal" tabindex="-1">
-                    <div class="modal-dialog modal-xl modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-success text-white">
-                                <h5 class="modal-title">Project Progress Summary</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-center align-middle data-table">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Project ID</th>
-                                                <th>Customer Name</th>
-                                                <th>Location</th>
-                                                <th>Capacity</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($projects ?? [] as $idx => $p)
-                                                <tr>
-                                                    <td>{{ $p['id'] }}</td>
-                                                    <td>{{ $p['customer'] }}</td>
-                                                    <td>{{ $p['location'] }}</td>
-                                                    <td>{{ $p['capacity'] }}</td>
-                                                    <td>{{ $p['status'] }}</td>
-                                                    <td>
-                                                        <button class="btn btn-sm btn-outline-primary"
-                                                            onclick="showDetail('project', {{ $idx }}, 'projectModal')">View</button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="d-flex gap-2 mt-2">
-                                    <button class="btn btn-outline-dark btn-sm"
-                                        onclick="printModal('projectModal', 'Project Progress Summary')">Print</button>
-                                    <button class="btn btn-outline-success btn-sm">Export Excel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MODAL 5: ATTENDANCE SUMMARY -->
-                <div class="modal fade" id="attendanceModal" tabindex="-1">
-                    <div class="modal-dialog modal-xl modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-warning text-dark">
-                                <h5 class="modal-title">Attendance Summary</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-center align-middle data-table">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Emp ID</th>
-                                                <th>Employee</th>
-                                                <th>Present</th>
-                                                <th>Absent</th>
-                                                <th>Leave</th>
-                                                <th>Month</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($attendance ?? [] as $idx => $a)
-                                                <tr>
-                                                    <td>{{ $a['id'] }}</td>
-                                                    <td>{{ $a['name'] }}</td>
-                                                    <td>{{ $a['present'] }}</td>
-                                                    <td>{{ $a['absent'] }}</td>
-                                                    <td>{{ $a['leave'] }}</td>
-                                                    <td>February 2026</td>
-                                                    <td>
-                                                        <button class="btn btn-sm btn-outline-primary"
-                                                            onclick="showDetail('attendance', {{ $idx }}, 'attendanceModal')">View</button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="d-flex gap-2 mt-2">
-                                    <button class="btn btn-outline-dark btn-sm"
-                                        onclick="printModal('attendanceModal', 'Attendance Summary')">Print</button>
-                                    <button class="btn btn-outline-success btn-sm">Export Excel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MODAL 6: PARTNER COMPANIES -->
-                <div class="modal fade" id="partnerModal" tabindex="-1">
-                    <div class="modal-dialog modal-xl modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title">Partner Company Report</h5>
-                                <button type="button" class="btn-close btn-close-white"
-                                    data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-center align-middle data-table">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Partner ID</th>
-                                                <th>Company Name</th>
-                                                <th>Total Projects</th>
-                                                <th>Completed</th>
-                                                <th>Ongoing</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($partners ?? [] as $idx => $p)
-                                                <tr>
-                                                    <td>{{ $p['id'] }}</td>
-                                                    <td>{{ $p['company'] }}</td>
-                                                    <td>{{ $p['total'] }}</td>
-                                                    <td>{{ $p['completed'] }}</td>
-                                                    <td>{{ $p['ongoing'] }}</td>
-                                                    <td>
-                                                        <button class="btn btn-sm btn-outline-primary"
-                                                            onclick="showDetail('partner', {{ $idx }}, 'partnerModal')">View</button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="d-flex gap-2 mt-2">
-                                    <button class="btn btn-outline-dark btn-sm"
-                                        onclick="printModal('partnerModal', 'Partner Company Report')">Print</button>
-                                    <button class="btn btn-outline-success btn-sm">Export Excel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <button class="btn btn-primary p-4" data-bs-toggle="modal" data-bs-target="#technicianModal">Technician
+                Performance</button>
+            <button class="btn btn-success p-4" data-bs-toggle="modal" data-bs-target="#projectModal">Project Progress</button>
+            <button class="btn btn-warning p-4" data-bs-toggle="modal" data-bs-target="#attendanceModal">Attendance
+                Summary</button>
+            <button class="btn btn-info p-4" data-bs-toggle="modal" data-bs-target="#partnerModal">Partner
+                Companies</button>
 
         </div>
     </div>
 
-
-    <!-- DETAIL MODAL (shared for both roles) -->
-    <div class="modal fade" id="detailModal" tabindex="-1">
+    {{-- ==================== TECHNICIAN MODAL ==================== --}}
+    <div class="modal fade" id="technicianModal" tabindex="-1">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="detailTitle">Detailed View</h5>
+                    <h5 class="modal-title">Technician Performance Report</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" id="detailContent"></div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-dark btn-sm me-auto" onclick="printDetailTable()">Print</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover text-center align-middle data-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Technician ID</th>
+                                    <th>Name</th>
+                                    <th>Total</th>
+                                    <th>Completed</th>
+                                    <th>Pending</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($technicians as $t)
+                                    <tr>
+                                        <td>T{{ str_pad($t['raw_id'], 3, '0', STR_PAD_LEFT) }}</td>
+                                        <td>{{ ucwords(strtolower($t['name'])) }}</td>
+                                        <td>{{ $t['total'] }}</td>
+                                        <td>{{ $t['completed'] }}</td>
+                                        <td>{{ $t['pending'] }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                                data-bs-target="#techDetailModal{{ $t['raw_id'] }}"
+                                                data-bs-dismiss="modal">View</button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6">No technicians found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-outline-dark btn-sm mt-2"
+                        onclick="printModal('technicianModal', 'Technician Performance Report')">Print</button>
                 </div>
             </div>
         </div>
     </div>
 
+    {{-- ===== TECHNICIAN DETAIL MODALS ===== --}}
+    @foreach ($technicians as $t)
+        <div class="modal fade" id="techDetailModal{{ $t['raw_id'] }}" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            Projects — T{{ str_pad($t['raw_id'], 3, '0', STR_PAD_LEFT) }}
+                            {{ ucwords(strtolower($t['name'])) }}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h6 class="fw-bold text-success">Completed Projects</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm text-center align-middle data-table">
+                                <thead class="table-success">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Project ID</th>
+                                        <th>Customer</th>
+                                        <th>Capacity</th>
+                                        <th>Completed Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($t['completed_projects'] as $i => $a)
+                                        <tr>
+                                            <td>{{ $i + 1 }}</td>
+                                            <td>P{{ str_pad($a->project->idProject, 3, '0', STR_PAD_LEFT) }}</td>
+                                            <td>{{ ucwords(strtolower($a->project->customer_name)) }}</td>
+                                            <td>{{ optional($a->project->Solar)->capacity ?? '-' }} kW</td>
+                                            <td>{{ optional($a->project->updated_at)->format('Y-m-d') ?? '-' }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5">No completed projects.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                        <h6 class="fw-bold text-danger mt-4">Pending Projects</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm text-center align-middle data-table">
+                                <thead class="table-danger">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Project ID</th>
+                                        <th>Customer</th>
+                                        <th>Capacity</th>
+                                        <th>Due Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($t['pending_projects'] as $i => $a)
+                                        <tr>
+                                            <td>{{ $i + 1 }}</td>
+                                            <td>P{{ str_pad($a->project->idProject, 3, '0', STR_PAD_LEFT) }}</td>
+                                            <td>{{ ucwords(strtolower($a->project->customer_name)) }}</td>
+                                            <td>{{ optional($a->project->Solar)->capacity ?? '-' }} kW</td>
+                                            <td>{{ optional($a->project->updated_at)->format('Y-m-d') ?? 'TBD' }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5">No pending projects.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-dark btn-sm me-auto"
+                            onclick="printDetailModal('techDetailModal{{ $t['raw_id'] }}', 'Projects — {{ ucwords(strtolower($t['name'])) }}')">Print</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
 
-    <script>
-        const data = {
-            system: @json($systemLogs ?? []),
-            user: @json($users ?? []),
-            userLogs: @json($userLogs ?? []),
-            technician: @json($technicians ?? []),
-            techProjects: @json($techProjects ?? []),
-            project: @json($projects ?? []),
-            attendance: @json($attendance ?? []),
-            attendanceHistory: @json($attendanceHistory ?? []),
-            partner: @json($partners ?? []),
-            partnerProjects: @json($partnerProjects ?? []),
-        };
-
-        let detailState = {};
-        let sourceModalId = null;
-
-        function showDetail(type, idx, fromModalId) {
-            sourceModalId = fromModalId;
-            let html = '';
-            let title = 'Detailed View';
-            detailState = {};
-
-            if (type === 'user') {
-                const u = data.user[idx];
-                const logs = data.userLogs[u.id] || [];
-                title = `Login History — ${u.name}`;
-                detailState.loginLogs = logs;
-                html = `
-                    <p class="mb-2 text-muted"><strong>User:</strong> ${u.name} &nbsp;|&nbsp; <strong>Role:</strong> ${u.role} &nbsp;|&nbsp; <strong>Email:</strong> ${u.email}</p>
+    {{-- ==================== PROJECT MODAL ==================== --}}
+    <div class="modal fade" id="projectModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Project Progress Summary</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
                     <div class="table-responsive">
-                    <table class="table table-bordered table-hover text-center align-middle mb-0">
-                        <thead class="table-dark"><tr><th>#</th><th>IP Address</th><th>Device / Browser</th><th>Login Date & Time</th><th>Logout Date & Time</th></tr></thead>
-                        <tbody id="loginLogBody">${renderLoginRows(logs, 5)}</tbody>
-                    </table></div>`;
+                        <table class="table table-bordered table-hover text-center align-middle data-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Project ID</th>
+                                    <th>Customer</th>
+                                    <th>Location</th>
+                                    <th>Capacity</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($projects as $p)
+                                    <tr>
+                                        <td>P{{ str_pad($p['raw_id'], 3, '0', STR_PAD_LEFT) }}</td>
+                                        <td>{{ ucwords(strtolower($p['customer'])) }}</td>
+                                        <td>{{ ucwords(strtolower($p['location'])) }}</td>
+                                        <td>{{ $p['capacity'] }} kW</td>
+                                        <td>
+                                            @if ($p['status'] == 1)
+                                                <span class="badge bg-success">Completed</span>
+                                            @else
+                                                <span class="badge bg-warning text-dark">Ongoing</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                                data-bs-target="#projectDetailModal{{ $p['raw_id'] }}"
+                                                data-bs-dismiss="modal">View</button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6">No projects found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-outline-dark btn-sm mt-2"
+                        onclick="printModal('projectModal', 'Project Progress Summary')">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            } else if (type === 'technician') {
-                const t = data.technician[idx];
-                const projects = data.techProjects[t.id] || {
-                    completed: [],
-                    pending: []
-                };
-                title = `Projects — ${t.name}`;
-                detailState.techCompleted = projects.completed;
-                detailState.techPending = projects.pending;
-                html = `
-                    <p class="mb-2 text-muted"><strong>Technician:</strong> ${t.name}</p>
-                    <h6 class="fw-bold text-success mt-3 mb-2">Completed Projects</h6>
+    {{-- ===== PROJECT DETAIL MODALS ===== --}}
+    @foreach ($projects as $p)
+        <div class="modal fade" id="projectDetailModal{{ $p['raw_id'] }}" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">Project Details — P{{ str_pad($p['raw_id'], 3, '0', STR_PAD_LEFT) }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered align-middle">
+                            <tbody>
+                                <tr>
+                                    <th class="table-light" style="width:35%">Project ID</th>
+                                    <td>P{{ str_pad($p['raw_id'], 3, '0', STR_PAD_LEFT) }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light">Customer Name</th>
+                                    <td>{{ ucwords(strtolower($p['customer'])) }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light">Location</th>
+                                    <td>{{ ucwords(strtolower($p['location'])) }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light">Capacity</th>
+                                    <td>{{ $p['capacity'] }} kW</td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light">Partner Company</th>
+                                    <td>{{ $p['partner'] }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light">Assigned Technicians</th>
+                                    <td>
+                                        @forelse ($p['technicians'] as $tech)
+                                            {{ ucwords(strtolower($tech['name'])) }}@unless ($loop->last), @endunless
+                                        @empty
+                                            -
+                                        @endforelse
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light">Status</th>
+                                    <td>
+                                        @if ($p['status'] == 1)
+                                            <span class="badge bg-success">Completed</span>
+                                        @else
+                                            <span class="badge bg-warning text-dark">Ongoing</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light">Start Date</th>
+                                    <td>{{ $p['start_date'] }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light">End Date</th>
+                                    <td>{{ $p['end_date'] }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-dark btn-sm me-auto"
+                            onclick="printDetailModal('projectDetailModal{{ $p['raw_id'] }}', 'Project Details — P{{ str_pad($p['raw_id'], 3, '0', STR_PAD_LEFT) }}')">Print</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
+    {{-- ==================== ATTENDANCE MODAL ==================== --}}
+    <div class="modal fade" id="attendanceModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title">Attendance Summary</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
                     <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-sm text-center align-middle mb-0">
-                        <thead class="table-success"><tr><th>#</th><th>Project ID</th><th>Project Name</th><th>Completed Date</th></tr></thead>
-                        <tbody id="techCompletedBody">${renderTechCompletedRows(projects.completed, 5)}</tbody>
-                    </table></div>
-                    <h6 class="fw-bold text-danger mt-4 mb-2">Pending Projects</h6>
+                        <table class="table table-bordered table-hover text-center align-middle data-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Emp ID</th>
+                                    <th>Employee</th>
+                                    <th>Present</th>
+                                    <th>Absent</th>
+                                    <th>Leave</th>
+                                    <th>Month</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($attendance as $a)
+                                    <tr>
+                                        <td>T{{ str_pad($a['raw_id'], 3, '0', STR_PAD_LEFT) }}</td>
+                                        <td>{{ ucwords(strtolower($a['name'])) }}</td>
+                                        <td>{{ $a['present'] }}</td>
+                                        <td>{{ $a['absent'] }}</td>
+                                        <td>{{ $a['leave'] }}</td>
+                                        <td>{{ $a['month'] }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                                data-bs-target="#attendanceDetailModal{{ $a['raw_id'] }}"
+                                                data-bs-dismiss="modal">View</button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7">No attendance records found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-outline-dark btn-sm mt-2"
+                        onclick="printModal('attendanceModal', 'Attendance Summary')">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ===== ATTENDANCE DETAIL MODALS ===== --}}
+    @foreach ($attendance as $a)
+        <div class="modal fade" id="attendanceDetailModal{{ $a['raw_id'] }}" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title">
+                            Attendance History — T{{ str_pad($a['raw_id'], 3, '0', STR_PAD_LEFT) }}
+                            {{ ucwords(strtolower($a['name'])) }}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered text-center align-middle data-table">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Month</th>
+                                        <th>Present</th>
+                                        <th>Absent</th>
+                                        <th>Leave</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($a['history'] as $i => $r)
+                                        <tr>
+                                            <td>{{ $i + 1 }}</td>
+                                            <td>{{ $r['month'] }}</td>
+                                            <td>{{ $r['present'] }}</td>
+                                            <td>{{ $r['absent'] }}</td>
+                                            <td>{{ $r['leave'] }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5">No attendance records found.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-dark btn-sm me-auto"
+                            onclick="printDetailModal('attendanceDetailModal{{ $a['raw_id'] }}', 'Attendance History — {{ ucwords(strtolower($a['name'])) }}')">Print</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
+    {{-- ==================== PARTNER MODAL ==================== --}}
+    <div class="modal fade" id="partnerModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">Partner Company Report</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
                     <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-sm text-center align-middle mb-0">
-                        <thead class="table-danger"><tr><th>#</th><th>Project ID</th><th>Project Name</th><th>Due Date</th></tr></thead>
-                        <tbody id="techPendingBody">${renderTechPendingRows(projects.pending, 5)}</tbody>
-                    </table></div>`;
+                        <table class="table table-bordered table-hover text-center align-middle data-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Partner ID</th>
+                                    <th>Company</th>
+                                    <th>Total</th>
+                                    <th>Completed</th>
+                                    <th>Ongoing</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($partners as $p)
+                                    <tr>
+                                        <td>C{{ str_pad($p['raw_id'], 3, '0', STR_PAD_LEFT) }}</td>
+                                        <td>{{ ucwords(strtolower($p['company'])) }}</td>
+                                        <td>{{ $p['total'] }}</td>
+                                        <td>{{ $p['completed'] }}</td>
+                                        <td>{{ $p['ongoing'] }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                                data-bs-target="#partnerDetailModal{{ $p['raw_id'] }}"
+                                                data-bs-dismiss="modal">View</button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6">No partners found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-outline-dark btn-sm mt-2"
+                        onclick="printModal('partnerModal', 'Partner Company Report')">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            } else if (type === 'project') {
-                const p = data.project[idx];
-                title = `Project Details — ${p.id}`;
-                html = `
-                    <div class="table-responsive">
-                    <table class="table table-bordered align-middle mb-0">
-                        <tbody>
-                            <tr><th class="table-light" style="width:35%">Project ID</th><td>${p.id}</td></tr>
-                            <tr><th class="table-light">Customer Name</th><td>${p.customer}</td></tr>
-                            <tr><th class="table-light">Location</th><td>${p.location}</td></tr>
-                            <tr><th class="table-light">Capacity</th><td>${p.capacity}</td></tr>
-                            <tr><th class="table-light">Start Date</th><td>${p.start}</td></tr>
-                            <tr><th class="table-light">End Date</th><td>${p.end}</td></tr>
-                            <tr><th class="table-light">Assigned Technician</th><td>${p.tech}</td></tr>
-                            <tr><th class="table-light">Partner Company</th><td>${p.partner}</td></tr>
-                            <tr><th class="table-light">Status</th><td>${p.status}</td></tr>
-                            <tr><th class="table-light">Additional Work</th><td>${p.addWork}</td></tr>
-                        </tbody>
-                    </table></div>`;
+    {{-- ===== PARTNER DETAIL MODALS ===== --}}
+    @foreach ($partners as $p)
+        <div class="modal fade" id="partnerDetailModal{{ $p['raw_id'] }}" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title">
+                            Projects — C{{ str_pad($p['raw_id'], 3, '0', STR_PAD_LEFT) }}
+                            {{ ucwords(strtolower($p['company'])) }}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h6 class="fw-bold text-success">Completed Projects</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm text-center align-middle data-table">
+                                <thead class="table-success">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Project ID</th>
+                                        <th>Customer</th>
+                                        <th>Location</th>
+                                        <th>Capacity</th>
+                                        <th>Completed Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($p['completed_projects'] as $i => $proj)
+                                        <tr>
+                                            <td>{{ $i + 1 }}</td>
+                                            <td>P{{ str_pad($proj['raw_id'], 3, '0', STR_PAD_LEFT) }}</td>
+                                            <td>{{ ucwords(strtolower($proj['customer'])) }}</td>
+                                            <td>{{ ucwords(strtolower($proj['location'])) }}</td>
+                                            <td>{{ $proj['capacity'] }} kW</td>
+                                            <td>{{ $proj['end_date'] }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6">No completed projects.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                        <h6 class="fw-bold text-primary mt-4">Ongoing Projects</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm text-center align-middle data-table">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Project ID</th>
+                                        <th>Customer</th>
+                                        <th>Location</th>
+                                        <th>Capacity</th>
+                                        <th>Start Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($p['ongoing_projects'] as $i => $proj)
+                                        <tr>
+                                            <td>{{ $i + 1 }}</td>
+                                            <td>P{{ str_pad($proj['raw_id'], 3, '0', STR_PAD_LEFT) }}</td>
+                                            <td>{{ ucwords(strtolower($proj['customer'])) }}</td>
+                                            <td>{{ ucwords(strtolower($proj['location'])) }}</td>
+                                            <td>{{ $proj['capacity'] }} kW</td>
+                                            <td>{{ $proj['start_date'] }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6">No ongoing projects.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-dark btn-sm me-auto"
+                            onclick="printDetailModal('partnerDetailModal{{ $p['raw_id'] }}', 'Projects — {{ ucwords(strtolower($p['company'])) }}')">Print</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
 
-            } else if (type === 'attendance') {
-                const a = data.attendance[idx];
-                const history = data.attendanceHistory[a.id] || [];
-                title = `Attendance History — ${a.name}`;
-                detailState.attendanceHistory = history;
-                html = `
-                    <p class="mb-2 text-muted"><strong>Technician:</strong> ${a.name}</p>
-                    <div class="table-responsive">
-                    <table class="table table-bordered table-hover text-center align-middle mb-0">
-                        <thead class="table-dark"><tr><th>#</th><th>Month</th><th>Present Days</th><th>Absent Days</th><th>Leave Days</th></tr></thead>
-                        <tbody id="attendanceHistoryBody">${renderAttendanceRows(history, 5)}</tbody>
-                    </table></div>`;
-
-            } else if (type === 'partner') {
-                const p = data.partner[idx];
-                const projects = data.partnerProjects[p.id] || {
-                    completed: [],
-                    ongoing: []
-                };
-                title = `Projects — ${p.company}`;
-                html = `
-                    <p class="mb-2 text-muted"><strong>Partner:</strong> ${p.company}</p>
-                    <h6 class="fw-bold text-success mt-3 mb-2">Completed Projects</h6>
-                    <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-sm text-center align-middle mb-0">
-                        <thead class="table-success"><tr><th>#</th><th>Project ID</th><th>Customer</th><th>Location</th><th>Capacity</th><th>Completed Date</th></tr></thead>
-                        <tbody id="partnerCompletedBody">${renderPartnerCompletedRows(projects.completed, 5)}</tbody>
-                    </table></div>
-                    <h6 class="fw-bold text-primary mt-4 mb-2">Ongoing Projects</h6>
-                    <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-sm text-center align-middle mb-0">
-                        <thead class="table-primary"><tr><th>#</th><th>Project ID</th><th>Customer</th><th>Location</th><th>Capacity</th><th>Start Date</th></tr></thead>
-                        <tbody id="partnerOngoingBody">${renderPartnerOngoingRows(projects.ongoing, 5)}</tbody>
-                    </table></div>`;
-            }
-
-            document.getElementById('detailTitle').innerText = title;
-            document.getElementById('detailContent').innerHTML = html;
-
-            const sourceEl = document.getElementById(sourceModalId);
-            const detailEl = document.getElementById('detailModal');
-            bootstrap.Modal.getInstance(sourceEl)?.hide();
-            sourceEl.addEventListener('hidden.bs.modal', function handler() {
-                new bootstrap.Modal(detailEl).show();
-                sourceEl.removeEventListener('hidden.bs.modal', handler);
-            });
-        }
-
-        function printModal(modalId, title) {
-            const table = document.querySelector(`#${modalId} table`).outerHTML;
-            openPrintWindow(title, table);
-        }
-
-        function printDetailTable() {
-            const title = document.getElementById('detailTitle').innerText;
-            const content = document.getElementById('detailContent').innerHTML;
-            openPrintWindow(title, content);
-        }
-
-        function openPrintWindow(title, content) {
-            const win = window.open('', '_blank');
-            win.document.write(`
-                <!DOCTYPE html><html>
-                <head>
-                    <title>${title}</title>
-                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-                    <style>body{padding:24px;}@media print{@page{margin:15mm;}}</style>
-                </head>
-                <body><h5>${title}</h5>${content}
-                <script>window.onload=function(){window.print();window.close();}<\/script>
-                </body></html>`);
-            win.document.close();
-        }
-
-        // Render helpers (keep your existing ones or use empty fallbacks)
-        function renderLoginRows(rows, limit) {
-            return (limit == -1 ? rows : rows.slice(0, limit)).map((r, i) =>
-                    `<tr><td>${i+1}</td><td>${r.ip}</td><td>${r.device}</td><td>${r.login}</td><td>${r.logout}</td></tr>`)
-                .join('') || '<tr><td colspan="5">No data.</td></tr>';
-        }
-
-        function renderTechCompletedRows(rows, limit) {
-            return (limit == -1 ? rows : rows.slice(0, limit)).map((r, i) =>
-                    `<tr><td>${i+1}</td><td>${r.id}</td><td>${r.name}</td><td>${r.date}</td></tr>`).join('') ||
-                '<tr><td colspan="4">No data.</td></tr>';
-        }
-
-        function renderTechPendingRows(rows, limit) {
-            return (limit == -1 ? rows : rows.slice(0, limit)).map((r, i) =>
-                    `<tr><td>${i+1}</td><td>${r.id}</td><td>${r.name}</td><td>${r.due}</td></tr>`).join('') ||
-                '<tr><td colspan="4">No data.</td></tr>';
-        }
-
-        function renderAttendanceRows(rows, limit) {
-            return (limit == -1 ? rows : rows.slice(0, limit)).map((r, i) =>
-                `<tr><td>${i+1}</td><td>${r.month}</td><td>${r.present}</td><td>${r.absent}</td><td>${r.leave}</td></tr>`
-            ).join('') || '<tr><td colspan="5">No data.</td></tr>';
-        }
-
-        function renderPartnerCompletedRows(rows, limit) {
-            return (limit == -1 ? rows : rows.slice(0, limit)).map((r, i) =>
-                `<tr><td>${i+1}</td><td>${r.id}</td><td>${r.customer}</td><td>${r.location}</td><td>${r.capacity}</td><td>${r.date}</td></tr>`
-            ).join('') || '<tr><td colspan="6">No data.</td></tr>';
-        }
-
-        function renderPartnerOngoingRows(rows, limit) {
-            return (limit == -1 ? rows : rows.slice(0, limit)).map((r, i) =>
-                `<tr><td>${i+1}</td><td>${r.id}</td><td>${r.customer}</td><td>${r.location}</td><td>${r.capacity}</td><td>${r.start}</td></tr>`
-            ).join('') || '<tr><td colspan="6">No data.</td></tr>';
-        }
-    </script>
+    @include('others.print')
 @endsection
